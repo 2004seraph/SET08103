@@ -11,7 +11,7 @@ passing project meta information such as the `version` defined in the maven `pom
 file over to the docker image, so it does not need to manually updated each version change.
 
 - This is done inside the `build.sh` script. It simply runs each line as a terminal 
-- command in sequence.
+command in sequence.
 
 Other than that, the `docker-compose.yml` file isn't used for anything else.
 
