@@ -1,0 +1,29 @@
+# User Stories
+
+- As a user I want to produce a report on all the countries in the world organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the countries in a continent organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the countries in a region organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on the top N populated countries in the world where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated countries in a continent where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated countries in a region where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the cities in the world organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the cities in a continent organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the cities in a region organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the cities in a country organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the cities in a district organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on the top N populated cities in the world where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated cities in a continent where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated cities in a region where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated cities in a country where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated cities in a district where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on all the capital cities in the world organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the capital cities in a continent organised by largest population to smallest so that I can easily access this population information
+- As a user I want to produce a report on all the capital cities in a region organised by largest to smallest so that I can easily access this population information
+- As a user I want to produce a report on the top N populated capital cities in the world where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated capital cities in a continent where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the top N populated capital cities in a region where N is provided by me so that I can easily access this population information
+- As a user I want to produce a report on the population of people, people living in cities, and people not living in cities in each continent so that I can easily access this population information
+- As a user I want to produce a report on the population of people, people living in cities, and people not living in cities in each region so that I can easily access this population information
+- As a user I want to produce a report on the population of people, people living in cities, and people not living in cities in each country so that I can easily access this population information
+- As a user I want to access the population of a continent, region, country, district, city and the world so that I can easily access this population information
+- As a user I want to produce a report on how many people speak Chinese, English, Hindi, Spanish and Arabic ordered from greatest number to smallest, including the percentage of the world population so that I can easily access this population information 
