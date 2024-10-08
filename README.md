@@ -1,25 +1,29 @@
 # SET08103 - Software Engineering Methods, Team 3 Project Repository
 
-## Project Structure
+##Contributor Code of Conduct
 
-This project follows the same format seen in the previous labs, but with some small 
-additions that basically amount to typing less stuff into the console and allows more 
-focus on Java coding.
+## Our Pledge
 
-We use a feature of Docker called Docker Compose to automate some simple things. Mainly 
-passing project meta information such as the `version` defined in the maven `pom.xml` 
-file over to the docker image, so it does not need to manually updated each version change.
+We pledge to act and interact in ways that contribute to an open, welcoming,
+diverse, inclusive, and healthy team.
 
-- This is done inside the `build.sh` script. It simply runs each line as a terminal 
-command in sequence.
+## Our Standards
 
-Other than that, the `docker-compose.yml` file isn't used for anything else.
+- Being willing to accept feedback from others.
 
-### Getting up and running
+- Mutual respect.
 
-To build the docker container, run `./build.sh` in the repository folder. If this doesn't 
-work, you may need to run `chmod +x ./build.sh` before trying again.
+- Fair contribution.
 
-To then run the docker container, run `./start.sh`. You may need to do the same fix as 
-above but with this file as well.
+- Speaking up to the team if there's any issue.
+
+## Scope
+
+This Code of Conduct applies within all team spaces, this repo, as well as any 
+other platforms.
+
+## Enforcement
+
+All complaints will be reviewed promptly and fairly by the rest of the team, 
+should they not be able to resolve the issue, it will be forwarded to a member of staff.
 
