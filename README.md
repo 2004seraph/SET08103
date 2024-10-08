@@ -1,6 +1,6 @@
 # SET08103 - Software Engineering Methods, Team 3 Project Repository
 
-##Contributor Code of Conduct
+## Contributor Code of Conduct
 
 ## Our Pledge
 
