@@ -13,4 +13,20 @@ public class SQLQueries {
                 + "WHERE region = " + region
                 + "ORDER BY population DESC";
     }
+
+    public static String Cities_in_a_continent_organised_by_largest_population_to_smallest(String continent){
+        return "Select code, city, population, country, continent"
+                + "FROM world"
+                + "WHERE continent = '" + continent + "' "
+                + "ORDER BY population DESC";
+    }
+
+    public static String top_n_populated_Countries(int n) {
+        return "SELECT code, name, continent, region, population, capital "
+                + "FROM country "
+                + "ORDER BY population DESC "
+                + "LIMIT " + n;
+    }
+
+
 }
