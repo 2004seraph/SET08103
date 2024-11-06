@@ -1,26 +1,12 @@
 package com.napier.SET08103;
 
 import java.sql.*;
+import java.util.ArrayList;
 
+/**
+ * Allows you to create an App object that you can connect and interact with a database to produce reports
+ */
 public class App {
-    /**
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     * TODO jyjuygjuyt
-     * mhf,hcfghmcghcfhgmcfgh
-     * @param args yuh8h8
-     *
-     */
     public static void main(String[] args) {
         // Create new Application
         App a = new App();
@@ -28,14 +14,18 @@ public class App {
         // Connect to database
         a.connect();
 
+        // Creates an ArrayList of country objects
+        ArrayList<Country> countries = a.countryReport(SQLQueries.world_countries_largest_population_to_smallest());
+
+        // Prints the countries in the ArrayList to console
+        a.printCountryReport(countries);
+
         // Disconnect from database
         a.disconnect();
     }
 
 
-    /**
-     * Connection to MySQL database.
-     */
+    //Connection to MySQL database
     private Connection con = null;
 
     /**
@@ -80,6 +70,68 @@ public class App {
             } catch (Exception e) {
                 System.out.println("Error closing connection to database");
             }
+        }
+    }
+
+    /**
+     * Executes an SQL query and extracts the results into country objects, returning an ArrayList of country objects
+     * @param strSelect
+     * @return
+     */
+    public ArrayList<Country> countryReport(String strSelect)
+    {
+        try
+        {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            // Extract country information
+            ArrayList<Country> countries = new ArrayList<>();
+            while (rset.next())
+            {
+                Country country = new Country();
+
+                country.code = rset.getString("code");
+                country.name = rset.getString("name");
+                country.continent = rset.getString("continent");
+                country.region = rset.getString("region");
+                country.population = Integer.parseInt(rset.getString("population"));
+                country.capital = rset.getString("capital");
+
+                countries.add(country);
+            }
+            return countries;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get country details");
+            return null;
+        }
+    }
+
+    /**
+     * Prints country objects to console
+     * @param countries
+     */
+    public void printCountryReport(ArrayList<Country> countries){
+        if (countries == null){
+            System.out.println("No countries");
+            return;
+        }
+
+        // Print header
+        System.out.println(String.format("%-4s %-45s %-14s %-26s %-11s %-9s", "Code", "Name", "Continent", "Region", "Population", "Capital"));
+
+        // Prints each country
+        for (Country country : countries){
+            if (country == null) continue;
+
+            String country_string = String.format("%-4s %-45s %-14s %-26s %-11s %-9s", country.code, country.name, country.continent, country.region, country.population, country.capital);
+            System.out.println(country_string);
         }
     }
 }
