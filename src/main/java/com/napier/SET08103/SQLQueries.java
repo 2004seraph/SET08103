@@ -14,6 +14,7 @@ public class SQLQueries {
                 + "ORDER BY population DESC";
     }
 
+    //This sql query produces countries from largest to smallest within a continent. User can input continent
     public static String Cities_in_a_continent_organised_by_largest_population_to_smallest(String continent){
         return "Select code, city, population, country, continent"
                 + "FROM world"
@@ -21,6 +22,7 @@ public class SQLQueries {
                 + "ORDER BY population DESC";
     }
 
+//This sql query produces top N populated countries in the world. User can input a desired number
     public static String top_n_populated_Countries(int n) {
         return "SELECT code, name, continent, region, population, capital "
                 + "FROM country "
