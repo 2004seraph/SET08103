@@ -20,6 +20,11 @@ jobs:
       #     docker run -d --name mongo-dbserver --network se-methods mongo
       - name: Build
         run: ./build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: JARs
+          path: |
+            target/*.jar
       - name: Run image
         run: ./start.sh
       - name: view logs
