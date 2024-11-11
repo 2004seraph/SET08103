@@ -8,6 +8,8 @@ import java.util.ArrayList;
  */
 public class App {
     public static void main(String[] args) {
+        System.out.println(System.getenv("MYSQL_ROOT_PASSWORD"));
+
         // Create new Application
         App a = new App();
 
@@ -47,7 +49,7 @@ public class App {
                 // Wait a bit for db to start
                 Thread.sleep(30000);
                 // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false", "root", "example");
+                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false", "root", System.getenv("MYSQL_ROOT_PASSWORD"));
                 System.out.println("Successfully connected");
                 break;
             } catch (SQLException sqle) {
@@ -124,7 +126,7 @@ public class App {
         }
 
         // Print header
-        System.out.println(String.format("%-4s %-45s %-14s %-26s %-11s %-9s", "Code", "Name", "Continent", "Region", "Population", "Capital"));
+        System.out.printf("%-4s %-45s %-14s %-26s %-11s %-9s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
 
         // Prints each country
         for (Country country : countries){
