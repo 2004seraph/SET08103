@@ -24,5 +24,5 @@ jobs:
         run: ./build.sh
       - name: Run image
         run: ./start.sh
-      - name: view logs
-        run: docker logs sem-team-project-app
+#      - name: view logs
+#        run: docker logs sem-team-project-app
