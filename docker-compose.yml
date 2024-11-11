@@ -4,8 +4,8 @@ services:
   main:
     build:
       args:
-        PROJECT_ARTIFACT_ID: ${PROJECT_ARTIFACT_ID:-USED_ONLY_DURING_BUILD}
-        PROJECT_VERSION: ${PROJECT_VERSION:-USED_ONLY_DURING_BUILD}
+        PROJECT_ARTIFACT_ID: ${PROJECT_ARTIFACT_ID:-group-3}
+        PROJECT_VERSION: ${PROJECT_VERSION:-0.1-0}
     image: sem-team-project-image:latest
     container_name: sem-team-project-container
 
