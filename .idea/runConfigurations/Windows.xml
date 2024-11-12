@@ -1,0 +1,24 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Windows" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="envFilePath" value="" />
+        <option name="commandLineOptions" value="--build" />
+        <option name="secondarySourceFiles">
+          <list>
+            <option value="windows.docker-compose.yml" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="docker-compose.yml" />
+        <option name="upAbortOnContainerExit" value="true" />
+        <option name="upAttachDependencies" value="true" />
+        <option name="upDetach" value="false" />
+        <option name="upForceRecreate" value="true" />
+      </settings>
+    </deployment>
+    <method v="2">
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="clean" />
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="package -DskipTests" />
+    </method>
+  </configuration>
+</component>
