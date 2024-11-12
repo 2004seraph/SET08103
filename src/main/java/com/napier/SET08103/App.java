@@ -39,6 +39,7 @@ public class App implements AutoCloseable {
         connectionProps.put("password", dbPassword);
         connectionProps.put("useSSL", false);
 
+        connectionProps.put("connectTimeout", DB_LOGIN_TIMEOUT_SECONDS * 1000);
         DriverManager.setLoginTimeout(DB_LOGIN_TIMEOUT_SECONDS);
 
         for (int i = 0; i < MAX_DB_CONN_RETRIES; i++) {
@@ -55,13 +56,6 @@ public class App implements AutoCloseable {
                         "[Attempt (" + (i + 1) + "/" + MAX_DB_CONN_RETRIES + ")] " +
                                 "Failed to connect to database:");
                 System.err.println(e.getMessage() + "\n");
-
-                try {
-                    // Wait
-                    Thread.sleep(300);
-                } catch (InterruptedException ie) {
-                    System.err.println("Wait thread interrupted, fatal error");
-                }
             }
         }
 
