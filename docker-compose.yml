@@ -9,6 +9,8 @@ services:
         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-default}
     image: sem-team-project-app:latest
     container_name: App
+    environment:
+      MYSQL_HOST: "db"
     depends_on:
       - db
 

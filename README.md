@@ -6,6 +6,6 @@
 - The `./build.sh` file simply builds the Maven project, then builds the docker containers
   - You can run the file from your command line by typing `./build.sh`
 - The `./start.sh` file starts the entire project, it works similarly to above, and will build the project if it needs
-to, you do not need to run one after the other.
+to, but if you edit it, you will need to rerun `./build.sh`
 - To completely reset all the docker containers, run: `docker compose rm`, and select "Yes"
 - Changing `MYSQL_ROOT_PASSWORD` requires `docker compose rm` to be ran

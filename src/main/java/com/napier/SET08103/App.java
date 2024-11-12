@@ -3,6 +3,7 @@ package com.napier.SET08103;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -10,15 +11,17 @@ import java.util.Properties;
  * and interact with a database to produce reports
  */
 public class App implements AutoCloseable {
-    private static final int MAX_DB_CONN_RETRIES = 3;
-    private static final int DB_LOGIN_TIMEOUT_SECONDS = 2;
+    private static final int DB_MAX_CONN_RETRIES = 10;
+    private static final int DB_LOGIN_TIMEOUT_SECONDS = 3;
 
     //Connection to MySQL database
     private Connection con = null;
 
     public static void main(String[] args) {
         try (App a = new App()) {
-            a.connect(System.getenv("MYSQL_ROOT_PASSWORD"));
+            a.connect(
+                    Objects.requireNonNullElse(System.getenv("MYSQL_HOST"), "localhost"),
+                    System.getenv("MYSQL_ROOT_PASSWORD"));
 
             // Creates an ArrayList of country objects
             ArrayList<Country> countries = a.countryReport(
@@ -30,7 +33,7 @@ public class App implements AutoCloseable {
         // Connection is automatically closed
     }
 
-    public void connect(String dbPassword) throws InternalError {
+    public void connect(String dbHost, String dbPassword) throws InternalError {
         if (!isDriverLoaded())
             throw new InternalError("Database driver not loaded");
 
@@ -38,14 +41,14 @@ public class App implements AutoCloseable {
         connectionProps.put("user", "root");
         connectionProps.put("password", dbPassword);
         connectionProps.put("useSSL", false);
-
         connectionProps.put("connectTimeout", DB_LOGIN_TIMEOUT_SECONDS * 1000);
+
         DriverManager.setLoginTimeout(DB_LOGIN_TIMEOUT_SECONDS);
 
-        for (int i = 0; i < MAX_DB_CONN_RETRIES; i++) {
+        for (int i = 0; i < DB_MAX_CONN_RETRIES; i++) {
             try {
                 con = DriverManager.getConnection(
-                        "jdbc:mysql://0.0.0.0:3306/world",
+                        "jdbc:mysql://" + dbHost + ":3306/world",
                         connectionProps);
 
                 System.out.println("Successfully connected to database");
@@ -53,9 +56,15 @@ public class App implements AutoCloseable {
 
             } catch (SQLException e) {
                 System.err.println(
-                        "[Attempt (" + (i + 1) + "/" + MAX_DB_CONN_RETRIES + ")] " +
+                        "[Attempt (" + (i + 1) + "/" + DB_MAX_CONN_RETRIES + ")] " +
                                 "Failed to connect to database:");
                 System.err.println(e.getMessage() + "\n");
+            }
+            try {
+                // Wait
+                Thread.sleep(DB_LOGIN_TIMEOUT_SECONDS * 1000);
+            } catch (InterruptedException ie) {
+                System.err.println("Wait thread interrupted, fatal error");
             }
         }
 
