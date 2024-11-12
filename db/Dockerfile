@@ -7,6 +7,8 @@ ARG MYSQL_ROOT_PASSWORD
 # Set the root password
 ENV MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
+RUN echo among $MYSQL_ROOT_PASSWORD
+
 # Copy all the files to the working directory of the container
 # Copy the main SQL file to docker-entrypoint-initdb.d.
 COPY world.sql /docker-entrypoint-initdb.d

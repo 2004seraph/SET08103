@@ -8,3 +8,4 @@
 - The `./start.sh` file starts the entire project, it works similarly to above, and will build the project if it needs
 to, you do not need to run one after the other.
 - To completely reset all the docker containers, run: `docker compose rm`, and select "Yes"
+- Changing `MYSQL_ROOT_PASSWORD` requires `docker compose rm` to be ran

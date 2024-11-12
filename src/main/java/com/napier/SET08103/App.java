@@ -2,91 +2,108 @@ package com.napier.SET08103;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
- * Allows you to create an App object that you can connect and interact with a database to produce reports
+ * Allows you to create an App object that you can connect
+ * and interact with a database to produce reports
  */
-public class App {
-    public static void main(String[] args) {
-        System.out.println(System.getenv("MYSQL_ROOT_PASSWORD"));
-
-        // Create new Application
-        App a = new App();
-
-        // Connect to database
-        a.connect();
-
-        // Creates an ArrayList of country objects
-        ArrayList<Country> countries = a.countryReport(SQLQueries.world_countries_largest_population_to_smallest());
-
-        // Prints the countries in the ArrayList to console
-        a.printCountryReport(countries);
-
-        // Disconnect from database
-        a.disconnect();
-    }
-
+public class App implements AutoCloseable {
+    private static final int MAX_DB_CONN_RETRIES = 3;
+    private static final int DB_LOGIN_TIMEOUT_SECONDS = 2;
 
     //Connection to MySQL database
     private Connection con = null;
 
-    /**
-     * Connect to the MySQL database.
-     */
-    public void connect() {
-        try {
-            // Load Database driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Could not load SQL driver");
-            System.exit(-1);
+    public static void main(String[] args) {
+        try (App a = new App()) {
+            a.connect(System.getenv("MYSQL_ROOT_PASSWORD"));
+
+            // Creates an ArrayList of country objects
+            ArrayList<Country> countries = a.countryReport(
+                    SQLQueries.world_countries_largest_population_to_smallest());
+            // Prints the countries in the ArrayList to console
+            a.printCountryReport(countries);
         }
 
-        int retries = 20;
-        for (int i = 0; i < retries; ++i) {
-            System.out.println("Connecting to database...");
+        // Connection is automatically closed
+    }
+
+    public void connect(String dbPassword) throws InternalError {
+        if (!isDriverLoaded())
+            throw new InternalError("Database driver not loaded");
+
+        Properties connectionProps = new Properties();
+        connectionProps.put("user", "root");
+        connectionProps.put("password", dbPassword);
+        connectionProps.put("useSSL", false);
+
+        DriverManager.setLoginTimeout(DB_LOGIN_TIMEOUT_SECONDS);
+
+        for (int i = 0; i < MAX_DB_CONN_RETRIES; i++) {
             try {
-                // Wait a bit for db to start
-                Thread.sleep(30000);
-                // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false", "root", System.getenv("MYSQL_ROOT_PASSWORD"));
-                System.out.println("Successfully connected");
-                break;
-            } catch (SQLException sqle) {
-                System.out.println("Failed to connect to database attempt " + i);
-                System.out.println(sqle.getMessage());
-            } catch (InterruptedException ie) {
-                System.out.println("Thread interrupted? Should not happen.");
+                con = DriverManager.getConnection(
+                        "jdbc:mysql://0.0.0.0:3306/world",
+                        connectionProps);
+
+                System.out.println("Successfully connected to database");
+                return;
+
+            } catch (SQLException e) {
+                System.err.println(
+                        "[Attempt (" + (i + 1) + "/" + MAX_DB_CONN_RETRIES + ")] " +
+                                "Failed to connect to database:");
+                System.err.println(e.getMessage() + "\n");
+
+                try {
+                    // Wait
+                    Thread.sleep(300);
+                } catch (InterruptedException ie) {
+                    System.err.println("Wait thread interrupted, fatal error");
+                }
             }
         }
+
+        throw new InternalError("Could not connect to database");
     }
 
     /**
      * Disconnect from the MySQL database.
      */
-    public void disconnect() {
+    @Override
+    public void close() {
         if (con != null) {
             try {
-                // Close connection
                 con.close();
             } catch (Exception e) {
-                System.out.println("Error closing connection to database");
+                System.err.println("Error closing connection to database");
             }
         }
     }
 
+    public static Boolean isDriverLoaded()  {
+        Enumeration<Driver> list = DriverManager.getDrivers();
+        while (list.hasMoreElements()) {
+            Driver driver = list.nextElement();
+            if (driver.toString().contains("mysql")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
-     * Executes an SQL query and extracts the results into country objects, returning an ArrayList of country objects
+     * Executes an SQL query and extracts the results into country objects,
+     * returning an ArrayList of country objects
      * @param strSelect
      * @return
      */
     public ArrayList<Country> countryReport(String strSelect)
     {
-        try
+        try (Statement stmt = con.createStatement())
         {
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
 
@@ -126,13 +143,17 @@ public class App {
         }
 
         // Print header
-        System.out.printf("%-4s %-45s %-14s %-26s %-11s %-9s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
+        System.out.printf(
+                "%-4s %-45s %-14s %-26s %-11s %-9s%n",
+                "Code", "Name", "Continent", "Region", "Population", "Capital");
 
         // Prints each country
         for (Country country : countries){
             if (country == null) continue;
 
-            String country_string = String.format("%-4s %-45s %-14s %-26s %-11s %-9s", country.code, country.name, country.continent, country.region, country.population, country.capital);
+            String country_string = String.format(
+                    "%-4s %-45s %-14s %-26s %-11s %-9s",
+                    country.code, country.name, country.continent, country.region, country.population, country.capital);
             System.out.println(country_string);
         }
     }
