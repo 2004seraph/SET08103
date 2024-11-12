@@ -29,24 +29,23 @@ public class SQLQueries {
                 + "ORDER BY population DESC "
                 + "LIMIT " + n;
     }
+    //This function generates total population of the entire world
+    public static String world_population() {
+        return "SELECT SUM(population) AS world_population FROM country";
+    }
 
- //This function generates total population of the entire world
- public static String world_population() {
-     return "SELECT SUM(population) AS world_population FROM country";
- }
+    //This function generates total population of a continent
+    public static String continent_population(String continent) {
+        return "SELECT SUM(population) AS continent_population "
+                + "FROM country "
+                + "WHERE continent = '" + continent + "'";
+    }
 
- //This function generates total population of a continent
- public static String continent_population(String continent) {
-     return "SELECT SUM(population) AS continent_population "
-             + "FROM country "
-             + "WHERE continent = '" + continent + "'";
- }
-
- //This function generates total population of a region
- public static String region_population(String region) {
-     return "SELECT SUM(population) AS region_population "
-             + "FROM country "
-             + "WHERE region = '" + region + "'";
- }
+    //This function generates total population of a region
+    public static String region_population(String region) {
+        return "SELECT SUM(population) AS region_population "
+                + "FROM country "
+                + "WHERE region = '" + region + "'";
+    }
 
 }
