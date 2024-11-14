@@ -29,5 +29,5 @@ jobs:
             target/*.jar
       - name: Run image
         run: ./start.sh
-      - name: view logs
-        run: docker logs sem-team-project-container
+#      - name: view logs
+#        run: docker logs sem-team-project-app

@@ -1,0 +1,8 @@
+﻿version: "3"
+
+services:
+  main:
+    build:
+      args:
+        PROJECT_ARTIFACT_ID: group-3
+        PROJECT_VERSION: 0.1-0

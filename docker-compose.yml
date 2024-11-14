@@ -4,12 +4,22 @@ services:
   main:
     build:
       args:
-        PROJECT_ARTIFACT_ID: ${PROJECT_ARTIFACT_ID:-USED_ONLY_DURING_BUILD}
-        PROJECT_VERSION: ${PROJECT_VERSION:-USED_ONLY_DURING_BUILD}
-    image: sem-team-project-image:latest
-    container_name: sem-team-project-container
+        PROJECT_ARTIFACT_ID: ${PROJECT_ARTIFACT_ID}
+        PROJECT_VERSION: ${PROJECT_VERSION}
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-default}
+    image: sem-team-project-app:latest
+    container_name: App
+    environment:
+      MYSQL_HOST: "db"
+    depends_on:
+      - db
 
   db:
-    build: vendor/.
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
+    build:
+      context: db/.
+      args:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-default}
+    command: --default-authentication-plugin=mysql_native_password --skip-name-resolve
+    restart: on-failure
+    image: sem-team-project-db:latest
+    container_name: DB

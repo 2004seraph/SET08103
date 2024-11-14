@@ -6,5 +6,6 @@
 
 # Builds the Java project into a self-contained JAR file
 mvn package -DskipTests
+
 # Sets up the run environment (docker container) and copies the JAR file there
-docker compose build
+docker compose build "$@"

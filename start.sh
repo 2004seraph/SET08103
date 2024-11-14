@@ -5,4 +5,4 @@
 . ./scripts/envars.sh
 
 # Runs the docker image as a container
-docker compose up --abort-on-container-exit
+docker compose up --abort-on-container-exit "$@"
