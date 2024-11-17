@@ -21,8 +21,8 @@ jobs:
       - name: Unit Tests
         run: mvn test -DfailIfNoTests=false
       - name: Build
-        run: ./build.sh
+        run: ./scripts/build.sh
       - name: Run image
-        run: ./start.sh
+        run: ./scripts/start.sh
 #      - name: view logs
 #        run: docker logs sem-team-project-app

@@ -10,7 +10,7 @@
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/target/classes" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.napier.SET08103.*" />
+        <option name="PATTERN" value="com.napier.SET08103.model.concepts.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
