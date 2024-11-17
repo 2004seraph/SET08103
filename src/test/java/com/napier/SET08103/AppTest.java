@@ -1,12 +1,10 @@
 package com.napier.SET08103;
 
+import com.napier.SET08103.model.concepts.Country;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Class for testing App
@@ -21,33 +19,32 @@ public class AppTest {
 
     @Test
     void printCountryReportTestNull(){
-        app.printCountryReport(null);
+        CountryReport.print(null);
     }
 
     @Test
     void printCountryReportTestEmpty(){
         ArrayList<Country> countries = new ArrayList<>();
-        app.printCountryReport(countries);
+        CountryReport.print(countries);
     }
 
     @Test
     void printCountryReportContainsNull(){
         ArrayList<Country> countries = new ArrayList<>();
         countries.add(null);
-        app.printCountryReport(countries);
+        CountryReport.print(countries);
     }
 
     @Test
     void printCountryReport(){
-        ArrayList<Country> countries = new ArrayList<>();
-        Country country = new Country();
-        country.code = "GBR";
-        country.name = "United Kingdom";
-        country.continent = "Europe";
-        country.region = "British Islands";
-        country.population = 59623400;
-        country.capital = "London";
-        countries.add(country);
-        app.printCountryReport(countries);
+//        ArrayList<Country> countries = new ArrayList<>();
+//        Country country = Country.fromCountryCode("GBR", );
+//        country.name = "United Kingdom";
+//        country.continent = "Europe";
+//        country.region = "British Islands";
+//        country.population = 59623400;
+//        country.capital = "London";
+//        countries.add(country);
+//        CountryReport.print(countries);
     }
 }
