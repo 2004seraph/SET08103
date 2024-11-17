@@ -1,5 +1,7 @@
 package com.napier.SET08103;
 
+import com.napier.SET08103.model.concepts.Country;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -14,23 +16,45 @@ public class App implements AutoCloseable {
     private static final int DB_MAX_CONN_RETRIES = 10;
     private static final int DB_LOGIN_TIMEOUT_SECONDS = 3;
 
-    //Connection to MySQL database
-    private Connection con = null;
+    public static Boolean isDriverLoaded()  {
+        Enumeration<Driver> list = DriverManager.getDrivers();
+        while (list.hasMoreElements()) {
+            Driver driver = list.nextElement();
+            if (driver.toString().contains("mysql")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public static void main(String[] args) {
         try (App a = new App()) {
             a.connect(
-                    Objects.requireNonNullElse(System.getenv("MYSQL_HOST"), "localhost"),
-                    System.getenv("MYSQL_ROOT_PASSWORD"));
+                    Objects.requireNonNullElse(
+                            System.getenv("MYSQL_HOST"),
+                            "localhost"),
+                    Objects.requireNonNullElse(
+                            System.getenv("MYSQL_ROOT_PASSWORD"),
+                            "default")
+                    );
 
-            // Creates an ArrayList of country objects
-            ArrayList<Country> countries = a.countryReport(
-                    SQLQueries.world_countries_largest_population_to_smallest());
-            // Prints the countries in the ArrayList to console
-            a.printCountryReport(countries);
+            a.run();
         }
 
-        // Connection is automatically closed
+        // Connection is automatically closed by try (...) { } calling a.close(); on exit
+    }
+
+    //Connection to MySQL database
+    private Connection con = null;
+
+    public void run() {
+        // Creates an ArrayList of country objects
+        ArrayList<Country> countries = CountryReport.build(
+                con,
+                SQLQueries.world_countries_largest_population_to_smallest());
+        // Prints the countries in the ArrayList to console
+        CountryReport.print(countries);
     }
 
     public void connect(String dbHost, String dbPassword) throws InternalError {
@@ -82,82 +106,6 @@ public class App implements AutoCloseable {
             } catch (Exception e) {
                 System.err.println("Error closing connection to database");
             }
-        }
-    }
-
-    public static Boolean isDriverLoaded()  {
-        Enumeration<Driver> list = DriverManager.getDrivers();
-        while (list.hasMoreElements()) {
-            Driver driver = list.nextElement();
-            if (driver.toString().contains("mysql")) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Executes an SQL query and extracts the results into country objects,
-     * returning an ArrayList of country objects
-     * @param strSelect
-     * @return
-     */
-    public ArrayList<Country> countryReport(String strSelect)
-    {
-        try (Statement stmt = con.createStatement())
-        {
-            // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
-
-            // Extract country information
-            ArrayList<Country> countries = new ArrayList<>();
-            while (rset.next())
-            {
-                Country country = new Country();
-
-                country.code = rset.getString("code");
-                country.name = rset.getString("name");
-                country.continent = rset.getString("continent");
-                country.region = rset.getString("region");
-                country.population = Integer.parseInt(rset.getString("population"));
-                country.capital = rset.getString("capital");
-
-                countries.add(country);
-            }
-            return countries;
-        }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-            System.out.println("Failed to get country details");
-            return null;
-        }
-    }
-
-    /**
-     * Prints country objects to console
-     * @param countries
-     */
-    public void printCountryReport(ArrayList<Country> countries){
-        if (countries == null){
-            System.out.println("No countries");
-            return;
-        }
-
-        // Print header
-        System.out.printf(
-                "%-4s %-45s %-14s %-26s %-11s %-9s%n",
-                "Code", "Name", "Continent", "Region", "Population", "Capital");
-
-        // Prints each country
-        for (Country country : countries){
-            if (country == null) continue;
-
-            String country_string = String.format(
-                    "%-4s %-45s %-14s %-26s %-11s %-9s",
-                    country.code, country.name, country.continent, country.region, country.population, country.capital);
-            System.out.println(country_string);
         }
     }
 }
