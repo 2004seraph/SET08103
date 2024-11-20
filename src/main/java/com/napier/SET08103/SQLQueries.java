@@ -80,4 +80,37 @@ public class SQLQueries {
                 + "WHERE ci.District = '" + district + "' "
                 + "ORDER BY population DESC";
     }
+
+//This function generates total population of the world
+    public static String country_population(String countryName) {
+        return "SELECT population AS country_population "
+                + "FROM country "
+                + "WHERE name = '" + countryName + "'";
+    }
+
+//This function generates total population of a district
+public static String district_population(String districtName) {
+    return "SELECT SUM(population) AS district_population "
+            + "FROM city "
+            + "WHERE district = '" + districtName + "'";
+}
+
+//This function generates total population of a city
+public static String cityPopulation(String cityName) {
+    return "SELECT population AS city_population "
+            + "FROM city "
+            + "WHERE name = '" + cityName + "'";
+}
+//The population of people, people living in cities, and people not living in cities in each country
+    public static String populationBreakdownByCountry() {
+        return "SELECT "
+                + "country.name AS country_name, "
+                + "country.population AS total_population, "
+                + "IFNULL(SUM(city.population), 0) AS city_population, "
+                + "(country.population - IFNULL(SUM(city.population), 0)) AS non_city_population "
+                + "FROM country "
+                + "LEFT JOIN city ON country.code = city.countrycode "
+                + "GROUP BY country.name, country.population";
+    }
+
 }
