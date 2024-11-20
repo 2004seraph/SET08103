@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface IZone {
-    public int getPopulation();
+    public PopulationInfo getPopulation();
 
     public Zone GetZoneLevel();
 }

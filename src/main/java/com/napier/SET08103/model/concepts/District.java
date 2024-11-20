@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
 
@@ -29,7 +30,7 @@ public final class District implements IFieldEnum<String>, IZone {
     }
 
     @Override
-    public int getPopulation() {
+    public PopulationInfo getPopulation() {
 //        try (PreparedStatement stmt = conn.prepareStatement(
 //                "SELECT SUM(" +  + ") FROM ? WHERE ? = ?",
 //                new String[] {
@@ -44,7 +45,11 @@ public final class District implements IFieldEnum<String>, IZone {
 //
 //                return rs.getInt(1);
 //            }
-        return 0;
+        return new PopulationInfo(
+                this,
+                0,
+                0
+        );
     }
 
     @Override
