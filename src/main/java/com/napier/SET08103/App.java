@@ -1,18 +1,16 @@
 package com.napier.SET08103;
 
+import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Allows you to create an App object that you can connect
  * and interact with a database to produce reports
  */
-public class App implements AutoCloseable {
+public final class App implements AutoCloseable {
     private static final int DB_MAX_CONN_RETRIES = 10;
     private static final int DB_LOGIN_TIMEOUT_SECONDS = 3;
 
@@ -47,6 +45,16 @@ public class App implements AutoCloseable {
 
     //Connection to MySQL database
     private Connection con = null;
+
+    /**
+     * Package-private function only allowed for use in JUnit test code.
+     * Allows you to create a new App() instance, run its .connect() function,
+     * and then use its "con" property in the tests.
+     * @return con
+     */
+    Connection getConnectionForTesting() {
+        return con;
+    }
 
     public void run() {
         // Creates an ArrayList of country objects
