@@ -38,10 +38,10 @@ public class CityTest {
         Connection conn = app.getConnectionForTesting();
         try {
             City kabul = City.fromId(1, conn);
-            Assertions.assertEquals(1780000, kabul.getPopulation());
+            Assertions.assertEquals(1780000, kabul.getPopulation().total);
 
             City london = City.fromName("LonDON", conn);
-            Assertions.assertEquals(7285000, london.getPopulation());
+            Assertions.assertEquals(7285000, london.getPopulation().total);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
