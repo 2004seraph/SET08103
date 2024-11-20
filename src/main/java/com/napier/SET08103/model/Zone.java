@@ -11,6 +11,8 @@ public enum Zone {
     CITIES(5),
     CAPITALS(6);
 
+    public static final Zone[] asList = values();
+
     // Each enum has an integer value associated with it to create the notion
     // of one being bigger or "encompassing" the other. (The WORLD is >>> than a REGION)
 
