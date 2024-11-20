@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
 
@@ -25,8 +26,12 @@ public final class Region implements IFieldEnum<String>, IZone {
     }
 
     @Override
-    public int getPopulation() {
-        return 0;
+    public PopulationInfo getPopulation() {
+        return new PopulationInfo(
+                this,
+                0,
+                0
+        );
     }
 
     @Override
