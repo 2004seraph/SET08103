@@ -2,10 +2,9 @@ name: Package and Create Release
 
 on:
   push:
-    branches:
-      - master
+    # Pattern matched against refs/tags
     tags:
-      - 'v*'
+      - '*'           # Push events to every tag not containing /
 
 permissions: write-all
 
