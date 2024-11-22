@@ -1,5 +1,7 @@
 # SET08103 - Software Engineering Methods
 
+![ENU Badge](https://img.shields.io/badge/Edinburgh%20Napier%20University-CC002A)
+
 ## Team 3 Project Repository
 
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/2004seraph/SET08103/docker-image.yml?branch=master)
