@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Class for testing App
  */
-public class AppTest {
+public class AppUnitTest {
     static App app;
 
     @BeforeAll
