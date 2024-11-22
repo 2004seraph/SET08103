@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CityTest {
+public class AppIntegrationTest {
     static App app;
 
     @BeforeAll
