@@ -1,4 +1,17 @@
-# SET08103 - Software Engineering Methods, Team 3 Project Repository
+# SET08103 - Software Engineering Methods
+
+## Team 3 Project Repository
+
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/2004seraph/SET08103/docker-image.yml?branch=master)
+[![LICENSE](https://img.shields.io/github/license/2004seraph/SET08103.svg?style=flat-square)](https://github.com/2004seraph/SET08103/blob/master/LICENSE)
+[![Releases](https://img.shields.io/github/release/2004seraph/SET08103/all.svg?style=flat-square)](https://github.com/2004seraph/SET08103/releases)
+[![codecov](https://codecov.io/gh/2004seraph/SET08103/branch/master/graph/badge.svg?token=EDH24ELB68)](https://codecov.io/gh/2004seraph/SET08103)
+
+## Coverage
+
+Each square is a file, color-coded to how much of it is being tested.
+
+![Grid map of code coverage](https://codecov.io/gh/2004seraph/SET08103/graphs/tree.svg?token=EDH24ELB68)
 
 ## Dev Notes
 
