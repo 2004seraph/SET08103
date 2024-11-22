@@ -11,7 +11,7 @@ permissions: write-all
 
 jobs:
   release:
-    name: Build Run in Docker and Deploy Release
+    name: Build, Run and Deploy Release
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
