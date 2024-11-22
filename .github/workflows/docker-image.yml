@@ -33,7 +33,7 @@ jobs:
           distribution: 'adopt'
       - name: Integration Tests
         run: |
-          docker compose -f ./docker-compose.yml -f ./docker-compose.dev.linux.yml up db
+          docker compose -f ./docker-compose.yml -f ./docker-compose.dev.linux.yml up db -d
           mvn -Dtest='!*UnitTest' test
 
   build:
