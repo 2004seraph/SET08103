@@ -35,6 +35,14 @@ jobs:
         run: |
           docker compose -f ./docker-compose.yml -f ./docker-compose.dev.linux.yml up db -d
           mvn -Dtest='!*UnitTest' test
+      - name: CodeCov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./target/site/jacoco
+          flags: Integration Tests
+          verbose: false
+          slug: 2004seraph/SET08103
 
   build:
     name: Build and Run
