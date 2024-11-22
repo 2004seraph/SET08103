@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IEntity;
 
@@ -14,6 +15,7 @@ public final class Country implements IEntity, IZone {
     public static final String tableName = "country";
     public static final String primaryKeyFieldName = "Code";
     public static final String populationFieldName = "Population";
+    public static final String capitalFieldName = "Capital";
 
     public static Country fromCountryCode(String countryCode, Connection conn) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(
@@ -41,8 +43,12 @@ public final class Country implements IEntity, IZone {
     }
 
     @Override
-    public int getPopulation(Connection conn) throws SQLException {
-        return 0;
+    public PopulationInfo getPopulation() {
+        return new PopulationInfo(
+                this,
+                0,
+                0
+        );
     }
 
     @Override
