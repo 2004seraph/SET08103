@@ -72,5 +72,6 @@ public final class CountryReport {
                     country.getPrimaryKey(), country.name, country.continent, country.region, country.population, country.capital);
             System.out.println(country_string);
         }
+        System.out.println();
     }
 }

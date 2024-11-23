@@ -63,6 +63,25 @@ public final class App implements AutoCloseable {
                 SQLQueries.world_countries_largest_population_to_smallest());
         // Prints the countries in the ArrayList to console
         CountryReport.print(countries);
+
+
+        // city report tests
+        ArrayList<City> cities = CityReport.build(
+                con,
+                SQLQueries.cities_in_a_country_largest_population_to_smallest("United Kingdom"));
+        CityReport.print(cities);
+
+        ArrayList<City> cities2 = CityReport.build(
+                con,
+                SQLQueries.cities_in_a_region_largest_population_to_smallest("Western Europe"));
+        CityReport.print(cities2);
+
+        ArrayList<City> cities3 = CityReport.build(
+                con,
+                SQLQueries.cities_in_world_largest_population_to_smallest());
+        CityReport.print(cities3);
+
+
     }
 
     public void connect(String dbHost, String dbPassword) throws InternalError {

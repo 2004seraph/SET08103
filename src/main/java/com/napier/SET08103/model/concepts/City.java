@@ -13,19 +13,23 @@ public final class City implements IEntity, IZone {
 
     public static final String tableName = "city";
     public static final String primaryKeyFieldName = "ID";
-    public static final String populationFieldName = "Population";
     public static final String nameFieldName = "Name";
+    public static  final String countryFieldName = "co.name";
+    public static final String districtFieldName = "District";
+    public static final String populationFieldName = "Population";
 
     public static City fromId(int id, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + tableName + " where " + primaryKeyFieldName + " = ?")) {
+                "SELECT ci.Name, co.Name, ci.District, ci.Population FROM " + tableName + " ci " + "JOIN country co ON co.CODE = " + "ci.CountryCode" + " where " + primaryKeyFieldName + " = ?")) {
             ps.setInt(1, id);
-
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
                     City c = new City(id, conn);
-                    c.population = res.getInt(populationFieldName);
-                    c.name = res.getString(nameFieldName);
+
+                    c.name = res.getString("ci." + nameFieldName);
+                    c.country = res.getString(countryFieldName);
+                    c.district = res.getString(districtFieldName);
+                    c.population = res.getInt("ci." + populationFieldName);
 
                     return c;
                 }
@@ -51,8 +55,10 @@ public final class City implements IEntity, IZone {
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 City c = new City(res.getInt(primaryKeyFieldName), conn);
-                c.population = res.getInt(populationFieldName);
                 c.name = res.getString(nameFieldName);
+                c.country = res.getString(countryFieldName);
+                c.district = res.getString(districtFieldName);
+                c.population = res.getInt(populationFieldName);
 
                 return c;
             } else
@@ -95,8 +101,10 @@ public final class City implements IEntity, IZone {
     public final int id;
     private final Zone zone;
 
-    private int population;
-    private String name;
+    public String name;
+    public String country;
+    public String district;
+    public int population;
 
     private City(int primaryKey, Connection conn) throws SQLException {
         this.id = primaryKey;
