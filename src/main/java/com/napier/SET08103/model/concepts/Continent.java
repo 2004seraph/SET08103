@@ -6,7 +6,13 @@ import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class Continent implements IFieldEnum<Continent.ContinentName>, IZone {
 
@@ -20,15 +26,25 @@ public final class Continent implements IFieldEnum<Continent.ContinentName>, IZo
     }
 
     public enum ContinentName {
-        NORTH_AMERICA,
-        EUROPE,
-        ASIA,
-        AFRICA,
-        OCEANIA,
-        ANTARCTICA,
-        SOUTH_AMERICA;
+        NORTH_AMERICA("North America"),
+        EUROPE("Europe"),
+        ASIA("Asia"),
+        AFRICA("Africa"),
+        OCEANIA("Oceania"),
+        ANTARCTICA("Antarctica"),
+        SOUTH_AMERICA("South America");
 
         public static final ContinentName[] asList = values();
+
+        private final String databaseName;
+
+        ContinentName(String databaseName) {
+            this.databaseName = databaseName;
+        }
+
+        public String getDatabaseName() {
+            return this.databaseName;
+        }
     }
 
     private final ContinentName name;
@@ -45,8 +61,43 @@ public final class Continent implements IFieldEnum<Continent.ContinentName>, IZo
     }
 
     @Override
-    public Zone GetZoneLevel() {
+    public List<City> getCities(Connection conn) throws SQLException {
+        return getInnerZones(conn)
+                .stream()
+                .flatMap(d -> {
+                    try {
+                        return d.getCities(conn).stream();
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT " + Country.regionFieldName + " FROM " + Country.tableName +
+                        " WHERE " + Country.continentFieldName + " = ?"
+        );
+        stmt.setString(1, name.getDatabaseName());
+
+        List<IZone> regions = new ArrayList<>();
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            while (res.next())
+                regions.add(Region.fromName(res.getString(Country.regionFieldName), conn));
+        }
+
+        return regions;
+    }
+
+    @Override
+    public Zone getZoneLevel() {
         return Zone.CONTINENTS;
+    }
+
+    @Override
+    public IZone getOuterZone() {
+        return null;
     }
 
     @Override
@@ -56,5 +107,10 @@ public final class Continent implements IFieldEnum<Continent.ContinentName>, IZo
                 0,
                 0
         );
+    }
+
+    @Override
+    public String toString() {
+        return name.getDatabaseName();
     }
 }

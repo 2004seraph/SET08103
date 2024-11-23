@@ -9,19 +9,86 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public final class District implements IFieldEnum<String>, IZone {
 
-    public static final String districtFieldName = "District";
+    public static final String nullFieldValue = "–"; // Don't be fooled, this is a weird Unicode character
 
-    public static District fromName(String name) {
-        return new District(name);
+    public static District fromName(String name, String countryCode, Connection conn) throws SQLException {
+        return District.fromName(name, Country.fromCountryCode(countryCode, conn), conn);
+    }
+
+    public static District fromName(String name, Country country, Connection conn) throws SQLException {
+        if (Objects.equals(name, nullFieldValue))
+            return null;
+
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT " + City.districtFieldName + ", " + City.countryCodeFieldName + " FROM " + City.tableName +
+                        " WHERE LOWER( " + City.districtFieldName + " ) LIKE ? AND " + City.countryCodeFieldName + " = ?"
+        );
+        stmt.setString(1, name.toLowerCase());
+        stmt.setString(2, country.countryCode);
+
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            if (res.next()) {
+                District d = new District(res.getString(City.districtFieldName));
+                d.country = country;
+                return d;
+            } else
+                throw new IllegalArgumentException("No district with name: " + name + ", and country: " + country);
+        }
+    }
+
+    public static District fromName(String name, Connection conn) throws SQLException {
+        if (Objects.equals(name, nullFieldValue))
+            return null;
+
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT " + City.districtFieldName + " FROM " + City.tableName +
+                        " WHERE LOWER( " + City.districtFieldName + " ) LIKE ? ORDER BY " +
+                        City.populationFieldName + " DESC"
+        );
+        stmt.setString(1, name.toLowerCase());
+
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            if (res.next()) {
+                return new District(res.getString(City.districtFieldName));
+            } else
+                throw new IllegalArgumentException("No district with name: " + name);
+        }
     }
 
     private final String name;
+    private Country country;
 
     private District(String name) {
         this.name = name;
+    }
+
+    @Override
+    public List<City> getCities(Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT " + City.primaryKeyFieldName + " FROM " + City.tableName +
+                        " WHERE " + City.districtFieldName + " = ?"
+        );
+        stmt.setString(1, name);
+
+        List<City> cities = new ArrayList<>();
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            while (res.next())
+                cities.add(City.fromId(res.getInt(City.primaryKeyFieldName), conn));
+        }
+
+        return cities;
+    }
+
+    @Override
+    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+        return getCities(conn).stream().map(c -> (IZone)c).collect(Collectors.toList());
     }
 
     @Override
@@ -31,20 +98,6 @@ public final class District implements IFieldEnum<String>, IZone {
 
     @Override
     public PopulationInfo getPopulation() {
-//        try (PreparedStatement stmt = conn.prepareStatement(
-//                "SELECT SUM(" +  + ") FROM ? WHERE ? = ?",
-//                new String[] {
-//                        City.populationFieldName,
-//                        City.tableName,
-//                        districtFieldName,
-//                        name
-//                });
-//            ResultSet rs = stmt.executeQuery()) {
-//                if (!rs.next())
-//                    throw new InternalError("No population results for District: " + name);
-//
-//                return rs.getInt(1);
-//            }
         return new PopulationInfo(
                 this,
                 0,
@@ -53,7 +106,17 @@ public final class District implements IFieldEnum<String>, IZone {
     }
 
     @Override
-    public Zone GetZoneLevel() {
+    public Zone getZoneLevel() {
         return Zone.DISTRICTS;
+    }
+
+    @Override
+    public IZone getOuterZone() {
+        return this.country;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

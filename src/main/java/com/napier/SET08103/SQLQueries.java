@@ -1,6 +1,10 @@
 package com.napier.SET08103;
 
-public class SQLQueries {
+public final class SQLQueries {
+
+    // Prevents instantiation, i.e. writing `SQLQueries sq = new SQLQueries();`
+    private SQLQueries() { }
+
     // This function generates countries largest population to smallest.
     public static String world_countries_largest_population_to_smallest(){
         return "SELECT code, name, continent, region, population, capital "
