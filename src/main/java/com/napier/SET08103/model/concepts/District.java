@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
-import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public final class District implements IFieldEnum<String>, IZone {
+public final class District extends AbstractZone implements IFieldEnum<String>, IZone {
 
     public static final String nullFieldValue = "–"; // Don't be fooled, this is a weird Unicode character
 
@@ -48,7 +49,7 @@ public final class District implements IFieldEnum<String>, IZone {
             return null;
 
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + City.districtFieldName + " FROM " + City.tableName +
+                "SELECT * FROM " + City.tableName +
                         " WHERE LOWER( " + City.districtFieldName + " ) LIKE ? ORDER BY " +
                         City.populationFieldName + " DESC"
         );
@@ -56,7 +57,9 @@ public final class District implements IFieldEnum<String>, IZone {
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                return new District(res.getString(City.districtFieldName));
+                District d = new District(res.getString(City.districtFieldName));
+                d.country = Country.fromCountryCode(res.getString(City.countryCodeFieldName), conn);
+                return d;
             } else
                 throw new IllegalArgumentException("No district with name: " + name);
         }

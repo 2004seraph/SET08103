@@ -1,5 +1,7 @@
-package com.napier.SET08103.model;
+package com.napier.SET08103.model.concepts.zone;
 
+import com.napier.SET08103.model.PopulationInfo;
+import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.concepts.City;
 
 import java.sql.Connection;

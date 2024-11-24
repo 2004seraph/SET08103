@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
-import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IEntity;
@@ -9,7 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class City implements IEntity, IZone {
+public final class City extends AbstractZone implements IEntity, IZone {
 
     public static final String tableName = "city";
     public static final String primaryKeyFieldName = "ID";

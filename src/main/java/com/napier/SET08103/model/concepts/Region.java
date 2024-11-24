@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
-import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class Region implements IFieldEnum<String>, IZone {
+public final class Region extends AbstractZone implements IFieldEnum<String>, IZone {
 
     public static Region fromName(String name, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(

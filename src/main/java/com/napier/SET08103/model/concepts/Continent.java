@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
-import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
@@ -12,10 +13,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-public final class Continent implements IFieldEnum<Continent.Name>, IZone {
+public final class Continent extends AbstractZone implements IFieldEnum<Continent.Name>, IZone {
 
     /**
      * In the event of a name clash, it will return the continent with the higher population.
