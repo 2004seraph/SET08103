@@ -12,26 +12,27 @@ import java.util.List;
 
 public final class City extends AbstractZone implements IEntity, IZone {
 
-    public static final String tableName = "city";
-    public static final String primaryKeyFieldName = "ID";
-    public static final String populationFieldName = "Population";
-    public static final String nameFieldName = "Name";
-    public static final String districtFieldName = "District";
-    public static final String countryCodeFieldName = "CountryCode";
+    // no spelling mistakes
+    public static final String table = "city";
+    public static final String primaryKeyField = table + ".ID";
+    public static final String populationField = table + ".Population";
+    public static final String nameField = table + ".Name";
+    public static final String districtField = table + ".District";
+    public static final String countryCodeField = table + ".CountryCode";
 
     public static City fromId(int id, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + tableName + " where " + primaryKeyFieldName + " = ?")) {
+                "SELECT * FROM " + table + " WHERE " + primaryKeyField + " = ?")) {
             ps.setInt(1, id);
 
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
                     City c = new City(
                             id,
-                            Country.fromCountryCode(res.getString(countryCodeFieldName), conn),
+                            Country.fromCountryCode(res.getString(countryCodeField), conn),
                             conn);
-                    c.population = res.getInt(populationFieldName);
-                    c.name = res.getString(nameFieldName);
+                    c.population = res.getInt(populationField);
+                    c.name = res.getString(nameField);
 
                     return c;
                 }
@@ -50,19 +51,19 @@ public final class City extends AbstractZone implements IEntity, IZone {
      */
     public static City fromName(String name, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + tableName +
-                        " WHERE LOWER( Name ) LIKE ? ORDER BY " + populationFieldName +" DESC"
+                "SELECT * FROM " + table +
+                        " WHERE LOWER( Name ) LIKE ? ORDER BY " + populationField +" DESC"
         );
         stmt.setString(1, name.toLowerCase());
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 City c = new City(
-                        res.getInt(primaryKeyFieldName),
-                        Country.fromCountryCode(res.getString(countryCodeFieldName), conn),
+                        res.getInt(primaryKeyField),
+                        Country.fromCountryCode(res.getString(countryCodeField), conn),
                         conn);
-                c.population = res.getInt(populationFieldName);
-                c.name = res.getString(nameFieldName);
+                c.population = res.getInt(populationField);
+                c.name = res.getString(nameField);
 
                 return c;
             } else
@@ -72,7 +73,7 @@ public final class City extends AbstractZone implements IEntity, IZone {
 
     public static List<City> capitals(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + Country.capitalFieldName + " FROM " + Country.tableName
+                "SELECT " + Country.capitalField + " FROM " + Country.table
         );
 
         List<City> capitals = new ArrayList<>();
@@ -90,9 +91,9 @@ public final class City extends AbstractZone implements IEntity, IZone {
 
     private static District setInstanceDistrict(int id, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + City.districtFieldName + ", " + countryCodeFieldName + " " +
-                        " FROM " + tableName +
-                        " WHERE " + primaryKeyFieldName +
+                "SELECT " + City.districtField + ", " + countryCodeField + " " +
+                        " FROM " + table +
+                        " WHERE " + primaryKeyField +
                         " = ?"
         );
         stmt.setInt(1, id);
@@ -100,8 +101,8 @@ public final class City extends AbstractZone implements IEntity, IZone {
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 return District.fromName(
-                        res.getString(City.districtFieldName),
-                        Country.fromCountryCode(res.getString(countryCodeFieldName), conn),
+                        res.getString(City.districtField),
+                        Country.fromCountryCode(res.getString(countryCodeField), conn),
                         conn);
             } else
                 throw new IllegalArgumentException("No city with ID: " + id);
@@ -110,7 +111,7 @@ public final class City extends AbstractZone implements IEntity, IZone {
 
     private static Zone setInstanceZone(int id, Connection conn) throws SQLException {
         PreparedStatement checkCapital = conn.prepareStatement(
-                "SELECT * FROM " + Country.tableName + " WHERE " + Country.capitalFieldName + " = ?"
+                "SELECT * FROM " + Country.table + " WHERE " + Country.capitalField + " = ?"
         );
         checkCapital.setInt(1, id);
 

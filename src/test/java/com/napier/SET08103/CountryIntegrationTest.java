@@ -2,7 +2,6 @@ package com.napier.SET08103;
 
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
-import com.napier.SET08103.model.concepts.District;
 import com.napier.SET08103.model.concepts.Region;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -86,14 +84,14 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
             List<City> citiesRequest;
 
             try (PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT " + City.nameFieldName + " FROM " + City.tableName +
-                    " WHERE " + City.countryCodeFieldName + " = ?"
+                    "SELECT " + City.nameField + " FROM " + City.table +
+                    " WHERE " + City.countryCodeField + " = ?"
                 )) {
                 stmt.setString(1, country.countryCode);
 
                 try (ResultSet res = stmt.executeQuery()) {
                     while (res.next())
-                        cityNames.add(res.getString(City.nameFieldName));
+                        cityNames.add(res.getString(City.nameField));
                 }
 
                 citiesRequest = country.getCities(conn);
@@ -115,5 +113,12 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
 
         // Duplicate city names
         checkCities.accept(Country.fromCountryCode("USA", conn));
+
+        // Other
+        // LKA has district names in common with PRY, this tests that distinction
+        checkCities.accept(Country.fromCountryCode("LKA", conn));
+        checkCities.accept(Country.fromCountryCode("PRY", conn));
+
+        checkCities.accept(Country.fromCountryCode("ARG", conn));
     }
 }

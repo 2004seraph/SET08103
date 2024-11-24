@@ -18,12 +18,12 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
 
     public static Region fromName(String name, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + Country.tableName + " WHERE " + Country.regionFieldName + " = ?")) {
+                "SELECT * FROM " + Country.table + " WHERE " + Country.regionField + " = ?")) {
             ps.setString(1, name);
 
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
-                    return new Region(name, Continent.fromName(res.getString(Country.continentFieldName)));
+                    return new Region(name, Continent.fromName(res.getString(Country.continentField)));
                 }
                 else
                     throw new IllegalArgumentException("No region with name: " + name);
@@ -56,8 +56,8 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
         // Will always be unique because country is a db entity
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + Country.tableName +
-                        " WHERE " + Country.regionFieldName + " = ? DISTINCT"
+                "SELECT DISTINCT * FROM " + Country.table +
+                        " WHERE " + Country.regionField + " = ?"
         );
         stmt.setString(1, name);
 
@@ -66,7 +66,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
             while (res.next())
                 countries.add(
                         Country.fromCountryCode(
-                                res.getString(Country.primaryKeyFieldName), conn));
+                                res.getString(Country.primaryKeyField), conn));
         }
 
         return countries;

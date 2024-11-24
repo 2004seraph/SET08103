@@ -28,15 +28,15 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
             return null;
 
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + City.districtFieldName + ", " + City.countryCodeFieldName + " FROM " + City.tableName +
-                        " WHERE LOWER( " + City.districtFieldName + " ) LIKE ? AND " + City.countryCodeFieldName + " = ?"
+                "SELECT " + City.districtField + ", " + City.countryCodeField + " FROM " + City.table +
+                        " WHERE LOWER( " + City.districtField + " ) LIKE ? AND " + City.countryCodeField + " = ?"
         );
         stmt.setString(1, name.toLowerCase());
         stmt.setString(2, country.countryCode);
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                District d = new District(res.getString(City.districtFieldName));
+                District d = new District(res.getString(City.districtField));
                 d.country = country;
                 return d;
             } else
@@ -49,16 +49,16 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
             return null;
 
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + City.tableName +
-                        " WHERE LOWER( " + City.districtFieldName + " ) LIKE ? ORDER BY " +
-                        City.populationFieldName + " DESC"
+                "SELECT * FROM " + City.table +
+                        " WHERE LOWER( " + City.districtField + " ) LIKE ? ORDER BY " +
+                        City.populationField + " DESC"
         );
         stmt.setString(1, name.toLowerCase());
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                District d = new District(res.getString(City.districtFieldName));
-                d.country = Country.fromCountryCode(res.getString(City.countryCodeFieldName), conn);
+                District d = new District(res.getString(City.districtField));
+                d.country = Country.fromCountryCode(res.getString(City.countryCodeField), conn);
                 return d;
             } else
                 throw new IllegalArgumentException("No district with name: " + name);
@@ -76,15 +76,17 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
     public List<City> getCities(Connection conn) throws SQLException {
         // Will always be unique values, due to primary key usage
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + City.primaryKeyFieldName + " FROM " + City.tableName +
-                        " WHERE " + City.districtFieldName + " = ?"
+                "SELECT " + City.primaryKeyField + " FROM " + City.table +
+                        " WHERE " + City.districtField + " = ?" + " AND " +
+                        City.countryCodeField + " = ?"
         );
         stmt.setString(1, name);
+        stmt.setString(2, country.countryCode);
 
         List<City> cities = new ArrayList<>();
         try (stmt; ResultSet res = stmt.executeQuery()) {
             while (res.next())
-                cities.add(City.fromId(res.getInt(City.primaryKeyFieldName), conn));
+                cities.add(City.fromId(res.getInt(City.primaryKeyField), conn));
         }
 
         return cities;

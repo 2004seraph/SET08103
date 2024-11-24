@@ -89,15 +89,15 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT DISTINCT " + Country.regionFieldName + " FROM " + Country.tableName +
-                        " WHERE " + Country.continentFieldName + " = ?"
+                "SELECT DISTINCT " + Country.regionField + " FROM " + Country.table +
+                        " WHERE " + Country.continentField + " = ?"
         );
         stmt.setString(1, name.getDatabaseName());
 
         List<IZone> regions = new ArrayList<>();
         try (stmt; ResultSet res = stmt.executeQuery()) {
             while (res.next())
-                regions.add(Region.fromName(res.getString(Country.regionFieldName), conn));
+                regions.add(Region.fromName(res.getString(Country.regionField), conn));
         }
 
         return regions;

@@ -16,23 +16,24 @@ import java.util.stream.Collectors;
 
 public final class Country extends AbstractZone implements IEntity, IZone {
 
-    public static final String tableName = "country";
-    public static final String primaryKeyFieldName = "Code";
-    public static final String populationFieldName = "Population";
-    public static final String capitalFieldName = "Capital";
-    public static final String regionFieldName = "Region";
-    public static final String continentFieldName = "Continent";
-    public static final String nameFieldName = "Name";
+    // no spelling mistakes
+    public static final String table = "country";
+    public static final String primaryKeyField = table + ".Code";
+    public static final String populationField = table + ".Population";
+    public static final String capitalField = table + ".Capital";
+    public static final String regionField = table + ".Region";
+    public static final String continentField = table + ".Continent";
+    public static final String nameField = table + ".Name";
 
     public static Country fromCountryCode(String countryCode, Connection conn) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + tableName + " where " + primaryKeyFieldName + " = ?");
+                "SELECT * FROM " + table + " WHERE " + primaryKeyField + " = ?");
         ps.setString(1, countryCode);
         ResultSet res = ps.executeQuery();
 
         if (res.next()) {
-            Country c = new Country(countryCode, Region.fromName(res.getString(regionFieldName), conn));
-            c.name = res.getString(nameFieldName);
+            Country c = new Country(countryCode, Region.fromName(res.getString(regionField), conn));
+            c.name = res.getString(nameField);
             return c;
         }
         else
@@ -71,15 +72,15 @@ public final class Country extends AbstractZone implements IEntity, IZone {
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT DISTINCT " + City.districtFieldName + " FROM " + City.tableName +
-                        " WHERE " + City.countryCodeFieldName + " = ?"
+                "SELECT DISTINCT " + City.districtField + " FROM " + City.table +
+                        " WHERE " + City.countryCodeField + " = ?"
         );
         stmt.setString(1, countryCode);
 
         List<IZone> districts = new ArrayList<>();
         try (stmt; ResultSet res = stmt.executeQuery()) {
             while (res.next())
-                districts.add(District.fromName(res.getString(City.districtFieldName), this, conn));
+                districts.add(District.fromName(res.getString(City.districtField), this, conn));
         }
 
         return districts;
