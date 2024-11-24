@@ -21,6 +21,7 @@ public final class Country implements IEntity, IZone {
     public static final String capitalFieldName = "Capital";
     public static final String regionFieldName = "Region";
     public static final String continentFieldName = "Continent";
+    public static final String nameFieldName = "Name";
 
     public static Country fromCountryCode(String countryCode, Connection conn) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(
@@ -28,8 +29,11 @@ public final class Country implements IEntity, IZone {
         ps.setString(1, countryCode);
         ResultSet res = ps.executeQuery();
 
-        if (res.next())
-            return new Country(countryCode, Region.fromName(res.getString(regionFieldName), conn));
+        if (res.next()) {
+            Country c = new Country(countryCode, Region.fromName(res.getString(regionFieldName), conn));
+            c.name = res.getString(nameFieldName);
+            return c;
+        }
         else
             throw new IllegalArgumentException("No country with code: " + countryCode);
     }

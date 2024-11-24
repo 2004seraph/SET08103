@@ -1,5 +1,6 @@
 package com.napier.SET08103;
 
+import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.concepts.City;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,7 +39,7 @@ public final class CityIntegrationTest {
     }
 
     @Test
-    void cityCreateValid() {
+    void cityCreateValid() throws SQLException {
         Connection conn = app.getConnectionForIntegrationTesting();
 
         BiConsumer<Integer, String> createCity = (id, name) -> {
@@ -63,6 +64,25 @@ public final class CityIntegrationTest {
         createCity.accept(1394, "arAK");  // random
         createCity.accept(2522, "León"); // Unicode
         createCity.accept(4079, "Rafah"); // Last entry
+
+        // Test if the zoning info is set correctly
+
+        {
+            // Known to be a capital, and District is known to be NULL "-"
+            City ArubaCapital = City.fromId(129, conn);
+            assertEquals(Zone.CAPITALS, ArubaCapital.getZoneLevel());
+
+            assertEquals("Aruba", ArubaCapital.getOuterZone().toString());
+            assertEquals(Zone.COUNTRIES, ArubaCapital.getOuterZone().getZoneLevel());
+        }
+        {
+            // Known to not be a capital, and District is known to be non-NULL
+            City Oranjestad = City.fromId(128, conn);
+            assertEquals(Zone.CITIES, Oranjestad.getZoneLevel());
+
+            assertEquals("Lori", Oranjestad.getOuterZone().toString());
+            assertEquals(Zone.DISTRICTS, Oranjestad.getOuterZone().getZoneLevel());
+        }
     }
 
     @Test
@@ -115,13 +135,9 @@ public final class CityIntegrationTest {
     }
 
     @Test
-    void cityGetCapitals() {
+    void cityGetCapitals() throws SQLException {
         Connection conn = app.getConnectionForIntegrationTesting();
-        try {
-            List<City> capitals = City.capitals(conn);
-            assertTrue(Arrays.asList(capitals.stream().map(City::toString).toArray()).contains("London"));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        List<City> capitals = City.capitals(conn);
+        assertTrue(Arrays.asList(capitals.stream().map(City::toString).toArray()).contains("London"));
     }
 }

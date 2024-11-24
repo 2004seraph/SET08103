@@ -148,7 +148,7 @@ public final class City implements IEntity, IZone {
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
-        return List.of(this);
+        return List.of();
     }
 
     @Override
