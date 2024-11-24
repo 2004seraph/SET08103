@@ -11,6 +11,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public abstract class AbstractZone {
+
+    // This cache spans different instances of the same underlying zone
+    // so creating the key for the ASIA continent on one instance will make its
+    // cache available to other continent instances of ASIA.
     protected static final HashMap<String, List<IZone>> cacheMap = new HashMap<>(5);
 
     protected static <T> List<IZone> wrapIZone(List<T> concreteIZones) {
@@ -30,7 +34,9 @@ public abstract class AbstractZone {
         AbstractZone otherZone = (AbstractZone)other;
         if (otherZone instanceof IFieldEnum)
             return Objects.equals(((IFieldEnum<?>) otherZone).getValue(), ((IFieldEnum<?>)this).getValue());
-        else
+        else if (otherZone instanceof IEntity)
             return Objects.equals(((IEntity) otherZone).getPrimaryKey(), ((IEntity) this).getPrimaryKey());
+        else
+            return Objects.equals(this, other);
     }
 }
