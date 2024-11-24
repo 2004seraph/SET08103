@@ -41,7 +41,11 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
-        return this.getInnerZones(conn)
+        final String cacheKey = this.getClass().getName() + "/" + continent + "/" + name + "/cities";
+        if (cacheMap.containsKey(cacheKey))
+            return unwrapIZone(cacheMap.get(cacheKey));
+
+        List<City> c = this.getInnerZones(conn)
                 .stream()
                 .flatMap(d -> {
                     try {
@@ -50,10 +54,17 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
+
+        cacheMap.put(cacheKey, wrapIZone(c));
+        return c;
     }
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
+        final String cacheKey = this.getClass().getName() + "/" + continent + "/" + name + "/innerZones";
+        if (cacheMap.containsKey(cacheKey))
+            return cacheMap.get(cacheKey);
+
         // Will always be unique because country is a db entity
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT DISTINCT * FROM " + Country.table +
@@ -68,6 +79,8 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
                         Country.fromCountryCode(
                                 res.getString(Country.primaryKeyField), conn));
         }
+
+        cacheMap.put(cacheKey, countries);
 
         return countries;
     }

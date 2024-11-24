@@ -84,6 +84,10 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
+        final String cacheKey = this.getClass().getName() + "/" + country + "/" + name + "/cities";
+        if (cacheMap.containsKey(cacheKey))
+            return unwrapIZone(cacheMap.get(cacheKey));
+
         // Will always be unique values, due to primary key usage
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT " + City.primaryKeyField + " FROM " + City.table +
@@ -98,6 +102,8 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
             while (res.next())
                 cities.add(City.fromId(res.getInt(City.primaryKeyField), conn));
         }
+
+        cacheMap.put(cacheKey, wrapIZone(cities));
 
         return cities;
     }

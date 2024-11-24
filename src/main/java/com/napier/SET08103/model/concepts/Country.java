@@ -59,7 +59,11 @@ public final class Country extends AbstractZone implements IEntity, IZone {
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
-        return getInnerZones(conn)
+        final String cacheKey = this.getClass().getName() + "/" + countryCode + "/cities";
+        if (cacheMap.containsKey(cacheKey))
+            return unwrapIZone(cacheMap.get(cacheKey));
+
+        List<City> c = getInnerZones(conn)
                 .stream()
                 .flatMap(d -> {
                     try {
@@ -69,10 +73,17 @@ public final class Country extends AbstractZone implements IEntity, IZone {
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
+
+        cacheMap.put(cacheKey, wrapIZone(c));
+        return c;
     }
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
+        final String cacheKey = this.getClass().getName() + "/" + countryCode + "/innerZones";
+        if (cacheMap.containsKey(cacheKey))
+            return cacheMap.get(cacheKey);
+
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT DISTINCT " + City.districtField + " FROM " + City.table +
                         " WHERE " + City.countryCodeField + " = ?"
@@ -116,6 +127,8 @@ public final class Country extends AbstractZone implements IEntity, IZone {
                 }
             }
         }
+
+        cacheMap.put(cacheKey, districts);
 
         return districts;
     }

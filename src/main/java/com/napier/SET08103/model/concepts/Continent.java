@@ -97,7 +97,11 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
-        return getInnerZones(conn)
+        final String cacheKey = this.getClass().getName() + "/" + name + "/cities";
+        if (cacheMap.containsKey(cacheKey))
+            return unwrapIZone(cacheMap.get(cacheKey));
+
+        List<City> c = getInnerZones(conn)
                 .stream()
                 .flatMap(d -> {
                     try {
@@ -106,10 +110,17 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
+
+        cacheMap.put(cacheKey, wrapIZone(c));
+        return c;
     }
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
+        final String cacheKey = this.getClass().getName() + "/" + name + "/innerZones";
+        if (cacheMap.containsKey(cacheKey))
+            return cacheMap.get(cacheKey);
+
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT DISTINCT " + Country.regionField + " FROM " + Country.table +
                         " WHERE " + Country.continentField + " = ?"
@@ -122,6 +133,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
                 regions.add(Region.fromName(res.getString(Country.regionField), conn));
         }
 
+        cacheMap.put(cacheKey, regions);
         return regions;
     }
 
