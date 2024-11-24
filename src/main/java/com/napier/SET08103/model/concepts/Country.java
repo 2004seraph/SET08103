@@ -47,7 +47,7 @@ public final class Country implements IEntity, IZone {
     private Country(String countryCode, Region region) {
         this.countryCode = countryCode;
         this.region = region;
-        this.continent = (Continent)getOuterZone();
+        this.continent = (Continent)region.getOuterZone();
     }
 
     @Override

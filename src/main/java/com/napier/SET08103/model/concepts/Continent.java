@@ -12,9 +12,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public final class Continent implements IFieldEnum<Continent.ContinentName>, IZone {
+public final class Continent implements IFieldEnum<Continent.Name>, IZone {
 
     /**
      * In the event of a name clash, it will return the continent with the higher population.
@@ -22,10 +23,10 @@ public final class Continent implements IFieldEnum<Continent.ContinentName>, IZo
      * @return An instance of Continent
      */
     public static Continent fromName(String name) {
-        return new Continent(ContinentName.valueOf(name));
+        return new Continent(Name.parse(name));
     }
 
-    public enum ContinentName {
+    public enum Name {
         NORTH_AMERICA("North America"),
         EUROPE("Europe"),
         ASIA("Asia"),
@@ -34,27 +35,39 @@ public final class Continent implements IFieldEnum<Continent.ContinentName>, IZo
         ANTARCTICA("Antarctica"),
         SOUTH_AMERICA("South America");
 
-        public static final ContinentName[] asList = values();
+        public static final Name[] asList = values();
 
         private final String databaseName;
 
-        ContinentName(String databaseName) {
+        Name(String databaseName) {
             this.databaseName = databaseName;
         }
 
         public String getDatabaseName() {
             return this.databaseName;
         }
+
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        public static Name parse(String databaseName) {
+            return Arrays.stream(Name.values())
+                    .filter(c -> c.databaseName.equals(databaseName))
+                    .findFirst().get();
+        }
+
+        @Override
+        public String toString() {
+            return databaseName;
+        }
     }
 
-    private final ContinentName name;
+    private final Name name;
 
-    public Continent(ContinentName name) {
+    public Continent(Name name) {
         this.name = name;
     }
 
     @Override
-    public ContinentName getValue() {
+    public Name getValue() {
         // Use .toString() on the return value to get a db compatible string.
         // I.e. NORTH_AMERICA -> "North America"
         return name;
