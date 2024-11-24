@@ -14,13 +14,13 @@ public final class City implements IEntity, IZone {
     public static final String tableName = "city";
     public static final String primaryKeyFieldName = "ID";
     public static final String nameFieldName = "Name";
-    public static  final String countryFieldName = "co.name";
+    public static  final String countryFieldName = "co.Name";
     public static final String districtFieldName = "District";
     public static final String populationFieldName = "Population";
 
     public static City fromId(int id, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT ci.Name, co.Name, ci.District, ci.Population FROM " + tableName + " ci " + "JOIN country co ON co.CODE = " + "ci.CountryCode" + " where " + primaryKeyFieldName + " = ?")) {
+                "SELECT ci.ID, ci.Name, co.Name, ci.District, ci.Population FROM " + tableName + " ci JOIN country co ON co.CODE = " + "ci.CountryCode" + " where " + primaryKeyFieldName + " = ?")) {
             ps.setInt(1, id);
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
@@ -48,7 +48,7 @@ public final class City implements IEntity, IZone {
      */
     public static City fromName(String name, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + tableName + " WHERE LOWER( Name ) LIKE ? ORDER BY " + populationFieldName +" DESC"
+                "SELECT ci.ID, ci.Name, co.Name, ci.District, ci.Population FROM " + tableName + " ci JOIN country co ON co.CODE = " + "ci.CountryCode" + " WHERE LOWER( ci.Name ) LIKE ? ORDER BY " + populationFieldName +" DESC"
         );
         stmt.setString(1, name.toLowerCase());
 

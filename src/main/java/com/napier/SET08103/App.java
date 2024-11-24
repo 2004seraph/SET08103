@@ -81,7 +81,6 @@ public final class App implements AutoCloseable {
                 SQLQueries.cities_in_world_largest_population_to_smallest());
         CityReport.print(cities3);
 
-
     }
 
     public void connect(String dbHost, String dbPassword) throws InternalError {
