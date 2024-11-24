@@ -71,7 +71,7 @@ public final class Country extends AbstractZone implements IEntity, IZone {
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + City.tableName +
+                "SELECT DISTINCT " + City.districtFieldName + " FROM " + City.tableName +
                         " WHERE " + City.countryCodeFieldName + " = ?"
         );
         stmt.setString(1, countryCode);

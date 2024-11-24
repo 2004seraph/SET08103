@@ -9,28 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Connection;
 import java.util.*;
 
-public final class RegionIntegrationTest {
-    static App app;
-
-    @BeforeAll
-    static void init() {
-        app = new App();
-
-        app.connect(
-                Objects.requireNonNullElse(
-                        System.getenv(Constants.MYSQL_HOST_ENVAR),
-                        Constants.MYSQL_HOST_ENVAR_DEFAULT),
-                Objects.requireNonNullElse(
-                        System.getenv(Constants.MYSQL_ROOT_PASSWORD_ENVAR),
-                        Constants.MYSQL_ROOT_PASSWORD_DEFAULT)
-        );
-    }
-
-    @AfterAll
-    static void deInit() {
-        app.close();
-    }
-
+public final class RegionIntegrationTest extends AbstractIntegrationTest {
 
     //region RegionTests
 

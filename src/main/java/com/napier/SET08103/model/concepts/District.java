@@ -74,6 +74,7 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
+        // Will always be unique values, due to primary key usage
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT " + City.primaryKeyFieldName + " FROM " + City.tableName +
                         " WHERE " + City.districtFieldName + " = ?"

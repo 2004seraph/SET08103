@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class DistrictIntegrationTest {
-    static App app;
+public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
     static final List<String> texasCities = List.of(
             "Houston",
@@ -50,25 +49,6 @@ public final class DistrictIntegrationTest {
             "Wichita Falls",
             "Midland",
             "Odessa");
-
-    @BeforeAll
-    static void init() {
-        app = new App();
-
-        app.connect(
-                Objects.requireNonNullElse(
-                        System.getenv(Constants.MYSQL_HOST_ENVAR),
-                        Constants.MYSQL_HOST_ENVAR_DEFAULT),
-                Objects.requireNonNullElse(
-                        System.getenv(Constants.MYSQL_ROOT_PASSWORD_ENVAR),
-                        Constants.MYSQL_ROOT_PASSWORD_DEFAULT)
-        );
-    }
-
-    @AfterAll
-    static void deInit() {
-        app.close();
-    }
 
     @Test
     void districtCreate() {

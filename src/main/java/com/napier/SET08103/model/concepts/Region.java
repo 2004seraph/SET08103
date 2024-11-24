@@ -54,9 +54,10 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
+        // Will always be unique because country is a db entity
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM " + Country.tableName +
-                        " WHERE " + Country.regionFieldName + " = ?"
+                        " WHERE " + Country.regionFieldName + " = ? DISTINCT"
         );
         stmt.setString(1, name);
 

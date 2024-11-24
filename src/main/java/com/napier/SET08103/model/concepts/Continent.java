@@ -89,7 +89,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + Country.regionFieldName + " FROM " + Country.tableName +
+                "SELECT DISTINCT " + Country.regionFieldName + " FROM " + Country.tableName +
                         " WHERE " + Country.continentFieldName + " = ?"
         );
         stmt.setString(1, name.getDatabaseName());
