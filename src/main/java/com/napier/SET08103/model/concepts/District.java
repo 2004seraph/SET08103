@@ -5,6 +5,7 @@ import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
+import com.napier.SET08103.model.db.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -49,11 +50,20 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
             return null;
 
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + City.table +
-                        " WHERE LOWER( " + City.districtField + " ) LIKE ? ORDER BY " +
-                        City.populationField + " DESC"
+                Model.buildStatement(
+                        "SELECT",
+
+                        City.countryCodeField, ",",
+                        City.districtField, ",",
+                        "SUM(", City.populationField, ")", "as Total",
+
+                        "FROM", City.table,
+                        "WHERE", "LOWER(", City.districtField, ")", "LIKE ?",
+                        "GROUP BY", City.countryCodeField, ",", City.districtField,
+                        "ORDER BY Total", "DESC"
+                )
         );
-        stmt.setString(1, name.toLowerCase());
+        stmt.setString(1, "%" + name.toLowerCase() + "%");
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {

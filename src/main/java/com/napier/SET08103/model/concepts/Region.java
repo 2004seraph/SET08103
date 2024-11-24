@@ -23,7 +23,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
 
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
-                    return new Region(name, Continent.fromName(res.getString(Country.continentField)));
+                    return new Region(name, Continent.fromDatabaseString(res.getString(Country.continentField)));
                 }
                 else
                     throw new IllegalArgumentException("No region with name: " + name);

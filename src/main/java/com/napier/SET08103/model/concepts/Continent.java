@@ -15,18 +15,40 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class Continent extends AbstractZone implements IFieldEnum<Continent.Name>, IZone {
+public final class Continent extends AbstractZone implements IFieldEnum<Continent.FieldEnum>, IZone {
 
-    /**
-     * In the event of a name clash, it will return the continent with the higher population.
-     * @param name The name of the continent
-     * @return An instance of Continent
-     */
-    public static Continent fromName(String name) {
-        return new Continent(Name.parse(name));
+    public static Continent likeDatabaseString(String name, Connection conn) throws SQLException {
+        // Select the continent with the higher population
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT SUM(" + Country.populationField + ") as Total, " + Country.continentField +
+                        " FROM " + Country.table +
+                        " WHERE LOWER( " + Country.continentField + " ) LIKE ? GROUP BY " +
+                        Country.continentField + " ORDER BY Total" +
+                        " DESC"
+        );
+        stmt.setString(1, "%" + name + "%");
+
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            if (res.next()) {
+                return Continent.fromDatabaseString(res.getString(Country.continentField));
+            } else
+                throw new IllegalArgumentException("No Continent with name like: " + name);
+        }
     }
 
-    public enum Name {
+    public static Continent fromDatabaseString(String name) {
+        return new Continent(FieldEnum.parse(name));
+    }
+
+    public static Continent fromValue(FieldEnum value) {
+        return new Continent(value);
+    }
+
+    public static Continent valueOf(String name) {
+        return new Continent(FieldEnum.valueOf(name));
+    }
+
+    public enum FieldEnum {
         NORTH_AMERICA("North America"),
         EUROPE("Europe"),
         ASIA("Asia"),
@@ -35,11 +57,11 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         ANTARCTICA("Antarctica"),
         SOUTH_AMERICA("South America");
 
-        public static final Name[] asList = values();
+        public static final FieldEnum[] asList = values();
 
         private final String databaseName;
 
-        Name(String databaseName) {
+        FieldEnum(String databaseName) {
             this.databaseName = databaseName;
         }
 
@@ -48,9 +70,9 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         }
 
         @SuppressWarnings("OptionalGetWithoutIsPresent")
-        public static Name parse(String databaseName) {
-            return Arrays.stream(Name.values())
-                    .filter(c -> c.databaseName.equals(databaseName))
+        public static FieldEnum parse(String databaseName) {
+            return Arrays.stream(FieldEnum.values())
+                    .filter(c -> c.databaseName.equalsIgnoreCase(databaseName))
                     .findFirst().get();
         }
 
@@ -60,14 +82,14 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         }
     }
 
-    private final Name name;
+    private final FieldEnum name;
 
-    public Continent(Name name) {
+    public Continent(FieldEnum name) {
         this.name = name;
     }
 
     @Override
-    public Name getValue() {
+    public FieldEnum getValue() {
         // Use .toString() on the return value to get a db compatible string.
         // I.e. NORTH_AMERICA -> "North America"
         return name;

@@ -5,6 +5,7 @@ import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IEntity;
+import com.napier.SET08103.model.db.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -62,7 +63,8 @@ public final class Country extends AbstractZone implements IEntity, IZone {
                 .stream()
                 .flatMap(d -> {
                     try {
-                        return d.getCities(conn).stream();
+                        List<City> d2 = d.getCities(conn);
+                        return d2.stream();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -78,9 +80,41 @@ public final class Country extends AbstractZone implements IEntity, IZone {
         stmt.setString(1, countryCode);
 
         List<IZone> districts = new ArrayList<>();
+        boolean nullDistricts = false;
         try (stmt; ResultSet res = stmt.executeQuery()) {
-            while (res.next())
-                districts.add(District.fromName(res.getString(City.districtField), this, conn));
+            while (res.next()) {
+                District d = District.fromName(res.getString(City.districtField), this, conn);
+                if (d != null) {
+                    districts.add(d);
+                } else {
+                    nullDistricts = true;
+                }
+            }
+
+            // shunt all the cities with a null district onto the end of the list
+            // doing this after the loop ensures no duplicate entries
+
+            // this case is covered by test:
+            //      ContinentIntegrationTest.zoneInfo:131->lambda$zoneInfo$8:124 expected: <581> but was: <578>
+            // if the entire "if" statement is commented
+            if (nullDistricts) {
+                PreparedStatement nullDistrictStmt = conn.prepareStatement(
+                        Model.buildStatement(
+                                "SELECT * FROM", City.table,
+                                "WHERE", City.countryCodeField, "= ?", "AND",
+                                City.districtField, "= ?"
+                        )
+                );
+                nullDistrictStmt.setString(1, countryCode);
+                nullDistrictStmt.setString(2, District.nullFieldValue);
+
+                try (nullDistrictStmt; ResultSet nullDistrictRes = nullDistrictStmt.executeQuery()) {
+                    while (nullDistrictRes.next()) {
+                        City c = City.fromId(nullDistrictRes.getInt(City.primaryKeyField), conn);
+                        districts.add(c);
+                    }
+                }
+            }
         }
 
         return districts;

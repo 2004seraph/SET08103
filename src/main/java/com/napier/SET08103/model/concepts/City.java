@@ -150,7 +150,8 @@ public final class City extends AbstractZone implements IEntity, IZone {
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
-        return List.of();
+        // required behaviour for tree searching, because sometimes a city can be in a NULL district
+        return List.of(this);
     }
 
     @Override

@@ -29,6 +29,11 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
     void regionCreate() {
         Connection conn = app.getConnectionForIntegrationTesting();
 
+        // no spaces
+        assertAll(() -> Region.fromName("Polynesia", conn));
+        // spaces
+        assertAll(() -> Region.fromName("Middle East", conn));
+
         // Misspelling
         assertThrows(IllegalArgumentException.class, () ->
                 Region.fromName("SouthernEurope", conn));

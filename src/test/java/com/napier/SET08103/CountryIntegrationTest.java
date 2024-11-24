@@ -34,6 +34,9 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
     void countryCreate() {
         Connection conn = app.getConnectionForIntegrationTesting();
 
+        assertAll(() -> Country.fromCountryCode("USA", conn));
+        assertAll(() -> Country.fromCountryCode("ZWE", conn));
+
         // Misspelling
         assertThrows(IllegalArgumentException.class, () ->
                 Country.fromCountryCode("AUSS", conn));
