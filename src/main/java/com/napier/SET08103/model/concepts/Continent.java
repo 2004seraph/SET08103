@@ -1,10 +1,12 @@
 package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IDistributedPopulation;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
+import com.napier.SET08103.model.db.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class Continent extends AbstractZone implements IFieldEnum<Continent.FieldEnum>, IZone {
+public final class Continent extends AbstractZone implements IFieldEnum<Continent.FieldEnum>, IDistributedPopulation {
 
     public static Continent likeDatabaseString(String name, Connection conn) throws SQLException {
         // Select the continent with the higher population
@@ -148,12 +150,47 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
     }
 
     @Override
-    public PopulationInfo getPopulation() {
+    public PopulationInfo getPopulationInfo(Connection conn) throws SQLException {
         return new PopulationInfo(
                 this,
-                0,
-                0
+                getTotalPopulation(conn),
+                getInnerZones(conn).stream()
+                        .map(i -> {
+                            try {
+                                return ((IDistributedPopulation)i)
+                                        .getPopulationInfo(conn).inCities;
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).reduce(0L, Long::sum)
         );
+    }
+
+    @Override
+    public long getTotalPopulation(Connection conn) throws SQLException {
+//        SELECT country.Continent , SUM(country.Population) AS Total
+//        FROM country
+//        GROUP BY country.Continent
+//        ORDER BY country.Continent
+        try (PreparedStatement ps = conn.prepareStatement(
+                Model.buildStatement(
+                        "SELECT",
+                        Country.continentField, ",",
+                        "SUM(", Country.populationField, ") AS Total",
+                        "FROM", Country.table,
+                        "WHERE", Country.continentField, "= ?"
+                )
+        )) {
+            ps.setString(1, name.getDatabaseName());
+
+            try (ResultSet res = ps.executeQuery()) {
+                if (res.next()) {
+                    return res.getLong("Total");
+                }
+                else
+                    throw new InternalError("No continent with name: " + name);
+            }
+        }
     }
 
     @Override

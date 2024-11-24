@@ -1,10 +1,12 @@
 package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IDistributedPopulation;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
+import com.napier.SET08103.model.db.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class Region extends AbstractZone implements IFieldEnum<String>, IZone {
+public final class Region extends AbstractZone implements IFieldEnum<String>, IDistributedPopulation {
 
     public static Region fromName(String name, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
@@ -91,12 +93,50 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, IZ
     }
 
     @Override
-    public PopulationInfo getPopulation() {
+    public PopulationInfo getPopulationInfo(Connection conn) throws SQLException {
         return new PopulationInfo(
                 this,
-                0,
-                0
+                getTotalPopulation(conn),
+                getInnerZones(conn).stream()
+                        .map(i -> {
+                            try {
+                                return ((IDistributedPopulation)i)
+                                        .getPopulationInfo(conn).inCities;
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).reduce(0L, Long::sum)
         );
+    }
+
+    @Override
+    public long getTotalPopulation(Connection conn) throws SQLException {
+//        SELECT country.Region, SUM(country.Population) AS Total
+//        FROM country
+//        WHERE CountryCode = ?
+//        GROUP BY country.Region
+//        ORDER BY country.Region
+
+        try (PreparedStatement ps = conn.prepareStatement(
+                Model.buildStatement(
+                        "SELECT",
+                            Country.regionField, ",",
+                            "SUM(", Country.populationField, ") AS Total",
+                        "FROM", Country.table,
+                        "WHERE", Country.regionField, "= ?",
+                        "GROUP BY", Country.regionField
+                )
+        )) {
+            ps.setString(1, name);
+
+            try (ResultSet res = ps.executeQuery()) {
+                if (res.next()) {
+                    return res.getInt("Total");
+                }
+                else
+                    throw new InternalError("No region with name: " + name);
+            }
+        }
     }
 
     @Override

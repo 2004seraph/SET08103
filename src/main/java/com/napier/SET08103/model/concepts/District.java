@@ -2,7 +2,6 @@ package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
 import com.napier.SET08103.model.db.Model;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public final class District extends AbstractZone implements IFieldEnum<String>, IZone {
+public final class District extends AbstractZone implements IFieldEnum<String> {
 
     public static final String nullFieldValue = "–"; // Don't be fooled, this is a weird Unicode character
 
@@ -119,15 +118,6 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
     }
 
     @Override
-    public PopulationInfo getPopulation() {
-        return new PopulationInfo(
-                this,
-                0,
-                0
-        );
-    }
-
-    @Override
     public Zone getZoneLevel() {
         return Zone.DISTRICTS;
     }
@@ -135,6 +125,17 @@ public final class District extends AbstractZone implements IFieldEnum<String>, 
     @Override
     public IZone getOuterZone() {
         return this.country;
+    }
+
+    @Override
+    public long getTotalPopulation(Connection conn) throws SQLException {
+        return getCities(conn).stream().mapToLong(c -> {
+            try {
+                return c.getTotalPopulation(conn);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }).reduce(0, Long::sum);
     }
 
     @Override

@@ -4,13 +4,15 @@ import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.db.IEntity;
 import com.napier.SET08103.model.db.IFieldEnum;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractZone {
+public abstract class AbstractZone implements IZone {
 
     // This cache spans different instances of the same underlying zone
     // so creating the key for the ASIA continent on one instance will make its

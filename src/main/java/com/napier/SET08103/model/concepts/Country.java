@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IDistributedPopulation;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class Country extends AbstractZone implements IEntity, IZone {
+public final class Country extends AbstractZone implements IEntity, IDistributedPopulation {
 
     // no spelling mistakes
     public static final String table = "country";
@@ -134,12 +135,38 @@ public final class Country extends AbstractZone implements IEntity, IZone {
     }
 
     @Override
-    public PopulationInfo getPopulation() {
+    public PopulationInfo getPopulationInfo(Connection conn) throws SQLException {
         return new PopulationInfo(
                 this,
-                0,
-                0
+                getTotalPopulation(conn),
+
+                // Sum of district populations (which are made up only of cities
+                getInnerZones(conn).stream().mapToLong(d -> {
+                    try {
+                        return d.getTotalPopulation(conn);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).reduce(0, Long::sum)
         );
+    }
+
+    @Override
+    public long getTotalPopulation(Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                Model.buildStatement(
+                        "SELECT", populationField, "FROM",
+                        table, "WHERE", primaryKeyField, "= ?"
+                )
+        );
+        stmt.setString(1, this.countryCode);
+
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            if (res.next()) {
+                return res.getInt(populationField);
+            } else
+                throw new InternalError("No entry found");
+        }
     }
 
     @Override

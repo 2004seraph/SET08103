@@ -1,5 +1,6 @@
 package com.napier.SET08103;
 
+import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.District;
 import com.napier.SET08103.model.concepts.zone.IZone;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -148,5 +150,23 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
                         .stream()
                         .map(Object::toString)
                         .collect(Collectors.toCollection(HashSet::new)));
+    }
+
+    @Test
+    void getTotalPopulation() {
+        final Connection conn = app.getConnectionForIntegrationTesting();
+
+        final BiFunction<String, String, Long> getDistrictPopulation = (cc, name) -> {
+            try {
+                return District.fromName(name, cc, conn).getTotalPopulation(conn);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        assertEquals(9208281, getDistrictPopulation.apply("USA", "Texas").intValue());
+        assertEquals(8958085, getDistrictPopulation.apply("USA", "New York").intValue());
+        // Unicode
+        assertEquals(26316966, getDistrictPopulation.apply("BRA", "São Paulo").intValue());
     }
 }

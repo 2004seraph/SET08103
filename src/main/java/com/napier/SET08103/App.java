@@ -1,6 +1,7 @@
 package com.napier.SET08103;
 
 import com.napier.SET08103.model.concepts.Country;
+import com.napier.SET08103.model.concepts.District;
 
 import java.sql.*;
 import java.util.*;
@@ -56,12 +57,18 @@ public final class App implements AutoCloseable {
     }
 
     public void run() {
-        // Creates an ArrayList of country objects
-        ArrayList<Country> countries = CountryReport.build(
-                con,
-                SQLQueries.world_countries_largest_population_to_smallest());
-        // Prints the countries in the ArrayList to console
-        CountryReport.print(countries);
+//        // Creates an ArrayList of country objects
+//        ArrayList<Country> countries = CountryReport.build(
+//                con,
+//                SQLQueries.world_countries_largest_population_to_smallest());
+//        // Prints the countries in the ArrayList to console
+//        CountryReport.print(countries);
+
+        try {
+            District ant = District.fromName("Antarctica", "ATA", con);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void connect(String dbHost, String dbPassword) throws InternalError {

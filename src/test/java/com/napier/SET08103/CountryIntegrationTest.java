@@ -1,5 +1,6 @@
 package com.napier.SET08103;
 
+import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.Region;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -123,5 +125,29 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
         checkCities.accept(Country.fromCountryCode("PRY", conn));
 
         checkCities.accept(Country.fromCountryCode("ARG", conn));
+    }
+
+    @Test
+    void getPopulation() throws SQLException {
+        final Connection conn = app.getConnectionForIntegrationTesting();
+
+        PopulationInfo usaInfo = Country.fromCountryCode("USA", conn).getPopulationInfo(conn);
+        assertEquals(278357000,
+                usaInfo.total);
+        assertEquals(78625774,
+                usaInfo.inCities);
+        assertEquals(278357000 - 78625774,
+                usaInfo.outsideCities);
+
+        // No population
+        assertEquals(0,
+                Country.fromCountryCode("ATA", conn).getPopulationInfo(conn).total);
+
+        // null districts
+        PopulationInfo arubaInfo = Country.fromCountryCode("ABW", conn).getPopulationInfo(conn);
+        assertEquals(103000,
+                arubaInfo.total);
+        assertEquals(29034,
+                arubaInfo.inCities);
     }
 }

@@ -1,5 +1,6 @@
 package com.napier.SET08103;
 
+import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Continent;
 import com.napier.SET08103.model.concepts.Country;
@@ -130,12 +131,47 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
                     citiesRequest.stream().map(Object::toString).collect(Collectors.toList())));
         };
 
-        checkCities.accept(Continent.fromValue(Continent.FieldEnum.NORTH_AMERICA));
-        checkCities.accept(Continent.fromValue(Continent.FieldEnum.SOUTH_AMERICA));
-        checkCities.accept(Continent.fromValue(Continent.FieldEnum.ANTARCTICA));
-        checkCities.accept(Continent.fromValue(Continent.FieldEnum.ASIA));
-        checkCities.accept(Continent.fromValue(Continent.FieldEnum.OCEANIA));
-        checkCities.accept(Continent.fromValue(Continent.FieldEnum.EUROPE));
-        checkCities.accept(Continent.fromValue(Continent.FieldEnum.AFRICA));
+        // might as well just check every single continent
+        for (Continent.FieldEnum c : Continent.FieldEnum.asList)
+            checkCities.accept(Continent.fromValue(c));
+    }
+
+    @Test
+    void getPopulation() throws SQLException {
+        Connection conn = app.getConnectionForIntegrationTesting();
+
+        // population in cities
+//        SELECT country.Continent, SUM(city.Population) AS CityPop
+//        FROM city
+//        INNER JOIN country
+//        ON country.Code = city.CountryCode
+//        GROUP BY country.Continent
+
+        // total population
+//        SELECT country.Continent , SUM(country.Population) AS Total
+//        FROM country
+//        GROUP BY country.Continent
+//        ORDER BY country.Continent
+
+        PopulationInfo naInfo = Continent.fromValue(Continent.FieldEnum.NORTH_AMERICA).getPopulationInfo(conn);
+        assertEquals(482993000,
+                naInfo.total);
+        assertEquals(168250381,
+                naInfo.inCities);
+        assertEquals(482993000 - 168250381,
+                naInfo.outsideCities);
+
+        // The population of Asia is bigger than a 32-bit integer
+        PopulationInfo asiaInfo = Continent.fromValue(Continent.FieldEnum.ASIA).getPopulationInfo(conn);
+        assertEquals(3705025700L,
+                asiaInfo.total);
+        assertEquals(697604103,
+                asiaInfo.inCities);
+        assertEquals(3705025700L - 697604103,
+                asiaInfo.outsideCities);
+
+        // No population
+        assertEquals(0,
+                Continent.fromValue(Continent.FieldEnum.ANTARCTICA).getPopulationInfo(conn).total);
     }
 }

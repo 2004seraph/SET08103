@@ -2,7 +2,6 @@ package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IEntity;
 
@@ -10,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class City extends AbstractZone implements IEntity, IZone {
+public final class City extends AbstractZone implements IEntity {
 
     // no spelling mistakes
     public static final String table = "city";
@@ -169,13 +168,10 @@ public final class City extends AbstractZone implements IEntity, IZone {
         return parentZone;
     }
 
+    // INFINITE RECURSION IF THIS IS NOT OVERRIDDEN BY THIS CLASS !!!!
     @Override
-    public PopulationInfo getPopulation() {
-        return new PopulationInfo(
-                this,
-                this.population,
-                this.population
-        );
+    public long getTotalPopulation(Connection conn) throws SQLException {
+        return this.population;
     }
 
     @Override

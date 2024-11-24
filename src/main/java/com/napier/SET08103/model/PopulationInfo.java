@@ -6,14 +6,14 @@ public class PopulationInfo {
 
     public final IZone location;
 
-    public final int total;
-    public final int inCities;
-    public final int outsideCities;
+    public final long total;
+    public final long inCities;
+    public final long outsideCities;
 
     public PopulationInfo(
             IZone location,
-            int total,
-            int inCities
+            long total,
+            long inCities
     ) {
         this.location = location;
         this.total = total;
