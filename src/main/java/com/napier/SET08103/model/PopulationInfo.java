@@ -1,5 +1,7 @@
 package com.napier.SET08103.model;
 
+import com.napier.SET08103.model.concepts.zone.IZone;
+
 public class PopulationInfo {
 
     public final IZone location;

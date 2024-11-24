@@ -4,18 +4,13 @@ import com.napier.SET08103.model.concepts.Country;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
  * Class for testing App
  */
-public class CountryReportUnitTest {
-    static App app;
-
-    @BeforeAll
-    static void init(){
-        app = new App();
-    }
+public final class CountryReportUnitTest {
 
     @Test
     void printCountryReportTestNull(){
@@ -33,18 +28,5 @@ public class CountryReportUnitTest {
         ArrayList<Country> countries = new ArrayList<>();
         countries.add(null);
         CountryReport.print(countries);
-    }
-
-    @Test
-    void printCountryReport(){
-//        ArrayList<Country> countries = new ArrayList<>();
-//        Country country = Country.fromCountryCode("GBR", );
-//        country.name = "United Kingdom";
-//        country.continent = "Europe";
-//        country.region = "British Islands";
-//        country.population = 59623400;
-//        country.capital = "London";
-//        countries.add(country);
-//        CountryReport.print(countries);
     }
 }

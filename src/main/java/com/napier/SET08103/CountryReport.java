@@ -30,8 +30,6 @@ public final class CountryReport {
             {
                 Country country = Country.fromCountryCode(rset.getString("code"), con);
                 country.name = rset.getString("name");
-                country.continent = rset.getString("continent");
-                country.region = rset.getString("region");
                 country.population = Integer.parseInt(rset.getString("population"));
                 country.capital = rset.getString("capital");
 

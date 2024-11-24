@@ -1,6 +1,5 @@
 package com.napier.SET08103;
 
-import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 
 import java.sql.*;
@@ -52,7 +51,7 @@ public final class App implements AutoCloseable {
      * and then use its "con" property in the tests.
      * @return con
      */
-    Connection getConnectionForTesting() {
+    Connection getConnectionForIntegrationTesting() {
         return con;
     }
 

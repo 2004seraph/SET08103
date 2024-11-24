@@ -1,6 +1,7 @@
 package com.napier.SET08103.model.concepts;
 
-import com.napier.SET08103.model.IZone;
+import com.napier.SET08103.model.concepts.zone.AbstractZone;
+import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.PopulationInfo;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IEntity;
@@ -9,23 +10,29 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class City implements IEntity, IZone {
+public final class City extends AbstractZone implements IEntity, IZone {
 
-    public static final String tableName = "city";
-    public static final String primaryKeyFieldName = "ID";
-    public static final String populationFieldName = "Population";
-    public static final String nameFieldName = "Name";
+    // no spelling mistakes
+    public static final String table = "city";
+    public static final String primaryKeyField = table + ".ID";
+    public static final String populationField = table + ".Population";
+    public static final String nameField = table + ".Name";
+    public static final String districtField = table + ".District";
+    public static final String countryCodeField = table + ".CountryCode";
 
     public static City fromId(int id, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + tableName + " where " + primaryKeyFieldName + " = ?")) {
+                "SELECT * FROM " + table + " WHERE " + primaryKeyField + " = ?")) {
             ps.setInt(1, id);
 
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
-                    City c = new City(id, conn);
-                    c.population = res.getInt(populationFieldName);
-                    c.name = res.getString(nameFieldName);
+                    City c = new City(
+                            id,
+                            Country.fromCountryCode(res.getString(countryCodeField), conn),
+                            conn);
+                    c.population = res.getInt(populationField);
+                    c.name = res.getString(nameField);
 
                     return c;
                 }
@@ -44,15 +51,19 @@ public final class City implements IEntity, IZone {
      */
     public static City fromName(String name, Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + tableName + " WHERE LOWER( Name ) LIKE ? ORDER BY " + populationFieldName +" DESC"
+                "SELECT * FROM " + table +
+                        " WHERE LOWER( Name ) LIKE ? ORDER BY " + populationField +" DESC"
         );
         stmt.setString(1, name.toLowerCase());
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                City c = new City(res.getInt(primaryKeyFieldName), conn);
-                c.population = res.getInt(populationFieldName);
-                c.name = res.getString(nameFieldName);
+                City c = new City(
+                        res.getInt(primaryKeyField),
+                        Country.fromCountryCode(res.getString(countryCodeField), conn),
+                        conn);
+                c.population = res.getInt(populationField);
+                c.name = res.getString(nameField);
 
                 return c;
             } else
@@ -62,7 +73,7 @@ public final class City implements IEntity, IZone {
 
     public static List<City> capitals(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + Country.capitalFieldName + " FROM " + Country.tableName
+                "SELECT " + Country.capitalField + " FROM " + Country.table
         );
 
         List<City> capitals = new ArrayList<>();
@@ -78,9 +89,29 @@ public final class City implements IEntity, IZone {
         return capitals;
     }
 
-    private static Zone setZone(int id, Connection conn) throws SQLException {
+    private static District setInstanceDistrict(int id, Connection conn) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT " + City.districtField + ", " + countryCodeField + " " +
+                        " FROM " + table +
+                        " WHERE " + primaryKeyField +
+                        " = ?"
+        );
+        stmt.setInt(1, id);
+
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            if (res.next()) {
+                return District.fromName(
+                        res.getString(City.districtField),
+                        Country.fromCountryCode(res.getString(countryCodeField), conn),
+                        conn);
+            } else
+                throw new IllegalArgumentException("No city with ID: " + id);
+        }
+    }
+
+    private static Zone setInstanceZone(int id, Connection conn) throws SQLException {
         PreparedStatement checkCapital = conn.prepareStatement(
-                "SELECT * FROM " + Country.tableName + " WHERE " + Country.capitalFieldName + " = ?"
+                "SELECT * FROM " + Country.table + " WHERE " + Country.capitalField + " = ?"
         );
         checkCapital.setInt(1, id);
 
@@ -95,16 +126,32 @@ public final class City implements IEntity, IZone {
     public final int id;
     private final Zone zone;
 
+    private IZone parentZone;
     private int population;
     private String name;
 
-    private City(int primaryKey, Connection conn) throws SQLException {
+    private City(int primaryKey, Country country, Connection conn) throws SQLException {
         this.id = primaryKey;
-        this.zone = setZone(this.id, conn);
+        this.zone = setInstanceZone(this.id, conn);
+
+        this.parentZone = setInstanceDistrict(this.id, conn);
+        if (this.parentZone == null)
+            this.parentZone = country;
     }
 
     public boolean isCapital() {
         return this.zone == Zone.CAPITALS;
+    }
+
+    @Override
+    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+        return List.of();
+    }
+
+    @Override
+    public List<City> getCities(Connection conn) throws SQLException {
+        // required behaviour for tree searching, because sometimes a city can be in a NULL district
+        return List.of(this);
     }
 
     @Override
@@ -113,8 +160,13 @@ public final class City implements IEntity, IZone {
     }
 
     @Override
-    public Zone GetZoneLevel() {
+    public Zone getZoneLevel() {
         return zone;
+    }
+
+    @Override
+    public IZone getOuterZone() {
+        return parentZone;
     }
 
     @Override
