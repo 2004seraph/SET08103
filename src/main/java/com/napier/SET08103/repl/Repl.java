@@ -41,6 +41,11 @@ public final class Repl {
     }
 
     public static void parseAndRun(String[] args, Connection conn) {
+        if (args.length == 0) {
+            System.out.println("Usage: " + COMMAND + " <total/leaderboard> [options]");
+            return;
+        }
+
         try {
             switch (args[0]) {
                 case Commands.Leaderboard.name:
