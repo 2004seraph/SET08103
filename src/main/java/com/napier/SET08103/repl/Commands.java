@@ -115,6 +115,7 @@ public final class Commands {
                     Integer.numberOfLeadingZeros(aggregateAreaType.getSizeRank())
                     - ((areaType == Zone.CAPITALS) ? 1 : 0);
 
+            assert aggregateArea != null;
             List<IZone> expansion = aggregateArea.getInnerZones(levelsDown, conn);
 
             if (areaType == Zone.CAPITALS)

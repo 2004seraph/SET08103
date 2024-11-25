@@ -20,12 +20,12 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
 
     public static Region fromName(String name, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + Country.TABLE + " WHERE " + Country.REGION + " LIKE ?")) {
+                "SELECT DISTINCT(" + Country.REGION + "), " + Country.CONTINENT + " FROM " + Country.TABLE + " WHERE " + Country.REGION + " LIKE ?")) {
             ps.setString(1, "%" + name + "%");
 
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
-                    return new Region(name, Continent.fromDatabaseString(res.getString(Country.CONTINENT)));
+                    return new Region(res.getString(Country.REGION), Continent.fromDatabaseString(res.getString(Country.CONTINENT)));
                 }
                 else
                     throw new IllegalArgumentException("No region with name: " + name);
