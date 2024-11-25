@@ -153,6 +153,30 @@ public final class City extends AbstractZone implements IEntity {
         this.zone = (id == countryCapital) ? Zone.CAPITALS : Zone.CITIES;
     }
 
+    public District getDistrict() {
+        IZone parent = getOuterZone();
+        switch (parent.getZoneLevel()) {
+            case COUNTRIES:
+                return null;
+            case DISTRICTS:
+                return (District) parent;
+            default:
+                throw new InternalError("Cannot find parent");
+        }
+    }
+
+    public Country getCountry() {
+        IZone parent = getOuterZone();
+        switch (parent.getZoneLevel()) {
+            case COUNTRIES:
+                return (Country) parent;
+            case DISTRICTS:
+                return (Country) parent.getOuterZone();
+            default:
+                throw new InternalError("Cannot find parent");
+        }
+    }
+
     public boolean isCapital() {
         return this.zone == Zone.CAPITALS;
     }

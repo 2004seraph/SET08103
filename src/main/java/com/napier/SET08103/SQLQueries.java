@@ -56,33 +56,33 @@ public final class SQLQueries {
 
     // This function generates cities largest population to smallest
     public static String cities_in_world_largest_population_to_smallest(){
-        return "SELECT ci.name, co.name, ci.district, ci.population"
-                + "FROM world.city ci JOIN world.country co ON co.Code = ci.CountryCode"
+        return "SELECT ci.ID "
+                + "FROM world.city ci "
                 + "ORDER BY population DESC";
     }
 
     // This function generates cities in a country largest population to smallest
     public static String cities_in_a_country_largest_population_to_smallest(String country){
-        return "SELECT ci.name, co.name, ci.district, ci.population"
-                + "FROM world.city ci JOIN world.country co ON co.Code = ci.CountryCode"
+        return "SELECT ci.ID "
+                + "FROM world.city ci JOIN world.country co ON co.Code = ci.CountryCode "
                 + "WHERE co.Name = '" + country + "' "
-                + "ORDER BY population DESC";
+                + "ORDER BY ci.population DESC";
     }
 
     // This function generates cities in a region largest population to smallest
     public static String cities_in_a_region_largest_population_to_smallest(String region){
-        return "SELECT ci.name, co.name, ci.district, ci.population"
-                + "FROM world.city ci JOIN world.country co ON co.Code = ci.CountryCode"
+        return "SELECT ci.ID "
+                + "FROM world.city ci JOIN world.country co ON co.Code = ci.CountryCode "
                 + "WHERE co.Region = '" + region + "' "
-                + "ORDER BY population DESC";
+                + "ORDER BY ci.population DESC";
     }
 
     // This function generates cities in a district largest population to smallest
     public static String cities_in_a_district_largest_population_to_smallest(String district){
-        return "SELECT ci.name, co.name, ci.district, ci.population"
-                + "FROM world.city ci JOIN world.country co ON co.Code = ci.CountryCode"
+        return "SELECT ci.ID "
+                + "FROM world.city ci JOIN world.country co ON co.Code = ci.CountryCode "
                 + "WHERE ci.District = '" + district + "' "
-                + "ORDER BY population DESC";
+                + "ORDER BY ci.population DESC";
     }
 
 //This function generates total population of the world
