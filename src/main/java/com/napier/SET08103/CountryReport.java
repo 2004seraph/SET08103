@@ -29,10 +29,6 @@ public final class CountryReport {
             while (rset.next())
             {
                 Country country = Country.fromCountryCode(rset.getString("code"), con);
-                country.name = rset.getString("name");
-                country.population = Integer.parseInt(rset.getString("population"));
-                country.capital = rset.getString("capital");
-
                 countries.add(country);
             }
             return countries;
@@ -67,7 +63,7 @@ public final class CountryReport {
 
             String country_string = String.format(
                     "%-4s %-45s %-14s %-26s %-11s %-9s",
-                    country.getPrimaryKey(), country.name, country.continent, country.region, country.population, country.capital);
+                    country.getPrimaryKey(), country.toString(), country.continent, country.region, country.population, country.capital);
             System.out.println(country_string);
         }
     }

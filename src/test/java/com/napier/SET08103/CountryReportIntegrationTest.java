@@ -11,9 +11,6 @@ public final class CountryReportIntegrationTest extends AbstractIntegrationTest 
     void printCountryReport() throws SQLException {
         ArrayList<Country> countries = new ArrayList<>();
         Country country = Country.fromCountryCode("GBR", app.getConnectionForIntegrationTesting());
-        country.name = "United Kingdom";
-        country.population = 59623400;
-        country.capital = "London";
         countries.add(country);
         CountryReport.print(countries);
     }

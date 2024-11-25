@@ -72,7 +72,9 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
             assertThrows(IllegalArgumentException.class, () -> City.fromName(name, conn));
         };
 
+        // even with "", City.fromName() will still try to find a City
         createCity.accept(0, "bajookieland");
+        createCity.accept(-12, "erghieiugfbwiefbuiwuhfiuwhrfiwhurfiwu");
         createCity.accept(-12, "");
         createCity.accept(65347860, "123");
     }

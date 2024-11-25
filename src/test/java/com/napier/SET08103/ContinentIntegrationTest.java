@@ -101,18 +101,18 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
 
             try (PreparedStatement stmt = conn.prepareStatement(
                     Model.buildStatement(
-                            "SELECT", City.nameField,
-                            "FROM", City.table,
-                            "INNER JOIN", Country.table,
-                            "ON", City.countryCodeField, "=", Country.primaryKeyField,
-                            "WHERE", Country.continentField, "= ?"
+                            "SELECT", City.NAME,
+                            "FROM", City.TABLE,
+                            "INNER JOIN", Country.TABLE,
+                            "ON", City.COUNTRY_CODE, "=", Country.PRIMARY_KEY,
+                            "WHERE", Country.CONTINENT, "= ?"
                     )
             )) {
                 stmt.setString(1, continent.toString());
 
                 try (ResultSet res = stmt.executeQuery()) {
                     while (res.next())
-                        cityNames.add(res.getString(City.nameField));
+                        cityNames.add(res.getString(City.NAME));
                 }
 
                 citiesRequest = continent.getCities(conn);

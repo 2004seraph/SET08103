@@ -4,39 +4,60 @@ import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.db.IEntity;
+import com.napier.SET08103.model.db.Model;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class City extends AbstractZone implements IEntity {
 
     // no spelling mistakes
-    public static final String table = "city";
-    public static final String primaryKeyField = table + ".ID";
-    public static final String populationField = table + ".Population";
-    public static final String nameField = table + ".Name";
-    public static final String districtField = table + ".District";
-    public static final String countryCodeField = table + ".CountryCode";
+    public static final String TABLE = "city";
+    public static final String PRIMARY_KEY = TABLE + ".ID";
+    public static final String POPULATION = TABLE + ".Population";
+    public static final String NAME = TABLE + ".Name";
+    public static final String DISTRICT = TABLE + ".District";
+    public static final String COUNTRY_CODE = TABLE + ".CountryCode";
+
+//    SELECT *
+//    FROM city
+//    RIGHT OUTER JOIN country
+//    ON city.ID = country.Capital
+//    WHERE ID = 1
+    private static final String CREATION_SQL =
+            Model.buildStatement(
+                    "SELECT *",
+                    "FROM", City.TABLE,
+                    "LEFT OUTER JOIN", Country.TABLE,
+                    "ON", City.PRIMARY_KEY, "=", Country.CAPITAL,
+                    "WHERE", City.PRIMARY_KEY, "= ?");
 
     public static City fromId(int id, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + table + " WHERE " + primaryKeyField + " = ?")) {
+        // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
+        try (PreparedStatement ps = conn.prepareStatement(CREATION_SQL)) {
             ps.setInt(1, id);
 
             try (ResultSet res = ps.executeQuery()) {
-                if (res.next()) {
-                    City c = new City(
-                            id,
-                            Country.fromCountryCode(res.getString(countryCodeField), conn),
-                            conn);
-                    c.population = res.getInt(populationField);
-                    c.name = res.getString(nameField);
-
-                    return c;
-                }
-                else
+                if (!res.next())
                     throw new IllegalArgumentException("No city with ID: " + id);
+
+                City c = new City(id, res.getInt(Country.CAPITAL));
+
+                c.population = res.getInt(POPULATION);
+                c.name = res.getString(NAME);
+
+                // Some cities can be in a NULL district
+                String districtName = res.getString(City.DISTRICT);
+                c.parentZone = (!Objects.equals(districtName, District.nullFieldValue)) ?
+                        District.fromName(
+                                districtName,
+                                Country.fromCountryCode(res.getString(COUNTRY_CODE), conn),
+                                conn)
+                        : Country.fromCountryCode(res.getString(City.COUNTRY_CODE), conn);
+
+                return c;
             }
         }
     }
@@ -49,22 +70,18 @@ public final class City extends AbstractZone implements IEntity {
      * @throws SQLException Use within your try/catch statements
      */
     public static City fromName(String name, Connection conn) throws SQLException {
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException("Invalid City name");
+
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT * FROM " + table +
-                        " WHERE LOWER( Name ) LIKE ? ORDER BY " + populationField +" DESC"
+                "SELECT * FROM " + TABLE +
+                        " WHERE LOWER( Name ) LIKE ? ORDER BY " + POPULATION + " DESC"
         );
-        stmt.setString(1, name.toLowerCase());
+        stmt.setString(1, "%" + name.toLowerCase() + "%");
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                City c = new City(
-                        res.getInt(primaryKeyField),
-                        Country.fromCountryCode(res.getString(countryCodeField), conn),
-                        conn);
-                c.population = res.getInt(populationField);
-                c.name = res.getString(nameField);
-
-                return c;
+                return fromId(res.getInt(PRIMARY_KEY), conn);
             } else
                 throw new IllegalArgumentException("No city with name: " + name);
         }
@@ -72,7 +89,7 @@ public final class City extends AbstractZone implements IEntity {
 
     public static List<City> capitals(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + Country.capitalField + " FROM " + Country.table
+                "SELECT " + Country.CAPITAL + " FROM " + Country.TABLE
         );
 
         List<City> capitals = new ArrayList<>();
@@ -88,37 +105,38 @@ public final class City extends AbstractZone implements IEntity {
         return capitals;
     }
 
-    private static District setInstanceDistrict(int id, Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(
-                "SELECT " + City.districtField + ", " + countryCodeField + " " +
-                        " FROM " + table +
-                        " WHERE " + primaryKeyField +
-                        " = ?"
-        );
-        stmt.setInt(1, id);
+    // I know this is ridiculous code duplication, but I cannot work out for the life of me
+    // how to invert the program-data dependency here.
+    // This function is only meant to be called by the Country class to set its own capital City instance,
+    // using the public function causes infinite recursion.
+    static City fromIdAsCapital(int id, Country country, Connection conn) throws SQLException {
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
-            if (res.next()) {
-                return District.fromName(
-                        res.getString(City.districtField),
-                        Country.fromCountryCode(res.getString(countryCodeField), conn),
-                        conn);
-            } else
-                throw new IllegalArgumentException("No city with ID: " + id);
+        // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
+        try (PreparedStatement ps = conn.prepareStatement(CREATION_SQL)) {
+            ps.setInt(1, id);
+
+            try (ResultSet res = ps.executeQuery()) {
+                if (!res.next())
+                    throw new IllegalArgumentException("No city with ID: " + id);
+
+                City c = new City(id, res.getInt(Country.CAPITAL));
+
+                c.population = res.getInt(POPULATION);
+                c.name = res.getString(NAME);
+
+                // Some cities can be in a NULL district
+                // Country is pre-computed this time
+                String districtName = res.getString(City.DISTRICT);
+                c.parentZone = (!Objects.equals(districtName, District.nullFieldValue)) ?
+                        District.fromName(
+                                districtName,
+                                country,
+                                conn)
+                        : country;
+
+                return c;
+            }
         }
-    }
-
-    private static Zone setInstanceZone(int id, Connection conn) throws SQLException {
-        PreparedStatement checkCapital = conn.prepareStatement(
-                "SELECT * FROM " + Country.table + " WHERE " + Country.capitalField + " = ?"
-        );
-        checkCapital.setInt(1, id);
-
-        try (checkCapital; ResultSet answer = checkCapital.executeQuery()) {
-            if (answer.next())
-                return Zone.CAPITALS;
-        }
-        return Zone.CITIES;
     }
 
     // Primary key column: "ID"
@@ -126,16 +144,13 @@ public final class City extends AbstractZone implements IEntity {
     private final Zone zone;
 
     private IZone parentZone;
+
     private int population;
     private String name;
 
-    private City(int primaryKey, Country country, Connection conn) throws SQLException {
+    private City(int primaryKey, int countryCapital) {
         this.id = primaryKey;
-        this.zone = setInstanceZone(this.id, conn);
-
-        this.parentZone = setInstanceDistrict(this.id, conn);
-        if (this.parentZone == null)
-            this.parentZone = country;
+        this.zone = (id == countryCapital) ? Zone.CAPITALS : Zone.CITIES;
     }
 
     public boolean isCapital() {

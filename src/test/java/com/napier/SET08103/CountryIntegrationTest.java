@@ -14,8 +14,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,11 +35,31 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
     );
 
     @Test
-    void countryCreate() {
+    void countryCreate() throws SQLException {
         Connection conn = app.getConnectionForIntegrationTesting();
 
-        assertAll(() -> Country.fromCountryCode("USA", conn));
-        assertAll(() -> Country.fromCountryCode("ZWE", conn));
+        BiFunction<String, String, Country> createCountry = (cc, name) -> {
+            // fromId
+            final AtomicReference<Country> fromCC = new AtomicReference<>();
+            assertAll(() -> fromCC.set(Country.fromCountryCode(cc, conn)));
+
+            // fromName
+            final AtomicReference<Country> fromName = new AtomicReference<>();
+            assertAll(() -> fromName.set(Country.fromName(name, conn)));
+
+            // Same?
+            assertEquals(fromName.get(), fromCC.get());
+
+            return fromCC.get();
+        };
+
+        assertEquals(City.fromId(3813, conn), createCountry.apply("USA", "United States").capital);
+        assertEquals(City.fromId(4068, conn), createCountry.apply("ZWE", "Zimbabwe").capital);
+
+        // NULL capital
+        assertNull(createCountry.apply("ATA", "Antarctica").capital);
+        // Partial name
+        assertNull(createCountry.apply("UMI", "United States Minor").capital);
 
         // Misspelling
         assertThrows(IllegalArgumentException.class, () ->
@@ -89,14 +111,14 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
             List<City> citiesRequest;
 
             try (PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT " + City.nameField + " FROM " + City.table +
-                    " WHERE " + City.countryCodeField + " = ?"
+                    "SELECT " + City.NAME + " FROM " + City.TABLE +
+                    " WHERE " + City.COUNTRY_CODE + " = ?"
                 )) {
                 stmt.setString(1, country.countryCode);
 
                 try (ResultSet res = stmt.executeQuery()) {
                     while (res.next())
-                        cityNames.add(res.getString(City.nameField));
+                        cityNames.add(res.getString(City.NAME));
                 }
 
                 citiesRequest = country.getCities(conn);

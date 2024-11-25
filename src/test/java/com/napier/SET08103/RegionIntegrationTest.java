@@ -5,7 +5,6 @@ import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.Region;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,18 +71,18 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
             List<City> citiesRequest;
 
             try (PreparedStatement stmt = conn.prepareStatement(
-                    "SELECT " + City.nameField +
-                            " FROM " + City.table +
-                            " INNER JOIN " + Country.table +
-                            " ON " + Country.primaryKeyField +
-                            " = " + City.countryCodeField +
-                            " WHERE " + Country.regionField + " = ?"
+                    "SELECT " + City.NAME +
+                            " FROM " + City.TABLE +
+                            " INNER JOIN " + Country.TABLE +
+                            " ON " + Country.PRIMARY_KEY +
+                            " = " + City.COUNTRY_CODE +
+                            " WHERE " + Country.REGION + " = ?"
             )) {
                 stmt.setString(1, region.toString());
 
                 try (ResultSet res = stmt.executeQuery()) {
                     while (res.next())
-                        cityNames.add(res.getString(City.nameField));
+                        cityNames.add(res.getString(City.NAME));
                 }
 
                 //citiesRequest.stream().map(Object::toString).filter(e -> !cityNames.contains(e)).collect(Collectors.toList())

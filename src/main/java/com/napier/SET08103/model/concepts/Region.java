@@ -20,12 +20,12 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
 
     public static Region fromName(String name, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + Country.table + " WHERE " + Country.regionField + " = ?")) {
+                "SELECT * FROM " + Country.TABLE + " WHERE " + Country.REGION + " = ?")) {
             ps.setString(1, name);
 
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
-                    return new Region(name, Continent.fromDatabaseString(res.getString(Country.continentField)));
+                    return new Region(name, Continent.fromDatabaseString(res.getString(Country.CONTINENT)));
                 }
                 else
                     throw new IllegalArgumentException("No region with name: " + name);
@@ -69,8 +69,8 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
 
         // Will always be unique because country is a db entity
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT DISTINCT * FROM " + Country.table +
-                        " WHERE " + Country.regionField + " = ?"
+                "SELECT DISTINCT * FROM " + Country.TABLE +
+                        " WHERE " + Country.REGION + " = ?"
         );
         stmt.setString(1, name);
 
@@ -79,7 +79,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
             while (res.next())
                 countries.add(
                         Country.fromCountryCode(
-                                res.getString(Country.primaryKeyField), conn));
+                                res.getString(Country.PRIMARY_KEY), conn));
         }
 
         cacheMap.put(cacheKey, countries);
@@ -120,11 +120,11 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
         try (PreparedStatement ps = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT",
-                            Country.regionField, ",",
-                            "SUM(", Country.populationField, ") AS Total",
-                        "FROM", Country.table,
-                        "WHERE", Country.regionField, "= ?",
-                        "GROUP BY", Country.regionField
+                            Country.REGION, ",",
+                            "SUM(", Country.POPULATION, ") AS Total",
+                        "FROM", Country.TABLE,
+                        "WHERE", Country.REGION, "= ?",
+                        "GROUP BY", Country.REGION
                 )
         )) {
             ps.setString(1, name);

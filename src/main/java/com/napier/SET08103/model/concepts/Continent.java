@@ -22,17 +22,17 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
     public static Continent likeDatabaseString(String name, Connection conn) throws SQLException {
         // Select the continent with the higher population
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT SUM(" + Country.populationField + ") as Total, " + Country.continentField +
-                        " FROM " + Country.table +
-                        " WHERE LOWER( " + Country.continentField + " ) LIKE ? GROUP BY " +
-                        Country.continentField + " ORDER BY Total" +
+                "SELECT SUM(" + Country.POPULATION + ") as Total, " + Country.CONTINENT +
+                        " FROM " + Country.TABLE +
+                        " WHERE LOWER( " + Country.CONTINENT + " ) LIKE ? GROUP BY " +
+                        Country.CONTINENT + " ORDER BY Total" +
                         " DESC"
         );
         stmt.setString(1, "%" + name + "%");
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                return Continent.fromDatabaseString(res.getString(Country.continentField));
+                return Continent.fromDatabaseString(res.getString(Country.CONTINENT));
             } else
                 throw new IllegalArgumentException("No Continent with name like: " + name);
         }
@@ -124,15 +124,15 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
             return cacheMap.get(cacheKey);
 
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT DISTINCT " + Country.regionField + " FROM " + Country.table +
-                        " WHERE " + Country.continentField + " = ?"
+                "SELECT DISTINCT " + Country.REGION + " FROM " + Country.TABLE +
+                        " WHERE " + Country.CONTINENT + " = ?"
         );
         stmt.setString(1, name.getDatabaseName());
 
         List<IZone> regions = new ArrayList<>();
         try (stmt; ResultSet res = stmt.executeQuery()) {
             while (res.next())
-                regions.add(Region.fromName(res.getString(Country.regionField), conn));
+                regions.add(Region.fromName(res.getString(Country.REGION), conn));
         }
 
         cacheMap.put(cacheKey, regions);
@@ -175,10 +175,10 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         try (PreparedStatement ps = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT",
-                        Country.continentField, ",",
-                        "SUM(", Country.populationField, ") AS Total",
-                        "FROM", Country.table,
-                        "WHERE", Country.continentField, "= ?"
+                        Country.CONTINENT, ",",
+                        "SUM(", Country.POPULATION, ") AS Total",
+                        "FROM", Country.TABLE,
+                        "WHERE", Country.CONTINENT, "= ?"
                 )
         )) {
             ps.setString(1, name.getDatabaseName());
