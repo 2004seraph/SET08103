@@ -35,7 +35,9 @@ public final class Repl {
 //        parseAndRun(new String[] { "--test build" }, null);
 //            parseAndRun(new String[] { "leaderboard", "--ofqwq", "countries" }, app.getConnectionForIntegrationTesting());
 //            System.out.println();
-            parseAndRun(new String[] { "leaderboard", "--top", "10", "--of", "countries" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
+            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "capitals" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
+            System.out.println();
+            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "cities" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
 
 //            System.out.println();
 //            parseAndRun(new String[] { "leaderboard", "--top", "10", "--of", "capitals" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());

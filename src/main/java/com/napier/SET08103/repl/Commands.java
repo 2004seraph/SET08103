@@ -1,9 +1,7 @@
 package com.napier.SET08103.repl;
 
 import com.napier.SET08103.model.Zone;
-import com.napier.SET08103.model.concepts.Continent;
-import com.napier.SET08103.model.concepts.Region;
-import com.napier.SET08103.model.concepts.World;
+import com.napier.SET08103.model.concepts.*;
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import org.apache.commons.cli.CommandLine;
@@ -93,24 +91,34 @@ public final class Commands {
                         aggregateAreaType = Zone.REGIONS;
                         aggregateArea = Region.fromName(p.get("region").toString(), conn);
                         break;
+                    case "country":
+                        aggregateAreaType = Zone.COUNTRIES;
+                        aggregateArea = Country.fromName(p.get("country").toString(), conn);
+                        break;
+                    case "district":
+                        aggregateAreaType = Zone.DISTRICTS;
+                        aggregateArea = District.fromName(p.get("district").toString(), conn);
+                        break;
                     default:
                         throw new InternalError();
                 }
             }
 
             if (args.hasOption("top")) {
-//                System.out.println(args.getOptionValue("top") + " ");
                 top = args.getParsedOptionValue("top");
                 if (top < 0)
                     throw new InternalError();
             }
 
             // within
-            // world should be passed differently
             int levelsDown = Integer.numberOfLeadingZeros(areaType.getSizeRank()) -
-                    Integer.numberOfLeadingZeros(aggregateAreaType.getSizeRank());
+                    Integer.numberOfLeadingZeros(aggregateAreaType.getSizeRank())
+                    - ((areaType == Zone.CAPITALS) ? 1 : 0);
 
             List<IZone> expansion = aggregateArea.getInnerZones(levelsDown, conn);
+
+            if (areaType == Zone.CAPITALS)
+                expansion = expansion.stream().filter(z -> ((City)z).isCapital()).collect(Collectors.toList());
 
             expansion.sort((s1, s2) -> {
                 try {
