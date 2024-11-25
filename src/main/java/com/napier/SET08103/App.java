@@ -2,10 +2,15 @@ package com.napier.SET08103;
 
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
-import com.napier.SET08103.model.concepts.District;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * Allows you to create an App object that you can connect
@@ -53,7 +58,7 @@ public final class App implements AutoCloseable {
      * and then use its "con" property in the tests.
      * @return con
      */
-    Connection getConnectionForIntegrationTesting() {
+    public Connection getConnectionForIntegrationTesting() {
         return con;
     }
 

@@ -1,13 +1,11 @@
 package com.napier.SET08103.model.concepts.zone;
 
-import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.db.IEntity;
 import com.napier.SET08103.model.db.IFieldEnum;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -40,5 +38,24 @@ public abstract class AbstractZone implements IZone {
             return Objects.equals(((IEntity) otherZone).getPrimaryKey(), ((IEntity) this).getPrimaryKey());
         else
             return Objects.equals(this, other);
+    }
+
+    public List<IZone> getInnerZones(int traverseDown, Connection conn) throws SQLException {
+        if (traverseDown > getZoneLevel().getSizeRank())
+            throw new RuntimeException("Zone traversal too deep");
+
+        List<IZone> treeExpansion = getInnerZones(conn);
+
+        for (int i = 0; i < traverseDown - 1; i++) {
+            treeExpansion = treeExpansion.stream().flatMap(z -> {
+                try {
+                    return z.getInnerZones(conn).stream();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
+        }
+
+        return treeExpansion;
     }
 }

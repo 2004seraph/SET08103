@@ -20,8 +20,8 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
 
     public static Region fromName(String name, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT * FROM " + Country.TABLE + " WHERE " + Country.REGION + " = ?")) {
-            ps.setString(1, name);
+                "SELECT * FROM " + Country.TABLE + " WHERE " + Country.REGION + " LIKE ?")) {
+            ps.setString(1, "%" + name + "%");
 
             try (ResultSet res = ps.executeQuery()) {
                 if (res.next()) {

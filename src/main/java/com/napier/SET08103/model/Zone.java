@@ -3,13 +3,13 @@ package com.napier.SET08103.model;
 // Used for supplying "search terms" to report functions (
 // for example writing Zone.Select.WORLD as a function argument)
 public enum Zone {
-    WORLD(0),
-    CONTINENTS(1),
-    REGIONS(2),
-    COUNTRIES(3),
-    DISTRICTS(4),
-    CITIES(5),
-    CAPITALS(6);
+    WORLD,
+    CONTINENTS,
+    REGIONS,
+    COUNTRIES,
+    DISTRICTS,
+    CITIES,
+    CAPITALS;
 
     public static final Zone[] asList = values();
 
@@ -19,14 +19,7 @@ public enum Zone {
     // This makes error checking easier, we can prevent someone looking up the biggest
     // CONTINENT in a CITIES with a simple number comparison.
 
-    // The code below merely implements the storage of the above.
-    public final int sizeFlag;
-
-    private Zone(int size) {
-        this.sizeFlag = 1 << size; // binary shift leftwards
-    }
-
     public int getSizeRank() {
-        return sizeFlag;
+        return 1 << (7 - this.ordinal());
     }
 }
