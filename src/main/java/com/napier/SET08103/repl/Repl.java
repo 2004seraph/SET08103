@@ -30,20 +30,12 @@ public final class Repl {
                             System.getenv("MYSQL_ROOT_PASSWORD"),
                             "default")
             );
-
-//        parse(new String[] { "-Dkey=1", "-Dbumbo=1" }, null);options.addOption(Option.builder("D").hasArgs().valueSeparator('=').build());;commandLine.getOptionProperties("D");//{bumbo=1, key=1}
-//        parseAndRun(new String[] { "--test build" }, null);
-//            parseAndRun(new String[] { "leaderboard", "--ofqwq", "countries" }, app.getConnectionForIntegrationTesting());
-//            System.out.println();
             parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "capitals" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
             System.out.println();
             parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "cities" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
-
-//            System.out.println();
-//            parseAndRun(new String[] { "leaderboard", "--top", "10", "--of", "capitals" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
+//            parseAndRun(new String[] { "total", "--in", "city:london" }, app.getConnectionForIntegrationTesting());
 
         }
-//        options.addOption("b", true, "some message");
     }
 
     public static void printHelpString(Options options) {
@@ -55,7 +47,6 @@ public final class Repl {
         try {
             switch (args[0]) {
                 case Commands.Leaderboard.name:
-//                    System.out.println(Commands.Leaderboard.name);
                     try {
                         CommandLine subArgs = new DefaultParser().parse(
                                 Commands.Leaderboard.options,
@@ -68,8 +59,21 @@ public final class Repl {
                         printHelpString(Commands.Leaderboard.options);
                     }
                     break;
+                case Commands.PopulationOf.name:
+                    try {
+                        CommandLine subArgs = new DefaultParser().parse(
+                                Commands.PopulationOf.options,
+                                args,
+                                false
+                        );
+
+                        Commands.PopulationOf.execute(subArgs, conn);
+                    } catch (ParseException e) {
+                        printHelpString(Commands.PopulationOf.options);
+                    }
+                    break;
                 default:
-                    System.out.println("nothing");
+                    System.out.println("Usage: pop <total/leaderboard>");
                     break;
             }
 

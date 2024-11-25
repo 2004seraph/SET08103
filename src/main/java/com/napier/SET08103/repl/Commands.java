@@ -18,6 +18,32 @@ import java.util.stream.Collectors;
 public final class Commands {
     private Commands() { }
 
+    public static final class PopulationOf {
+        private PopulationOf() {
+        }
+
+        public static final String name = "total";
+
+        public static final Options options = new Options()
+                // --in continent:Europe
+                .addOption(
+                        Option.builder("i")
+                                .longOpt("in")
+                                .required()
+                                .hasArgs()
+                                .numberOfArgs(2)
+                                .argName("<world/continent/region/country/district/city>:[name or ID]")
+                                .valueSeparator(':')
+                                .build()
+                );
+
+        public static void execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException {
+            IZone target = parseZoneReference(args.getOptionProperties("in"), conn);
+            System.out.println(target.toString() + ": " + target.getTotalPopulation(conn));
+        }
+    }
+
+
     public static final class Leaderboard {
         private Leaderboard() { }
 
@@ -80,28 +106,8 @@ public final class Commands {
 
                 Properties p = args.getOptionProperties("in");
 
-                switch (p.keys().nextElement().toString()) {
-                    case "world":
-                        break;
-                    case "continent":
-                        aggregateAreaType = Zone.CONTINENTS;
-                        aggregateArea = Continent.likeDatabaseString(p.get("continent").toString(), conn);
-                        break;
-                    case "region":
-                        aggregateAreaType = Zone.REGIONS;
-                        aggregateArea = Region.fromName(p.get("region").toString(), conn);
-                        break;
-                    case "country":
-                        aggregateAreaType = Zone.COUNTRIES;
-                        aggregateArea = Country.fromName(p.get("country").toString(), conn);
-                        break;
-                    case "district":
-                        aggregateAreaType = Zone.DISTRICTS;
-                        aggregateArea = District.fromName(p.get("district").toString(), conn);
-                        break;
-                    default:
-                        throw new InternalError();
-                }
+                aggregateArea = (AbstractZone) parseZoneReference(p, conn);
+                aggregateAreaType = aggregateArea.getZoneLevel();
             }
 
             if (args.hasOption("top")) {
@@ -115,7 +121,6 @@ public final class Commands {
                     Integer.numberOfLeadingZeros(aggregateAreaType.getSizeRank())
                     - ((areaType == Zone.CAPITALS) ? 1 : 0);
 
-            assert aggregateArea != null;
             List<IZone> expansion = aggregateArea.getInnerZones(levelsDown, conn);
 
             if (areaType == Zone.CAPITALS)
@@ -138,6 +143,33 @@ public final class Commands {
             for (IZone z : zones) {
                 System.out.println(z.toString() + ": " + z.getTotalPopulation(conn));
             }
+        }
+    }
+
+    private static IZone parseZoneReference(Properties p, Connection conn) throws SQLException {
+        switch (p.keys().nextElement().toString().toLowerCase().replace('_', ' ')) {
+            case "world":
+                return World.instance;
+            case "continent":
+                return Continent.likeDatabaseString(p.get("continent").toString(), conn);
+            case "region":
+                return Region.fromName(p.get("region").toString(), conn);
+            case "country":
+                try {
+                    return Country.fromName(p.get("country").toString(), conn);
+                } catch (Exception e) {
+                    return Country.fromCountryCode(p.get("country").toString(), conn);
+                }
+            case "district":
+                return District.fromName(p.get("district").toString(), conn);
+            case "city":
+                try {
+                    return City.fromName(p.get("city").toString(), conn);
+                } catch (Exception e) {
+                    return City.fromId(Integer.parseInt(p.get("city").toString()), conn);
+                }
+            default:
+                throw new InternalError();
         }
     }
 
