@@ -146,8 +146,8 @@ public final class Commands {
         }
     }
 
-    private static IZone parseZoneReference(Properties p, Connection conn) throws SQLException {
-        switch (p.keys().nextElement().toString().toLowerCase().replace('_', ' ')) {
+    private static IZone parseZoneReference(Properties p, Connection conn) throws InternalError, SQLException {
+        switch (p.keys().nextElement().toString().replace('_', ' ')) {
             case "world":
                 return World.instance;
             case "continent":

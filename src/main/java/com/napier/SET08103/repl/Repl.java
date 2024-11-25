@@ -1,11 +1,9 @@
 package com.napier.SET08103.repl;
 
-import com.napier.SET08103.App;
 import org.apache.commons.cli.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Objects;
 
 
 /**
@@ -20,22 +18,21 @@ public final class Repl {
 
     private static final String COMMAND = "pop";
 
-    public static void main(String[] args) throws SQLException, ParseException {
-        try (final App app = new App()) {
-            app.connect(
-                    Objects.requireNonNullElse(
-                            System.getenv("MYSQL_HOST"),
-                            "localhost"),
-                    Objects.requireNonNullElse(
-                            System.getenv("MYSQL_ROOT_PASSWORD"),
-                            "default")
-            );
-            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "capitals" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
-            System.out.println();
-            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "cities" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
+    public static void main(String[] args) {
+//        try (final App app = new App()) {
+//            app.connect(
+//                    Objects.requireNonNullElse(
+//                            System.getenv("MYSQL_HOST"),
+//                            "localhost"),
+//                    Objects.requireNonNullElse(
+//                            System.getenv("MYSQL_ROOT_PASSWORD"),
+//                            "default")
+//            );
+//            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "capitals" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
+//            System.out.println();
+//            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "cities" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
 //            parseAndRun(new String[] { "total", "--in", "city:london" }, app.getConnectionForIntegrationTesting());
-
-        }
+//        }
     }
 
     public static void printHelpString(Options options) {
@@ -43,7 +40,7 @@ public final class Repl {
         formatter.printHelp(COMMAND + " subcommand [options]", options);
     }
 
-    public static void parseAndRun(String[] args, Connection conn) throws SQLException {
+    public static void parseAndRun(String[] args, Connection conn) {
         try {
             switch (args[0]) {
                 case Commands.Leaderboard.name:
@@ -73,14 +70,16 @@ public final class Repl {
                     }
                     break;
                 default:
-                    System.out.println("Usage: pop <total/leaderboard>");
+                    System.out.println("Usage: " + COMMAND + " <total/leaderboard> [options]");
                     break;
             }
+        } catch (SQLException e) {
+            System.out.println("Database Error: ");
+            System.out.println(e.getMessage());
 
-        }  catch (InternalError e) {
+        } catch (InternalError | NullPointerException | IllegalArgumentException e) {
             System.out.println("Command Error: ");
             System.out.println(e.getMessage());
-            printHelpString(Commands.Leaderboard.options);
         }
     }
 }
