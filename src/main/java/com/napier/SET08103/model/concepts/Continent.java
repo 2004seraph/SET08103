@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public final class Continent extends AbstractZone implements IFieldEnum<Continent.FieldEnum>, IDistributedPopulation {
 
-    public static Continent likeDatabaseString(String name, Connection conn) throws SQLException {
+    public static Continent likeDatabaseString(final String name, final Connection conn) throws SQLException {
         // Select the continent with the higher population
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT SUM(" + Country.POPULATION + ") as Total, " + Country.CONTINENT +
@@ -81,6 +81,10 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
                     .findFirst().get();
         }
 
+        public Continent getInstance() {
+            return Continent.fromValue(this);
+        }
+
         @Override
         public String toString() {
             return databaseName;
@@ -91,9 +95,13 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         return Arrays.stream(FieldEnum.asList).map(Continent::fromValue).collect(Collectors.toList());
     }
 
+    public static List<IZone> getAllAsIZones() {
+        return Zone.wrapIZone(getAll());
+    }
+
     private final FieldEnum name;
 
-    public Continent(FieldEnum name) {
+    public Continent(final FieldEnum name) {
         this.name = name;
     }
 
@@ -105,10 +113,10 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
     }
 
     @Override
-    public List<City> getCities(Connection conn) throws SQLException {
+    public List<City> getCities(final Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + name + "/cities";
         if (cacheMap.containsKey(cacheKey))
-            return unwrapIZone(cacheMap.get(cacheKey));
+            return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
         List<City> c = getInnerZones(conn)
                 .stream()
@@ -120,12 +128,12 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
                     }
                 }).collect(Collectors.toList());
 
-        cacheMap.put(cacheKey, wrapIZone(c));
+        cacheMap.put(cacheKey, Zone.wrapIZone(c));
         return c;
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+    public List<IZone> getInnerZones(final Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + name + "/innerZones";
         if (cacheMap.containsKey(cacheKey))
             return cacheMap.get(cacheKey);
@@ -157,7 +165,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
     }
 
     @Override
-    public PopulationInfo getPopulationInfo(Connection conn) throws SQLException {
+    public PopulationInfo getPopulationInfo(final Connection conn) throws SQLException {
         return new PopulationInfo(
                 this,
                 getTotalPopulation(conn),
@@ -174,7 +182,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
     }
 
     @Override
-    public long getTotalPopulation(Connection conn) throws SQLException {
+    public long getTotalPopulation(final Connection conn) throws SQLException {
 //        SELECT country.Continent , SUM(country.Population) AS Total
 //        FROM country
 //        GROUP BY country.Continent

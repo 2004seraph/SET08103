@@ -55,7 +55,7 @@ public final class Leaderboard implements ICommand {
     }
 
     @Override
-    public void execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException {
+    public Object execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException {
         assert args.getOptionValue("of") != null;
 
         // --of
@@ -63,7 +63,7 @@ public final class Leaderboard implements ICommand {
 
         // --in
         Zone aggregateAreaType = Zone.WORLD;
-        AbstractZone aggregateArea = World.instance;
+        AbstractZone aggregateArea = World.INSTANCE;
 
         // --top
         int top = -1;
@@ -71,14 +71,14 @@ public final class Leaderboard implements ICommand {
         try {
             areaType = Zone.valueOf(args.getOptionValue("of").toUpperCase());
             if (areaType.getSizeRank() > Zone.COUNTRIES.getSizeRank())
-                throw new InternalError();
+                throw new InternalError("Invalid combination of --of and --in parameters");
         } catch (IllegalArgumentException e) {
             throw new InternalError(e);
         }
 
         if (args.hasOption("in")) {
             if (args.getOptionProperties("in").size() != 1)
-                throw new InternalError();
+                throw new InternalError("Only one pairing allowed for the --in parameter");
 
             Properties p = args.getOptionProperties("in");
 
@@ -89,7 +89,7 @@ public final class Leaderboard implements ICommand {
         if (args.hasOption("top")) {
             top = args.getParsedOptionValue("top");
             if (top < 0)
-                throw new InternalError();
+                throw new InternalError("top parameter cannot have a value below 0");
         }
 
         // within
@@ -110,9 +110,11 @@ public final class Leaderboard implements ICommand {
             }
         });
 
-        showLeaderboard(
-                ((top != -1) ? expansion.stream().limit(top).collect(Collectors.toList()) : expansion),
-                conn);
+        List<IZone> res = ((top != -1) ? expansion.stream().limit(top).collect(Collectors.toList()) : expansion);
+
+        showLeaderboard(res, conn);
+
+        return res;
     }
 
     private static void showLeaderboard(List<IZone> zones, Connection conn) throws SQLException {

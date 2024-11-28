@@ -45,7 +45,7 @@ public final class City extends AbstractZone implements IEntity {
      * @param id
      * @param conn
      * @return
-     * @throws SQLException
+     * @throws SQLException No entries found with that id
      */
     public static City fromId(int id, Connection conn) throws SQLException {
         // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
@@ -204,7 +204,7 @@ public final class City extends AbstractZone implements IEntity {
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
-        return List.of();
+        return List.of(this);
     }
 
     @Override
