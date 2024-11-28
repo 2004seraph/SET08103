@@ -1,18 +1,15 @@
-package com.napier.SET08103;
+package com.napier.SET08103.model;
 
-import com.napier.SET08103.model.concepts.City;
+import com.napier.SET08103.AbstractIntegrationTest;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.District;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -54,7 +51,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void districtCreate() {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         final String NON_EQUAL_DISTRICT = "Texas";
         final BiConsumer<String, String> createValidDistrict = (name, countryCode) -> {
@@ -119,7 +116,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void zoneInfo() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         // Outer zone
         final District texas = District.fromName("Texas", conn);
@@ -154,7 +151,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void getTotalPopulation() {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         final BiFunction<String, String, Long> getDistrictPopulation = (cc, name) -> {
             try {

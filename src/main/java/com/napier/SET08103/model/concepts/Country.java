@@ -1,12 +1,12 @@
 package com.napier.SET08103.model.concepts;
 
+import com.napier.SET08103.model.concepts.types.PopulationInfo;
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IDistributedPopulation;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import com.napier.SET08103.model.PopulationInfo;
-import com.napier.SET08103.model.Zone;
+import com.napier.SET08103.model.concepts.zone.Zone;
 import com.napier.SET08103.model.db.IEntity;
-import com.napier.SET08103.model.db.Model;
+import com.napier.SET08103.model.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a Country entity from the database
+ */
 public final class Country extends AbstractZone implements IEntity, IDistributedPopulation {
 
     // no spelling mistakes
@@ -30,6 +33,13 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
 
     public static final int NULL_CAPITAL = 0;
 
+    /**
+     * Returns a Country instance from a given primary key
+     * @param countryCode "USA"
+     * @param conn
+     * @return A Country instance
+     * @throws SQLException
+     */
     public static Country fromCountryCode(String countryCode, Connection conn) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(
                 "SELECT * FROM " + TABLE + " WHERE " + PRIMARY_KEY + " = ?");
@@ -49,6 +59,14 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
             throw new IllegalArgumentException("No country with code: " + countryCode);
     }
 
+    /**
+     * Returns a Country instance from a name. In the event of multiple matches, the country with the
+     * higher population is chosen.
+     * @param countryCode "USA"
+     * @param conn
+     * @return A Country instance
+     * @throws SQLException
+     */
     public static Country fromName(String name, Connection conn) throws SQLException {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Invalid City name");

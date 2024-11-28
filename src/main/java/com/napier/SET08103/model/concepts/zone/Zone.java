@@ -1,7 +1,5 @@
-package com.napier.SET08103.model;
+package com.napier.SET08103.model.concepts.zone;
 
-// Used for supplying "search terms" to report functions (
-// for example writing Zone.Select.WORLD as a function argument)
 public enum Zone {
     WORLD(0),
     CONTINENTS(1),

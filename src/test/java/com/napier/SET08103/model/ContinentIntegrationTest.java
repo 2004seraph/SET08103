@@ -1,11 +1,12 @@
-package com.napier.SET08103;
+package com.napier.SET08103.model;
 
-import com.napier.SET08103.model.PopulationInfo;
+import com.napier.SET08103.AbstractIntegrationTest;
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Continent;
 import com.napier.SET08103.model.concepts.Country;
+import com.napier.SET08103.model.concepts.types.PopulationInfo;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import com.napier.SET08103.model.db.Model;
+import com.napier.SET08103.Testing;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
@@ -31,7 +32,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void continentCreate() {
-        Connection conn = app.getConnectionForIntegrationTesting();
+        Connection conn = getAppDatabaseConnection();
 
         BiConsumer<String, String> createContinentLike = (search, actual) -> {
             // Placeholder variable for the lambda expression
@@ -74,7 +75,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void zoneInfo() throws SQLException {
-        Connection conn = app.getConnectionForIntegrationTesting();
+        Connection conn = getAppDatabaseConnection();
 
         assertNull(Continent.fromValue(Continent.FieldEnum.ASIA).getOuterZone());
 
@@ -126,7 +127,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
                 assertFalse(citiesRequest.isEmpty());
 
             assertEquals(cityNames.size(), citiesRequest.size());
-            assertTrue(Utilities.compareLists(
+            assertTrue(Testing.compareLists(
                     cityNames,
                     citiesRequest.stream().map(Object::toString).collect(Collectors.toList())));
         };
@@ -138,7 +139,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void getPopulation() throws SQLException {
-        Connection conn = app.getConnectionForIntegrationTesting();
+        Connection conn = getAppDatabaseConnection();
 
         // population in cities
 //        SELECT country.Continent, SUM(city.Population) AS CityPop

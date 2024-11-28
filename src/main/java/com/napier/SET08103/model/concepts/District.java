@@ -1,10 +1,10 @@
 package com.napier.SET08103.model.concepts;
 
+import com.napier.SET08103.model.Model;
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import com.napier.SET08103.model.Zone;
+import com.napier.SET08103.model.concepts.zone.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
-import com.napier.SET08103.model.db.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,16 +13,33 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public final class District extends AbstractZone implements IFieldEnum<String> {
 
     public static final String nullFieldValue = "–"; // Don't be fooled, this is a weird Unicode character
 
+    /**
+     * For selecting a district exactly, by specifying a parent country primary key
+     * @param name
+     * @param countryCode An explicit country code this district is contained within
+     * @param conn
+     * @return
+     * @throws SQLException If the given country does not exist, or if it has no such district with the
+     * given name
+     */
     public static District fromName(String name, String countryCode, Connection conn) throws SQLException {
         return District.fromName(name, Country.fromCountryCode(countryCode, conn), conn);
     }
 
+    /**
+     * For selecting a district exactly, by specifying a parent country instance
+     * @param name
+     * @param country An explicit country instance this district is contained within
+     * @param conn
+     * @return
+     * @throws SQLException If the given country does not exist, or if it has no such district with the
+     * given name
+     */
     public static District fromName(String name, Country country, Connection conn) throws SQLException {
         if (Objects.equals(name, nullFieldValue))
             return null;
@@ -44,6 +61,14 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
         }
     }
 
+    /**
+     * Returns a district from a name, in the event of multiple matches, the district with the higher
+     * population is used
+     * @param name
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
     public static District fromName(String name, Connection conn) throws SQLException {
         if (Objects.equals(name, nullFieldValue))
             return null;
@@ -83,7 +108,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
-        final String cacheKey = this.getClass().getName() + "/" + country + "/" + name + "/cities";
+        final String cacheKey = this.getClass().getName() + "/" + country.countryCode + "/" + name + "/cities";
         if (cacheMap.containsKey(cacheKey))
             return unwrapIZone(cacheMap.get(cacheKey));
 
@@ -109,7 +134,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
-        return getCities(conn).stream().map(c -> (IZone)c).collect(Collectors.toList());
+        return wrapIZone(getCities(conn));
     }
 
     @Override

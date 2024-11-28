@@ -1,6 +1,8 @@
-package com.napier.SET08103;
+package com.napier.SET08103.model;
 
-import com.napier.SET08103.model.PopulationInfo;
+import com.napier.SET08103.AbstractIntegrationTest;
+import com.napier.SET08103.Testing;
+import com.napier.SET08103.model.concepts.types.PopulationInfo;
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.Region;
@@ -15,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void countryCreate() throws SQLException {
-        Connection conn = app.getConnectionForIntegrationTesting();
+        Connection conn = getAppDatabaseConnection();
 
         BiFunction<String, String, Country> createCountry = (cc, name) -> {
             // fromId
@@ -78,7 +79,7 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void zoneInfo() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         // getOuterZone() : Austria in Western Europe
         final Country austria = Country.fromCountryCode("AUT", conn);
@@ -129,7 +130,7 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
 
             assertFalse(citiesRequest.isEmpty());
             assertEquals(cityNames.size(), citiesRequest.size());
-            assertTrue(Utilities.compareLists(
+            assertTrue(Testing.compareLists(
                     cityNames,
                     citiesRequest.stream().map(Object::toString).collect(Collectors.toList())));
         };
@@ -151,7 +152,7 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void getPopulation() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         PopulationInfo usaInfo = Country.fromCountryCode("USA", conn).getPopulationInfo(conn);
         assertEquals(278357000,

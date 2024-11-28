@@ -1,6 +1,7 @@
-package com.napier.SET08103;
+package com.napier.SET08103.model;
 
-import com.napier.SET08103.model.Zone;
+import com.napier.SET08103.AbstractIntegrationTest;
+import com.napier.SET08103.model.concepts.zone.Zone;
 import com.napier.SET08103.model.concepts.City;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void createValid() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         BiConsumer<Integer, String> createCity = (id, name) -> {
             { // fromId
@@ -64,7 +65,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void createInValid() {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         // Both name and id must be invalid and create no city
         BiConsumer<Integer, String> createCity = (id, name) -> {
@@ -81,7 +82,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void getTotalPopulation() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         final City kabul = City.fromId(1, conn);
         assertEquals(1780000, kabul.getTotalPopulation(conn));
@@ -92,7 +93,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void isCapital() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         final City kabul = City.fromId(1, conn);
         assertTrue(kabul.isCapital());
@@ -108,10 +109,10 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getCapitals() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+    void getAllCapitals() throws SQLException {
+        final Connection conn = getAppDatabaseConnection();
 
-        final List<City> capitals = City.capitals(conn);
+        final List<City> capitals = City.allCapitals(conn);
         assertTrue(Arrays.asList(capitals.stream().map(City::toString).toArray()).contains("London"));
     }
 }

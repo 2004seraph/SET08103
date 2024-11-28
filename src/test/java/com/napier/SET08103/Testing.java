@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class Utilities {
-    private Utilities() { }
+/**
+ * Constants and helper methods relating to unit and integration tests
+ */
+public final class Testing {
+    private Testing() { }
 
+    // Test constants
     public static final String MYSQL_HOST_ENVAR = "MYSQL_HOST";
     public static final String MYSQL_ROOT_PASSWORD_ENVAR = "MYSQL_ROOT_PASSWORD";
     public static final String MYSQL_HOST_ENVAR_DEFAULT = "localhost";

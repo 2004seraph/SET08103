@@ -2,15 +2,21 @@ package com.napier.SET08103.model.concepts;
 
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import com.napier.SET08103.model.Zone;
+import com.napier.SET08103.model.concepts.zone.Zone;
 import com.napier.SET08103.model.db.IEntity;
-import com.napier.SET08103.model.db.Model;
+import com.napier.SET08103.model.Model;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents a City (and a Capital) entity from the database
+ */
 public final class City extends AbstractZone implements IEntity {
 
     // no spelling mistakes
@@ -34,6 +40,13 @@ public final class City extends AbstractZone implements IEntity {
                     "ON", City.PRIMARY_KEY, "=", Country.CAPITAL,
                     "WHERE", City.PRIMARY_KEY, "= ?");
 
+    /**
+     * Returns a City instance with a given primary key
+     * @param id
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
     public static City fromId(int id, Connection conn) throws SQLException {
         // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
         try (PreparedStatement ps = conn.prepareStatement(CREATION_SQL)) {
@@ -87,7 +100,13 @@ public final class City extends AbstractZone implements IEntity {
         }
     }
 
-    public static List<City> capitals(Connection conn) throws SQLException {
+    /**
+     * Returns every capital in the world
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
+    public static List<City> allCapitals(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
                 "SELECT " + Country.CAPITAL + " FROM " + Country.TABLE
         );
@@ -105,10 +124,12 @@ public final class City extends AbstractZone implements IEntity {
         return capitals;
     }
 
-    // I know this is ridiculous code duplication, but I cannot work out for the life of me
-    // how to invert the program-data dependency here.
-    // This function is only meant to be called by the Country class to set its own capital City instance,
-    // using the public function causes infinite recursion.
+    /**
+     * Code duplication, but I cannot work out how to invert the program-data dependency here.
+     *
+     * This function is only meant to be called by the Country class to set its own capital City instance,
+     * using the public function causes infinite recursion.
+     */
     static City fromIdAsCapital(int id, Country country, Connection conn) throws SQLException {
 
         // Note to self: if this city is NOT a capital, ALL Country fields will be NULL

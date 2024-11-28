@@ -1,6 +1,8 @@
-package com.napier.SET08103;
+package com.napier.SET08103.model;
 
-import com.napier.SET08103.model.PopulationInfo;
+import com.napier.SET08103.AbstractIntegrationTest;
+import com.napier.SET08103.Testing;
+import com.napier.SET08103.model.concepts.types.PopulationInfo;
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.Region;
@@ -27,7 +29,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void regionCreate() {
-        Connection conn = app.getConnectionForIntegrationTesting();
+        Connection conn = getAppDatabaseConnection();
 
         // no spaces
         assertAll(() -> Region.fromName("Polynesia", conn));
@@ -52,7 +54,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void zoneInfo() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         // getInnerZones()
         List<IZone> northAmericaCountries = Region.fromName("North America", conn)
@@ -95,7 +97,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
 
             assertFalse(citiesRequest.isEmpty());
             assertEquals(cityNames.size(), citiesRequest.size());
-            assertTrue(Utilities.compareLists(
+            assertTrue(Testing.compareLists(
                     cityNames,
                     citiesRequest.stream().map(Object::toString).collect(Collectors.toList())));
         };
@@ -107,7 +109,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void getPopulation() throws SQLException {
-        final Connection conn = app.getConnectionForIntegrationTesting();
+        final Connection conn = getAppDatabaseConnection();
 
         // total pop
 //        SELECT country.Region, SUM(country.Population) AS Total

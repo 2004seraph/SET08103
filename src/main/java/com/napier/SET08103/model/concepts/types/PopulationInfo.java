@@ -1,4 +1,4 @@
-package com.napier.SET08103.model;
+package com.napier.SET08103.model.concepts.types;
 
 import com.napier.SET08103.model.concepts.zone.IZone;
 

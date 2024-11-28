@@ -1,12 +1,14 @@
 package com.napier.SET08103.model.concepts.zone;
 
-import com.napier.SET08103.model.Zone;
 import com.napier.SET08103.model.concepts.City;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ *
+ */
 public interface IZone {
     public Zone getZoneLevel();
     public IZone getOuterZone();

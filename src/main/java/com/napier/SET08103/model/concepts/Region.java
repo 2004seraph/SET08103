@@ -1,12 +1,12 @@
 package com.napier.SET08103.model.concepts;
 
+import com.napier.SET08103.model.concepts.types.PopulationInfo;
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IDistributedPopulation;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import com.napier.SET08103.model.PopulationInfo;
-import com.napier.SET08103.model.Zone;
+import com.napier.SET08103.model.concepts.zone.Zone;
 import com.napier.SET08103.model.db.IFieldEnum;
-import com.napier.SET08103.model.db.Model;
+import com.napier.SET08103.model.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
