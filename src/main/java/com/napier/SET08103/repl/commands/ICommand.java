@@ -13,5 +13,7 @@ import java.sql.SQLException;
 public interface ICommand {
     public Options getOptions();
 
-    void execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException;
+    // This has a catch-all return value purely for testing, as I know what to cast to based
+    // on the specific test
+    Object execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException;
 }

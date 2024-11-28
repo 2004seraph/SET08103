@@ -18,6 +18,8 @@ public final class Repl {
     private static final String COMMAND = "pop";
 
     public static void main(String[] args) {
+        // Left here as an example, as a database connection is inaccessible here
+
 //        try (final App app = new App()) {
 //            app.connect(
 //                    Objects.requireNonNullElse(
@@ -39,6 +41,11 @@ public final class Repl {
         formatter.printHelp(COMMAND + " subcommand [options]", options);
     }
 
+    /**
+     * Command entry point to the REPL, handles all possible exceptions in the application gracefully
+     * @param args
+     * @param conn
+     */
     public static void parseAndRun(String[] args, Connection conn) {
         if (args.length == 0) {
             System.out.println("Usage: " + COMMAND + " <total/leaderboard> [options]");
@@ -72,27 +79,46 @@ public final class Repl {
         }
     }
 
-    public static IZone parseZoneReference(Properties p, Connection conn) throws InternalError, SQLException {
-        switch (p.keys().nextElement().toString().toLowerCase().replace('_', ' ')) { // south_america
+    /**
+     * Parses zone references to IZone instances:
+     *      "continent:Europe"
+     *      "district:texas"
+     *      "world"
+     *      etc.
+     *
+     * The user may use any case combination they want.
+     *
+     * @param p Parsed key:value properties for a specific command line argument
+     * @param conn Connects to the database to get the specific zone instance referenced
+     * @return
+     * @throws InternalError
+     * @throws SQLException
+     */
+    public static IZone parseZoneReference(Properties p, Connection conn)
+            throws InternalError, SQLException, IllegalArgumentException {
+
+        final String zoneType = p.keys().nextElement().toString().replace('_', ' ');
+
+        switch (zoneType.toLowerCase()) {
             case "world":
-                return World.instance;
+                return World.INSTANCE;
             case "continent":
-                return Continent.likeDatabaseString(p.get("continent").toString(), conn);
+                return Continent.likeDatabaseString(p.get(zoneType).toString(), conn);
             case "region":
-                return Region.fromName(p.get("region").toString(), conn);
+                return Region.fromName(p.get(zoneType).toString(), conn);
             case "country":
                 try {
-                    return Country.fromName(p.get("country").toString(), conn);
+                    return Country.fromName(p.get(zoneType).toString(), conn);
                 } catch (Exception e) {
-                    return Country.fromCountryCode(p.get("country").toString(), conn);
+                    return Country.fromCountryCode(p.get(zoneType).toString(), conn);
                 }
             case "district":
-                return District.fromName(p.get("district").toString(), conn);
+                return District.fromName(p.get(zoneType).toString(), conn);
             case "city":
                 try {
-                    return City.fromName(p.get("city").toString(), conn);
+                    return City.fromName(p.get(zoneType).toString(), conn);
                 } catch (Exception e) {
-                    return City.fromId(Integer.parseInt(p.get("city").toString()), conn);
+                    return City.fromId(Integer.parseInt(p.get(zoneType).toString()), conn);
                 }
             default:
                 throw new InternalError();

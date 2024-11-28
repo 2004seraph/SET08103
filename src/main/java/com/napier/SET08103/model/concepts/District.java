@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Objects;
 
 public final class District extends AbstractZone implements IFieldEnum<String> {
-
-    public static final String nullFieldValue = "–"; // Don't be fooled, this is a weird Unicode character
+    // Don't be fooled, this is a weird Unicode character
+    public static final String nullFieldValue = "–";
 
     /**
      * For selecting a district exactly, by specifying a parent country primary key
@@ -67,7 +67,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
      * @param name
      * @param conn
      * @return
-     * @throws SQLException
+     * @throws SQLException No results found for name
      */
     public static District fromName(String name, Connection conn) throws SQLException {
         if (Objects.equals(name, nullFieldValue))
@@ -110,7 +110,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
     public List<City> getCities(Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + country.countryCode + "/" + name + "/cities";
         if (cacheMap.containsKey(cacheKey))
-            return unwrapIZone(cacheMap.get(cacheKey));
+            return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
         // Will always be unique values, due to primary key usage
         PreparedStatement stmt = conn.prepareStatement(
@@ -127,14 +127,14 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
                 cities.add(City.fromId(res.getInt(City.PRIMARY_KEY), conn));
         }
 
-        cacheMap.put(cacheKey, wrapIZone(cities));
+        cacheMap.put(cacheKey, Zone.wrapIZone(cities));
 
         return cities;
     }
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
-        return wrapIZone(getCities(conn));
+        return Zone.wrapIZone(getCities(conn));
     }
 
     @Override

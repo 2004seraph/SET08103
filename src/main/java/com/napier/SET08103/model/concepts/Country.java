@@ -107,7 +107,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     public List<City> getCities(Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + countryCode + "/cities";
         if (cacheMap.containsKey(cacheKey))
-            return unwrapIZone(cacheMap.get(cacheKey));
+            return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
         List<City> c = getInnerZones(conn)
                 .stream()
@@ -120,7 +120,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
                     }
                 }).collect(Collectors.toList());
 
-        cacheMap.put(cacheKey, wrapIZone(c));
+        cacheMap.put(cacheKey, Zone.wrapIZone(c));
         return c;
     }
 

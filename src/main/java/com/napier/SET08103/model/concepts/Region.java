@@ -45,7 +45,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
     public List<City> getCities(Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + continent + "/" + name + "/cities";
         if (cacheMap.containsKey(cacheKey))
-            return unwrapIZone(cacheMap.get(cacheKey));
+            return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
         List<City> c = this.getInnerZones(conn)
                 .stream()
@@ -57,7 +57,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
                     }
                 }).collect(Collectors.toList());
 
-        cacheMap.put(cacheKey, wrapIZone(c));
+        cacheMap.put(cacheKey, Zone.wrapIZone(c));
         return c;
     }
 

@@ -16,13 +16,13 @@ public class WorldIntegrationTest extends AbstractIntegrationTest {
         final Connection conn = getAppDatabaseConnection();
 
         // ensure there are indeed 7 continents
-        assertEquals(World.instance.getInnerZones(conn).size(), 7);
+        assertEquals(World.INSTANCE.getInnerZones(conn).size(), 7);
     }
 
     @Test
     void getPopulation() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
-        assertEquals(World.instance.getTotalPopulation(conn), 6078749450L);
+        assertEquals(World.INSTANCE.getTotalPopulation(conn), 6078749450L);
     }
 }

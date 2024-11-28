@@ -7,13 +7,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- *
+ * Tree-style API where each Zone is a node
  */
-public interface IZone {
-    public Zone getZoneLevel();
-    public IZone getOuterZone();
+public interface IZone extends Comparable<IZone> {
+    // Tree
+    public Zone getZoneLevel();                                             // Rank
+    public IZone getOuterZone();                                            // Parent
+    public List<IZone> getInnerZones(final Connection conn) throws SQLException;  // Children
 
-    public List<IZone> getInnerZones(Connection conn) throws SQLException;
-    List<City> getCities(Connection conn) throws SQLException;
-    public long getTotalPopulation(Connection conn) throws SQLException;
+    // Domain specific
+    List<City> getCities(final Connection conn) throws SQLException;
+    public long getTotalPopulation(final Connection conn) throws SQLException;
 }
