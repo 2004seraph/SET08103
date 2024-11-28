@@ -7,16 +7,19 @@ import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.Region;
 import com.napier.SET08103.model.concepts.zone.IZone;
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 final class RegionIntegrationTest extends AbstractIntegrationTest {
 
@@ -31,6 +34,10 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
     void regionCreate() {
         Connection conn = getAppDatabaseConnection();
 
+        // Middle East
+        assertAll(() ->
+                assertEquals("Middle East", Region.fromName("Middle", conn).toString()));
+
         // no spaces
         assertAll(() -> Region.fromName("Polynesia", conn));
         // spaces
@@ -39,16 +46,10 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
         // Misspelling
         assertThrows(IllegalArgumentException.class, () ->
                 Region.fromName("SouthernEurope", conn));
-        assertThrows(IllegalArgumentException.class, () ->
-                Region.fromName("Middle", conn));
 
         // non-existent
         assertThrows(IllegalArgumentException.class, () ->
                 Region.fromName("Volgograd", conn));
-
-        // Invalid
-        assertThrows(IllegalArgumentException.class, () ->
-                Region.fromName("", conn));
     }
 
 

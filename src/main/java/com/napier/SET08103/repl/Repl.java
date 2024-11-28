@@ -60,38 +60,6 @@ public final class Repl {
                     false // true = throw, false so it ignores the first arg
             );
             command.Instance().execute(subArgs, conn);
-
-//            switch (Command.valueOf(args[0])) {
-//                case LEADERBOARD:
-//                    try {
-//                        CommandLine subArgs = new DefaultParser().parse(
-//                                Command.LEADERBOARD.Instance().getOptions(),
-//                                args,
-//                                false // true = throw, false so it ignores the first arg
-//                        );
-//
-//                        Command.LEADERBOARD.Instance().execute(subArgs, conn);
-//                    } catch (ParseException e) {
-//                        printHelpString(Command.LEADERBOARD.Instance().getOptions());
-//                    }
-//                    break;
-//                case POPULATION:
-//                    try {
-//                        CommandLine subArgs = new DefaultParser().parse(
-//                                Command.POPULATION.Instance().getOptions(),
-//                                args,
-//                                false
-//                        );
-//
-//                        Command.POPULATION.Instance().execute(subArgs, conn);
-//                    } catch (ParseException e) {
-//                        printHelpString(Command.POPULATION.Instance().getOptions());
-//                    }
-//                    break;
-//                default:
-//                    System.out.println("Usage: " + COMMAND + " <total/leaderboard> [options]");
-//                    break;
-//            }
         } catch (ParseException e) {
             System.out.println("Syntax Error: ");
             printHelpString(command.Instance().getOptions());

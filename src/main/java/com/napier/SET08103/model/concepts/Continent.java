@@ -87,6 +87,10 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         }
     }
 
+    public static List<Continent> getAll() {
+        return Arrays.stream(FieldEnum.asList).map(Continent::fromValue).collect(Collectors.toList());
+    }
+
     private final FieldEnum name;
 
     public Continent(FieldEnum name) {
