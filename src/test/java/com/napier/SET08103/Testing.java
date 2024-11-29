@@ -2,6 +2,8 @@ package com.napier.SET08103;
 
 import org.junit.jupiter.api.function.Executable;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +19,23 @@ public final class Testing {
     public static final String MYSQL_ROOT_PASSWORD_ENVAR = "MYSQL_ROOT_PASSWORD";
     public static final String MYSQL_HOST_ENVAR_DEFAULT = "localhost";
     public static final String MYSQL_ROOT_PASSWORD_DEFAULT = "root";
+
+    private static PrintStream originalOutput = System.out;
+    private static PrintStream nullOutput = new PrintStream(new OutputStream() {
+        public void write(int b) {
+            //DO NOTHING
+        }
+    });
+    public static void setOutputState(boolean state) {
+        if (state) {
+            System.setOut(originalOutput);
+        } else {
+            if (System.out != nullOutput) {
+                originalOutput = System.out;
+                System.setOut(nullOutput);
+            }
+        }
+    }
 
     /**
      * Gets the reason for a top-level throw for a given JUnit executable function

@@ -69,8 +69,10 @@ public final class Leaderboard implements ICommand {
         int top = -1;
 
         areaType = Zone.valueOf(args.getOptionValue("of").toUpperCase());
-        if (areaType.getSizeRank() > Zone.COUNTRIES.getSizeRank())
-            throw new RuntimeException("Invalid combination of --of and --in parameters");
+
+        // The implementation can actually do more than what the client asked for
+//        if (areaType.getSizeRank() > Zone.COUNTRIES.getSizeRank())
+//            throw new RuntimeException("Invalid combination of --of and --in parameters");
 
 
         if (args.hasOption("in")) {
@@ -81,6 +83,9 @@ public final class Leaderboard implements ICommand {
 
             aggregateArea = (AbstractZone) parseZoneReference(p, conn);
             aggregateAreaType = aggregateArea.getZoneLevel();
+
+            if (areaType.getSizeRank() > aggregateAreaType.getSizeRank())
+                throw new RuntimeException("Invalid combination of --of and --in parameters");
         }
 
         if (args.hasOption("top")) {

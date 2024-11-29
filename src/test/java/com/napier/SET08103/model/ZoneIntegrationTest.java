@@ -16,13 +16,25 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static com.napier.SET08103.model.concepts.zone.Zone.wrapIZone;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public final class ZoneIntegrationTest extends AbstractIntegrationTest {
 
     @Test
-    void districtInnerTraversal() throws SQLException {
+    void equals() throws SQLException {
+        Connection conn = getAppDatabaseConnection();
+
+        assertFalse(City.fromName("Dallas", conn).equals(Country.fromCountryCode("USA", conn)));
+        assertFalse(Country.fromCountryCode("USA", conn).equals(City.fromName("Dallas", conn)));
+
+        assertTrue(City.fromId(3800, conn).equals(City.fromName("Dallas", conn)));
+        assertTrue(City.fromName("Dallas", conn).equals(City.fromId(3800, conn)));
+    }
+
+    @Test
+    void districtInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         District texas = District.fromName("Texas", "USA", conn);
@@ -31,7 +43,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void regionInnerTraversal() throws SQLException {
+    void regionInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         Region caribbean = Region.fromName("Caribbean", conn);
@@ -39,7 +51,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void continentInnerTraversal() throws SQLException {
+    void continentInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         assertTrue(Testing.compareLists(

@@ -24,6 +24,8 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
     void invalidSubCommand() {
         Connection conn = getAppDatabaseConnection();
 
+        Testing.setOutputState(false);
+
         // no args
         assertThrows(Error.class,() -> Repl.parseAndRun(conn, new String[] {}));
 
@@ -50,6 +52,8 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
                 () -> Repl.parseAndRun(conn, Command.LEADERBOARD.name(), "--of", ""));
         assertThrows(RuntimeException.class,
                 () -> Repl.parseAndRun(conn, Command.LEADERBOARD.name(), "--of", "america"));
+
+        Testing.setOutputState(true);
     }
 
     @Test
