@@ -4,6 +4,7 @@ import com.napier.SET08103.AbstractIntegrationTest;
 import com.napier.SET08103.Testing;
 import com.napier.SET08103.model.concepts.*;
 import com.napier.SET08103.model.concepts.zone.IZone;
+import com.napier.SET08103.repl.commands.Command;
 import com.napier.SET08103.repl.commands.ICommand;
 import org.apache.commons.cli.*;
 import org.junit.jupiter.api.Test;
@@ -34,19 +35,21 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
 
         // Valid command, but invalid sub args
         assertTrue(ParseException.class.isAssignableFrom( // ParseException is the superclass of MissingOptionException
-                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "leaderboard")).getClass()));
+                Testing.getExceptionCause(() ->
+                        Repl.parseAndRun(conn, Command.LEADERBOARD.name())).getClass()));
         assertTrue(ParseException.class.isAssignableFrom(
-                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "leaderboard", "--apple")).getClass()));
+                Testing.getExceptionCause(() ->
+                        Repl.parseAndRun(conn, Command.LEADERBOARD.name(), "--apple")).getClass()));
 
         // valid command, valid sub arg syntax, invalid semantics
         assertThrows(RuntimeException.class,
-                () -> Repl.parseAndRun(conn, "leaderboard", "--of", "pacific"));
+                () -> Repl.parseAndRun(conn, Command.LEADERBOARD.name(), "--of", "pacific"));
         assertThrows(RuntimeException.class,
-                () -> Repl.parseAndRun(conn, "leaderboard", "--of"));
+                () -> Repl.parseAndRun(conn, Command.LEADERBOARD.name(), "--of"));
         assertThrows(RuntimeException.class,
-                () -> Repl.parseAndRun(conn, "leaderboard", "--of", ""));
+                () -> Repl.parseAndRun(conn, Command.LEADERBOARD.name(), "--of", ""));
         assertThrows(RuntimeException.class,
-                () -> Repl.parseAndRun(conn, "leaderboard", "--of", "america"));
+                () -> Repl.parseAndRun(conn, Command.LEADERBOARD.name(), "--of", "america"));
     }
 
     @Test
