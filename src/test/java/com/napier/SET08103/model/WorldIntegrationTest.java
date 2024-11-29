@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WorldIntegrationTest extends AbstractIntegrationTest {
+public final class WorldIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void zoneInfo() throws SQLException {
