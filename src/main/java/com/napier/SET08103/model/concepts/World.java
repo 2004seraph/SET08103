@@ -79,7 +79,7 @@ public class World extends AbstractZone {
                     return res.getLong("Total");
                 }
                 else
-                    throw new InternalError("Database error");
+                    throw new RuntimeException("Database error");
             }
         }
     }

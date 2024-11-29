@@ -182,7 +182,7 @@ public final class City extends AbstractZone implements IEntity {
             case DISTRICTS:
                 return (District) parent;
             default:
-                throw new InternalError("Cannot find parent");
+                throw new RuntimeException("Cannot find parent");
         }
     }
 
@@ -194,7 +194,7 @@ public final class City extends AbstractZone implements IEntity {
             case DISTRICTS:
                 return (Country) parent.getOuterZone();
             default:
-                throw new InternalError("Cannot find parent");
+                throw new RuntimeException("Cannot find parent");
         }
     }
 

@@ -30,7 +30,7 @@ public final class PopulationOf implements ICommand {
     }
 
     @Override
-    public Object execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException {
+    public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
         IZone target = parseZoneReference(args.getOptionProperties("in"), conn);
         long population = target.getTotalPopulation(conn);
         System.out.println(target.toString() + ": " + population);
