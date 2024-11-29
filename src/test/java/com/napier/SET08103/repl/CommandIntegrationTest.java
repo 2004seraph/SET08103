@@ -67,6 +67,14 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
                 () -> Repl.parseAndRun(conn,
                         Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--top", "-10"));
 
+        // duplicate parameters (--in is the only one that can have multiple)
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--in", "region:north_america"));
+        assertEquals(51, // a valid duplicate parameter will override the previous one, expected UNIX behaviour
+                ((List<IZone>)Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--in", "continent:asia")).size());
+
         // Impossible queries
         assertThrows(RuntimeException.class,
                 () -> Repl.parseAndRun(conn,

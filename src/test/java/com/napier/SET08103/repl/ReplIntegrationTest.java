@@ -18,7 +18,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ReplIntegrationTest extends AbstractIntegrationTest {
+    @Test
+    void disconnected() throws SQLException {
+        Connection conn = getAppDatabaseConnection();
+        conn.close();
 
+        assertTrue(SQLException.class.isAssignableFrom(
+                Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "city:london")).getClass()));
+
+        // Reconnect after this test
+        connectToDatabase();
+    }
 
     @Test
     void invalidSubCommand() {
