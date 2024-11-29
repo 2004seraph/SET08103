@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Root of the tree of zones
  */
 public class World extends AbstractZone {
-    public static final World instance = new World();
+    public static final World INSTANCE = new World();
 
     private World() { }
 
@@ -26,8 +26,8 @@ public class World extends AbstractZone {
      * @param conn
      * @throws SQLException
      */
-    private static void preload(Connection conn) throws SQLException {
-        instance.getInnerZones(conn);
+    public static void preload(Connection conn) throws SQLException {
+        INSTANCE.getInnerZones(conn);
     }
 
     @Override
@@ -42,14 +42,14 @@ public class World extends AbstractZone {
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
-        return Continent.getAll().stream().map(c -> (IZone)c).collect(Collectors.toList());
+        return Zone.wrapIZone(Continent.getAll());
     }
 
     @Override
     public List<City> getCities(Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/instance" + "/cities";
         if (cacheMap.containsKey(cacheKey))
-            return unwrapIZone(cacheMap.get(cacheKey));
+            return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
         List<City> c = getInnerZones(conn)
                 .stream()
@@ -61,7 +61,7 @@ public class World extends AbstractZone {
                     }
                 }).collect(Collectors.toList());
 
-        cacheMap.put(cacheKey, wrapIZone(c));
+        cacheMap.put(cacheKey, Zone.wrapIZone(c));
         return c;
     }
 
@@ -79,7 +79,7 @@ public class World extends AbstractZone {
                     return res.getLong("Total");
                 }
                 else
-                    throw new InternalError("Database error");
+                    throw new RuntimeException("Database error");
             }
         }
     }

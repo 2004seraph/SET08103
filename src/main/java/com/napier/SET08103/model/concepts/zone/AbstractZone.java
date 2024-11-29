@@ -23,27 +23,6 @@ public abstract class AbstractZone implements IZone {
     protected static final HashMap<String, List<IZone>> cacheMap = new HashMap<>(5);
 
     /**
-     * Converts a List<City or Continent or Country, etc> to a LIst<IZone>
-     * @param concreteIZones List of a zone type
-     * @return All collapsed to the IZone type
-     * @param <T> City, District, Country, Region, Continent, or World
-     */
-    protected static <T> List<IZone> wrapIZone(List<T> concreteIZones) {
-        return concreteIZones.stream().map(c -> (IZone)c).collect(Collectors.toList());
-    }
-
-    /**
-     * Converts a List<IZone> to a given target type (Zone)
-     * @param concreteIZones list of IZones
-     * @return
-     * @param <T> City, District, Country, Region, Continent, or World
-     */
-    @SuppressWarnings("unchecked")
-    protected static <T extends IZone> List<T> unwrapIZone(List<IZone> concreteIZones) {
-        return concreteIZones.stream().map(c -> (T)c).collect(Collectors.toList());
-    }
-
-    /**
      * Flattens a list of all descendant zones of the given distance in levels from this zone instance
      * 
      * For example:
@@ -55,9 +34,9 @@ public abstract class AbstractZone implements IZone {
      * @return A List of all zone instances from that level
      * @throws SQLException
      */
-    public List<IZone> getInnerZones(int traverseDown, Connection conn) throws SQLException {
-        if (traverseDown > getZoneLevel().getSizeRank())
-            throw new RuntimeException("Zone traversal too deep");
+    public List<IZone> getInnerZones(final int traverseDown, final Connection conn) throws SQLException {
+        if (traverseDown < 1)
+            throw new RuntimeException("Invalid depth");
 
         List<IZone> treeExpansion = getInnerZones(conn);
 
@@ -75,7 +54,7 @@ public abstract class AbstractZone implements IZone {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if ((other == null) || (getClass() != other.getClass()))
             return false; // City will never == Country, despite both potentially having the same primary key
 
@@ -86,5 +65,10 @@ public abstract class AbstractZone implements IZone {
             return Objects.equals(((IEntity) otherZone).getPrimaryKey(), ((IEntity) this).getPrimaryKey());
         else
             return Objects.equals(this, other); // default to standard implementation
+    }
+
+    @Override
+    public int compareTo(final IZone o) {
+        return this.toString().compareTo(o.toString());
     }
 }

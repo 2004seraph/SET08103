@@ -114,5 +114,6 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
         final List<City> capitals = City.allCapitals(conn);
         assertTrue(Arrays.asList(capitals.stream().map(City::toString).toArray()).contains("London"));
+        assertTrue(capitals.stream().allMatch(c -> c.isCapital()));
     }
 }

@@ -18,6 +18,8 @@ public final class Repl {
     private static final String COMMAND = "pop";
 
     public static void main(String[] args) {
+        // Left here as an example, as a database connection is inaccessible here
+
 //        try (final App app = new App()) {
 //            app.connect(
 //                    Objects.requireNonNullElse(
@@ -39,10 +41,15 @@ public final class Repl {
         formatter.printHelp(COMMAND + " subcommand [options]", options);
     }
 
-    public static void parseAndRun(String[] args, Connection conn) {
+    /**
+     * Command entry point to the REPL
+     * @param args
+     * @param conn
+     * @return an object representing the evaluated output of the command
+     */
+    public static Object parseAndRun(String[] args, Connection conn) throws RuntimeException {
         if (args.length == 0) {
-            System.out.println("Usage: " + COMMAND + " <total/leaderboard> [options]");
-            return;
+            throw new java.lang.Error("Usage: " + COMMAND + " <total/leaderboard> [options]");
         }
 
         Command command;
@@ -50,7 +57,7 @@ public final class Repl {
             command = Command.valueOf(args[0].toUpperCase());
         } catch (IllegalArgumentException e) {
             System.out.println("Unknown subcommand");
-            return;
+            throw new RuntimeException(e);
         }
 
         try {
@@ -59,43 +66,68 @@ public final class Repl {
                     args,
                     false // true = throw, false so it ignores the first arg
             );
-            command.Instance().execute(subArgs, conn);
+            return command.Instance().execute(subArgs, conn);
+
         } catch (ParseException e) {
             System.out.println("Syntax Error: ");
             printHelpString(command.Instance().getOptions());
+            throw new RuntimeException(e);
         } catch (SQLException e) {
             System.out.println("Database Error: ");
-            System.out.println(e.getMessage());
-        } catch (InternalError | NullPointerException | IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
             System.out.println("Command Error: ");
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public static IZone parseZoneReference(Properties p, Connection conn) throws InternalError, SQLException {
-        switch (p.keys().nextElement().toString().toLowerCase().replace('_', ' ')) { // south_america
+    public static Object parseAndRun(Connection conn, String... args) throws RuntimeException {
+        return parseAndRun(args, conn);
+    }
+
+    /**
+     * Parses zone references to IZone instances:
+     *      "continent:Europe"
+     *      "district:texas"
+     *      "world"
+     *      etc.
+     *
+     * The user may use any case combination they want.
+     *
+     * @param p Parsed key:value properties for a specific command line argument
+     * @param conn Connects to the database to get the specific zone instance referenced
+     * @return
+     * @throws RuntimeException
+     * @throws SQLException
+     */
+    public static IZone parseZoneReference(Properties p, Connection conn)
+            throws RuntimeException, SQLException {
+
+        final String zoneType = p.keys().nextElement().toString().replace('_', ' ');
+
+        switch (zoneType.toLowerCase()) {
             case "world":
-                return World.instance;
+                return World.INSTANCE;
             case "continent":
-                return Continent.likeDatabaseString(p.get("continent").toString(), conn);
+                return Continent.likeDatabaseString(p.get(zoneType).toString(), conn);
             case "region":
-                return Region.fromName(p.get("region").toString(), conn);
+                return Region.fromName(p.get(zoneType).toString(), conn);
             case "country":
                 try {
-                    return Country.fromName(p.get("country").toString(), conn);
+                    return Country.fromName(p.get(zoneType).toString(), conn);
                 } catch (Exception e) {
-                    return Country.fromCountryCode(p.get("country").toString(), conn);
+                    return Country.fromCountryCode(p.get(zoneType).toString(), conn);
                 }
             case "district":
-                return District.fromName(p.get("district").toString(), conn);
+                return District.fromName(p.get(zoneType).toString(), conn);
             case "city":
                 try {
-                    return City.fromName(p.get("city").toString(), conn);
+                    return City.fromName(p.get(zoneType).toString(), conn);
                 } catch (Exception e) {
-                    return City.fromId(Integer.parseInt(p.get("city").toString()), conn);
+                    return City.fromId(Integer.parseInt(p.get(zoneType).toString()), conn);
                 }
             default:
-                throw new InternalError();
+                throw new RuntimeException("Could not parse zone reference");
         }
     }
 }

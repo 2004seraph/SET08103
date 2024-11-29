@@ -45,7 +45,7 @@ public final class City extends AbstractZone implements IEntity {
      * @param id
      * @param conn
      * @return
-     * @throws SQLException
+     * @throws SQLException No entries found with that id
      */
     public static City fromId(int id, Connection conn) throws SQLException {
         // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
@@ -182,7 +182,7 @@ public final class City extends AbstractZone implements IEntity {
             case DISTRICTS:
                 return (District) parent;
             default:
-                throw new InternalError("Cannot find parent");
+                throw new RuntimeException("Cannot find parent");
         }
     }
 
@@ -194,7 +194,7 @@ public final class City extends AbstractZone implements IEntity {
             case DISTRICTS:
                 return (Country) parent.getOuterZone();
             default:
-                throw new InternalError("Cannot find parent");
+                throw new RuntimeException("Cannot find parent");
         }
     }
 
@@ -204,7 +204,7 @@ public final class City extends AbstractZone implements IEntity {
 
     @Override
     public List<IZone> getInnerZones(Connection conn) throws SQLException {
-        return List.of();
+        return List.of(this);
     }
 
     @Override

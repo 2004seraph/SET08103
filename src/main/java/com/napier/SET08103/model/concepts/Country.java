@@ -61,7 +61,6 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     /**
      * Returns a Country instance from a name. In the event of multiple matches, the country with the
      * higher population is chosen.
-     * @param countryCode "USA"
      * @param conn
      * @return A Country instance
      * @throws SQLException
@@ -107,7 +106,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     public List<City> getCities(Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + countryCode + "/cities";
         if (cacheMap.containsKey(cacheKey))
-            return unwrapIZone(cacheMap.get(cacheKey));
+            return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
         List<City> c = getInnerZones(conn)
                 .stream()
@@ -120,7 +119,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
                     }
                 }).collect(Collectors.toList());
 
-        cacheMap.put(cacheKey, wrapIZone(c));
+        cacheMap.put(cacheKey, Zone.wrapIZone(c));
         return c;
     }
 
@@ -210,7 +209,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
             if (res.next()) {
                 return res.getInt(POPULATION);
             } else
-                throw new InternalError("No entry found");
+                throw new RuntimeException("No entry found");
         }
     }
 
