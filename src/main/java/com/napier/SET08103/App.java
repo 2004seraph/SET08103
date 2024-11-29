@@ -95,9 +95,9 @@ public final class App implements AutoCloseable {
         }
     }
 
-    public void connect(String dbHost, String dbPassword) throws InternalError {
+    public void connect(String dbHost, String dbPassword) throws RuntimeException, SQLException {
         if (!isDriverLoaded())
-            throw new InternalError("Database driver not loaded");
+            throw new RuntimeException("Database driver not loaded");
 
         Properties connectionProps = new Properties();
         connectionProps.put("user", "root");
@@ -114,7 +114,7 @@ public final class App implements AutoCloseable {
                         connectionProps);
 
                 System.out.println("Successfully connected to database");
-                return;
+                break;
 
             } catch (SQLException e) {
                 System.err.println(
@@ -130,7 +130,10 @@ public final class App implements AutoCloseable {
             }
         }
 
-        throw new InternalError("Could not connect to database");
+        if (con == null || !con.isValid(DB_LOGIN_TIMEOUT_SECONDS))
+            throw new RuntimeException("Could not connect to database");
+
+        con.setReadOnly(true);
     }
 
     /**

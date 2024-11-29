@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Objects;
 
 /**
@@ -14,7 +15,7 @@ public abstract class AbstractIntegrationTest {
     protected static final App app = new App();
 
     @BeforeAll
-    static void init() {
+    static void init() throws SQLException {
         app.connect(
                 Objects.requireNonNullElse(
                         System.getenv(Testing.MYSQL_HOST_ENVAR),
