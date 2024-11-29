@@ -32,7 +32,7 @@ public final class App implements AutoCloseable {
         return false;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         try (App a = new App()) {
             a.connect(
                     Objects.requireNonNullElse(
