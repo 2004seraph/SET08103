@@ -2,7 +2,6 @@ package com.napier.SET08103;
 
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
-import com.napier.SET08103.repl.Repl;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -64,7 +63,7 @@ public final class App implements AutoCloseable {
     }
 
     public void run(String[] args) {
-        Repl.parseAndRun(args, con);
+//        Repl.parseAndRun(args, con);
         try {
 
             // Creates an ArrayList of country objects
