@@ -71,11 +71,11 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
         };
 
         // Syntax error
-        assertThrows(InternalError.class, () ->
+        assertThrows(RuntimeException.class, () ->
                 tryParseZoneRef.accept("space:sun", World.INSTANCE));
-        assertThrows(InternalError.class, () ->
+        assertThrows(RuntimeException.class, () ->
                 tryParseZoneRef.accept("space", World.INSTANCE));
-        assertThrows(InternalError.class, () ->
+        assertThrows(RuntimeException.class, () ->
                 tryParseZoneRef.accept("texas:district", World.INSTANCE));
 
         // Semantic error
