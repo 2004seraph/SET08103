@@ -42,14 +42,14 @@ public final class Repl {
     }
 
     /**
-     * Command entry point to the REPL, handles all possible exceptions in the application gracefully
+     * Command entry point to the REPL
      * @param args
      * @param conn
+     * @return an object representing the evaluated output of the command
      */
-    public static void parseAndRun(String[] args, Connection conn) {
+    public static Object parseAndRun(String[] args, Connection conn) throws RuntimeException {
         if (args.length == 0) {
-            System.out.println("Usage: " + COMMAND + " <total/leaderboard> [options]");
-            return;
+            throw new java.lang.Error("Usage: " + COMMAND + " <total/leaderboard> [options]");
         }
 
         Command command;
@@ -57,7 +57,7 @@ public final class Repl {
             command = Command.valueOf(args[0].toUpperCase());
         } catch (IllegalArgumentException e) {
             System.out.println("Unknown subcommand");
-            return;
+            throw new RuntimeException(e);
         }
 
         try {
@@ -66,17 +66,23 @@ public final class Repl {
                     args,
                     false // true = throw, false so it ignores the first arg
             );
-            command.Instance().execute(subArgs, conn);
+            return command.Instance().execute(subArgs, conn);
+
         } catch (ParseException e) {
             System.out.println("Syntax Error: ");
             printHelpString(command.Instance().getOptions());
+            throw new RuntimeException(e);
         } catch (SQLException e) {
             System.out.println("Database Error: ");
-            System.out.println(e.getMessage());
-        } catch (InternalError | NullPointerException | IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
             System.out.println("Command Error: ");
-            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
+    }
+
+    public static Object parseAndRun(Connection conn, String... args) throws RuntimeException {
+        return parseAndRun(args, conn);
     }
 
     /**
@@ -91,11 +97,11 @@ public final class Repl {
      * @param p Parsed key:value properties for a specific command line argument
      * @param conn Connects to the database to get the specific zone instance referenced
      * @return
-     * @throws InternalError
+     * @throws RuntimeException
      * @throws SQLException
      */
     public static IZone parseZoneReference(Properties p, Connection conn)
-            throws InternalError, SQLException, IllegalArgumentException {
+            throws RuntimeException, SQLException {
 
         final String zoneType = p.keys().nextElement().toString().replace('_', ' ');
 
@@ -121,7 +127,7 @@ public final class Repl {
                     return City.fromId(Integer.parseInt(p.get(zoneType).toString()), conn);
                 }
             default:
-                throw new InternalError();
+                throw new RuntimeException("Could not parse zone reference");
         }
     }
 }

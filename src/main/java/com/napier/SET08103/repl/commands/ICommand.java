@@ -15,5 +15,5 @@ public interface ICommand {
 
     // This has a catch-all return value purely for testing, as I know what to cast to based
     // on the specific test
-    Object execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException;
+    Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException;
 }

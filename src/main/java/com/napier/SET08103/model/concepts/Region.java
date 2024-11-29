@@ -134,7 +134,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
                     return res.getInt("Total");
                 }
                 else
-                    throw new InternalError("No region with name: " + name);
+                    throw new RuntimeException("No region with name: " + name);
             }
         }
     }

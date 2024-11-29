@@ -61,7 +61,6 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     /**
      * Returns a Country instance from a name. In the event of multiple matches, the country with the
      * higher population is chosen.
-     * @param countryCode "USA"
      * @param conn
      * @return A Country instance
      * @throws SQLException
@@ -210,7 +209,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
             if (res.next()) {
                 return res.getInt(POPULATION);
             } else
-                throw new InternalError("No entry found");
+                throw new RuntimeException("No entry found");
         }
     }
 

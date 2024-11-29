@@ -1,5 +1,7 @@
 package com.napier.SET08103;
 
+import org.junit.jupiter.api.function.Executable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +17,20 @@ public final class Testing {
     public static final String MYSQL_ROOT_PASSWORD_ENVAR = "MYSQL_ROOT_PASSWORD";
     public static final String MYSQL_HOST_ENVAR_DEFAULT = "localhost";
     public static final String MYSQL_ROOT_PASSWORD_DEFAULT = "root";
+
+    /**
+     * Gets the reason for a top-level throw for a given JUnit executable function
+     * @param executable
+     * @return
+     */
+    public static Throwable getExceptionCause(Executable executable) {
+        try {
+            executable.execute();
+        } catch (Throwable e) {
+            return e.getCause();
+        }
+        throw new IllegalArgumentException("Executable did not throw");
+    }
 
     // Copied from https://stackoverflow.com/questions/13501142/java-arraylist-how-can-i-tell-if-two-lists-are-equal-order-not-mattering/13501200#13501200
     // Easy way of comparing two lists, insensitive to ordering, but sensitive to element frequency.

@@ -203,7 +203,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
                     return res.getLong("Total");
                 }
                 else
-                    throw new InternalError("No continent with name: " + name);
+                    throw new RuntimeException("No continent with name: " + name);
             }
         }
     }

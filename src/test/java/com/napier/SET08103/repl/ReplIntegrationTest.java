@@ -1,6 +1,7 @@
 package com.napier.SET08103.repl;
 
 import com.napier.SET08103.AbstractIntegrationTest;
+import com.napier.SET08103.Testing;
 import com.napier.SET08103.model.concepts.*;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.repl.commands.ICommand;
@@ -12,9 +13,41 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ReplIntegrationTest extends AbstractIntegrationTest {
+
+
+    @Test
+    void invalidSubCommand() {
+        Connection conn = getAppDatabaseConnection();
+
+        // no args
+        assertThrows(Error.class,() -> Repl.parseAndRun(conn, new String[] {}));
+
+        // Unknown subcommand
+        assertEquals(IllegalArgumentException.class,
+                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "among")).getClass());
+        assertEquals(IllegalArgumentException.class,
+                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "")).getClass());
+
+        // Valid command, but invalid sub args
+        assertTrue(ParseException.class.isAssignableFrom( // ParseException is the superclass of MissingOptionException
+                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "leaderboard")).getClass()));
+        assertTrue(ParseException.class.isAssignableFrom(
+                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "leaderboard", "--apple")).getClass()));
+
+        // valid command, valid sub arg syntax, invalid semantics
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn, "leaderboard", "--of", "pacific"));
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn, "leaderboard", "--of"));
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn, "leaderboard", "--of", ""));
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn, "leaderboard", "--of", "america"));
+    }
 
     @Test
     void parseZoneReference() {
