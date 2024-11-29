@@ -1,6 +1,7 @@
 package com.napier.SET08103.model;
 
 import com.napier.SET08103.AbstractIntegrationTest;
+import com.napier.SET08103.Testing;
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.World;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import static com.napier.SET08103.model.concepts.zone.Zone.wrapIZone;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,6 +47,10 @@ public class WorldIntegrationTest extends AbstractIntegrationTest {
                 assertTrue(citiesOfTheWorld.contains(City.fromId(res.getInt(City.PRIMARY_KEY), conn)));
             }
             assertEquals(total, citiesOfTheWorld.size());
+
+            // test caching
+            List<City> citiesOfTheWorldFromCache = World.INSTANCE.getCities(conn);
+            assertTrue(Testing.compareLists(wrapIZone(citiesOfTheWorldFromCache), wrapIZone(citiesOfTheWorld)));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
