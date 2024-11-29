@@ -12,7 +12,7 @@ import com.napier.SET08103.repl.commands.implementations.PopulationOf;
 public enum Command {
     // Linking to a new instance of the implementation
     LEADERBOARD(new Leaderboard()),
-    POPULATION(new PopulationOf());
+    TOTAL(new PopulationOf());
 
     private final ICommand command;
 

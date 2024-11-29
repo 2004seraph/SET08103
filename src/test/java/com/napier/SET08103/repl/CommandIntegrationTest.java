@@ -1,6 +1,7 @@
 package com.napier.SET08103.repl;
 
 import com.napier.SET08103.AbstractIntegrationTest;
+import com.napier.SET08103.repl.commands.Command;
 import org.apache.commons.cli.ParseException;
 import org.junit.jupiter.api.Test;
 
@@ -14,15 +15,9 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     @Test
     void populationOf() throws SQLException, ParseException {
         Connection conn = getAppDatabaseConnection();
-
-        var x = Repl.parseAndRun(
+        assertEquals(((Long) Repl.parseAndRun(
                 conn,
-                "total", "--in", "city:london"
-        );
-
-        assertEquals(((Integer) Repl.parseAndRun(
-                conn,
-                "total", "--in", "city:london"
-        )).intValue(), 7285000);
+                Command.TOTAL.name(), "--in", "city:london"
+        )).longValue(), 7285000);
     }
 }
