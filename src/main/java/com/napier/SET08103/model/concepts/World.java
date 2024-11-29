@@ -20,16 +20,6 @@ public class World extends AbstractZone {
 
     private World() { }
 
-    /**
-     * Will load the entire tree structure of zones into memory, will mean no delays in any of the
-     * query methods
-     * @param conn
-     * @throws SQLException
-     */
-    public static void preload(Connection conn) throws SQLException {
-        INSTANCE.getInnerZones(conn);
-    }
-
     @Override
     public Zone getZoneLevel() {
         return Zone.WORLD;

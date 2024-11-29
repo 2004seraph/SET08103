@@ -115,7 +115,7 @@ public final class Repl {
             case "country":
                 try {
                     return Country.fromName(p.get(zoneType).toString(), conn);
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     return Country.fromCountryCode(p.get(zoneType).toString(), conn);
                 }
             case "district":
@@ -123,7 +123,7 @@ public final class Repl {
             case "city":
                 try {
                     return City.fromName(p.get(zoneType).toString(), conn);
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     return City.fromId(Integer.parseInt(p.get(zoneType).toString()), conn);
                 }
             default:

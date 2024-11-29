@@ -14,7 +14,6 @@ import java.util.List;
 
 import static com.napier.SET08103.model.concepts.zone.Zone.wrapIZone;
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class WorldIntegrationTest extends AbstractIntegrationTest {
@@ -38,7 +37,6 @@ public final class WorldIntegrationTest extends AbstractIntegrationTest {
                 )
         ); ResultSet res = stmt.executeQuery()) {
 
-            assertAll(() -> World.preload(conn));
             List<City> citiesOfTheWorld = World.INSTANCE.getCities(conn);
 
             int total = 0;
