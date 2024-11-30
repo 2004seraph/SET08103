@@ -36,7 +36,7 @@ These commands assume a Linux environment with Docker and Maven installed.
 
 ### Evidence
 
-Very long results have been reduced to the beginning and ending dozen or so.
+Very long results have been reduced to the beginning and ending dozen or so. The command has been included for you to reproduce it yourself.
 
 | ID | Name                                                                                                                                                     | Met | Screenshot                                                                                                                |
 |----|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----|---------------------------------------------------------------------------------------------------------------------------|
