@@ -120,6 +120,10 @@ public final class Leaderboard implements ICommand {
     }
 
     private static void showLeaderboard(List<IZone> zones, Connection conn) throws SQLException {
+        switch (zones.get(0).getZoneLevel()) {
+            case CITIES:
+                break;
+        }
         for (IZone z : zones) {
             System.out.println(z.toString() + ": " + z.getTotalPopulation(conn));
         }

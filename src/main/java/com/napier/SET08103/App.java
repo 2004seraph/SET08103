@@ -1,13 +1,13 @@
 package com.napier.SET08103;
 
-import com.napier.SET08103.model.concepts.City;
-import com.napier.SET08103.model.concepts.Country;
+import com.napier.SET08103.repl.Repl;
+import de.audioattack.io.Console;
+import de.audioattack.io.ConsoleCreator;
 
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Objects;
 import java.util.Properties;
@@ -63,36 +63,56 @@ public final class App implements AutoCloseable {
     }
 
     public void run(String[] args) {
-//        Repl.parseAndRun(args, con);
-        try {
+        if (args.length != 0)
+            Repl.parseAndRun(args, con); // command passed via arguments, do not start the prompt
+        else {
+            // Standard Java Console object is null if used within an IDE setting, this package provides a
+            // drop-in fallback.
+            Console console = ConsoleCreator.console();
 
-            // Creates an ArrayList of country objects
-            ArrayList<Country> countries = CountryReport.build(
-                    con,
-                    SQLQueries.world_countries_largest_population_to_smallest());
-            // Prints the countries in the ArrayList to console
-            CountryReport.print(countries);
+            while (true) {
+                String line = console.readLine(" > ");
+                String[] subArgs = line.split("\\s+"); // split by any amount of whitespace
 
+                if (subArgs.length == 1 && Objects.equals(subArgs[0], "quit"))
+                    break;
 
-            // city report tests
-            ArrayList<City> cities = CityReport.build(
-                    con,
-                    SQLQueries.cities_in_a_country_largest_population_to_smallest("United Kingdom"));
-            CityReport.print(cities, con);
-
-            ArrayList<City> cities2 = CityReport.build(
-                    con,
-                    SQLQueries.cities_in_a_region_largest_population_to_smallest("Western Europe"));
-            CityReport.print(cities2, con);
-
-            ArrayList<City> cities3 = CityReport.build(
-                    con,
-                    SQLQueries.cities_in_world_largest_population_to_smallest());
-            CityReport.print(cities3, con);
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+                try {
+                    Repl.parseAndRun(subArgs, con);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
         }
+//        try {
+//
+//            // Creates an ArrayList of country objects
+//            ArrayList<Country> countries = CountryReport.build(
+//                    con,
+//                    SQLQueries.world_countries_largest_population_to_smallest());
+//            // Prints the countries in the ArrayList to console
+//            CountryReport.print(countries);
+//
+//
+//            // city report tests
+//            ArrayList<City> cities = CityReport.build(
+//                    con,
+//                    SQLQueries.cities_in_a_country_largest_population_to_smallest("United Kingdom"));
+//            CityReport.print(cities, con);
+//
+//            ArrayList<City> cities2 = CityReport.build(
+//                    con,
+//                    SQLQueries.cities_in_a_region_largest_population_to_smallest("Western Europe"));
+//            CityReport.print(cities2, con);
+//
+//            ArrayList<City> cities3 = CityReport.build(
+//                    con,
+//                    SQLQueries.cities_in_world_largest_population_to_smallest());
+//            CityReport.print(cities3, con);
+//
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     public void connect(String dbHost, String dbPassword) throws RuntimeException, SQLException {
