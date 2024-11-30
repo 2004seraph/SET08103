@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * Basic command interface for the Repl class
  */
 public interface ICommand {
-    public Options getOptions();
+    Options getOptions();
 
     // This has a catch-all return value purely for testing, as I know what to cast to based
     // on the specific test

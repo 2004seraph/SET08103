@@ -15,15 +15,12 @@ import java.util.List;
 import java.util.Objects;
 
 public final class District extends AbstractZone implements IFieldEnum<String> {
-    // Don't be fooled, this is a weird Unicode character
+    // Don't be fooled, this is a weird Unicode character in the database
     public static final String nullFieldValue = "–";
 
     /**
      * For selecting a district exactly, by specifying a parent country primary key
-     * @param name
      * @param countryCode An explicit country code this district is contained within
-     * @param conn
-     * @return
      * @throws SQLException If the given country does not exist, or if it has no such district with the
      * given name
      */
@@ -33,10 +30,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
 
     /**
      * For selecting a district exactly, by specifying a parent country instance
-     * @param name
      * @param country An explicit country instance this district is contained within
-     * @param conn
-     * @return
      * @throws SQLException If the given country does not exist, or if it has no such district with the
      * given name
      */
@@ -64,10 +58,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
     /**
      * Returns a district from a name, in the event of multiple matches, the district with the higher
      * population is used
-     * @param name
-     * @param conn
-     * @return
-     * @throws SQLException No results found for name
+     * @throws SQLException No results found for this name
      */
     public static District fromName(String name, Connection conn) throws SQLException {
         if (Objects.equals(name, nullFieldValue))
@@ -155,11 +146,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
     @Override
     public long getTotalPopulation(Connection conn) throws SQLException {
         return getCities(conn).stream().mapToLong(c -> {
-            try {
-                return c.getTotalPopulation(conn);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            return c.getTotalPopulation(conn);
         }).reduce(0, Long::sum);
     }
 

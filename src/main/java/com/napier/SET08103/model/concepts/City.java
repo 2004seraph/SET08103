@@ -42,10 +42,8 @@ public final class City extends AbstractZone implements IEntity {
 
     /**
      * Returns a City instance with a given primary key
-     * @param id
-     * @param conn
      * @return A City instance
-     * @throws SQLException No entries found with that id
+     * @throws IllegalArgumentException No entries found with that id
      */
     public static City fromId(int id, Connection conn) throws SQLException {
         // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
@@ -80,7 +78,7 @@ public final class City extends AbstractZone implements IEntity {
      * @param name The name of the city
      * @param conn The db connection
      * @return An instance of City
-     * @throws SQLException Use within your try/catch statements
+     * @throws IllegalArgumentException No entries found with a name like the one given
      */
     public static City fromName(String name, Connection conn) throws SQLException {
         if (name == null || name.isEmpty())
@@ -102,9 +100,6 @@ public final class City extends AbstractZone implements IEntity {
 
     /**
      * Returns every capital in the world
-     * @param conn
-     * @return
-     * @throws SQLException
      */
     public static List<City> allCapitals(Connection conn) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
@@ -126,7 +121,7 @@ public final class City extends AbstractZone implements IEntity {
 
     /**
      * Code duplication, but I cannot work out how to invert the program-data dependency here.
-     *
+     * <p>
      * This function is only meant to be called by the Country class to set its own capital City instance,
      * using the public function causes infinite recursion.
      */
@@ -203,12 +198,12 @@ public final class City extends AbstractZone implements IEntity {
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+    public List<IZone> getInnerZones(Connection conn) {
         return List.of(this);
     }
 
     @Override
-    public List<City> getCities(Connection conn) throws SQLException {
+    public List<City> getCities(Connection conn) {
         // required behaviour for tree searching, because sometimes a city can be in a NULL district
         return List.of(this);
     }
@@ -230,7 +225,7 @@ public final class City extends AbstractZone implements IEntity {
 
     // INFINITE RECURSION IF THIS IS NOT OVERRIDDEN BY THIS CLASS !!!!
     @Override
-    public long getTotalPopulation(Connection conn) throws SQLException {
+    public long getTotalPopulation(Connection conn) {
         return this.population;
     }
 

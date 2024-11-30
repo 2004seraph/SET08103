@@ -12,12 +12,13 @@ public enum Zone {
     CITIES,
     CAPITALS;
 
-    public static final Zone[] asList = values();
+    @SuppressWarnings("unused")
+    public static final Zone[] asArray = values();
 
     /**
      * Converts a List<City or Continent or Country, etc> to a LIst<IZone>
      * @param concreteIZones List of a zone type
-     * @return All c  ollapsed to the IZone type
+     * @return All collapsed to the IZone type
      * @param <T> City, District, Country, Region, Continent, or World
      */
     public static <T> List<IZone> wrapIZone(final List<T> concreteIZones) {
@@ -27,7 +28,7 @@ public enum Zone {
     /**
      * Converts a List<IZone> to a given target type (Zone)
      * @param concreteIZones list of IZones
-     * @return
+     * @return whatever type will work here
      * @param <T> City, District, Country, Region, Continent, or World
      */
     @SuppressWarnings("unchecked")
@@ -35,13 +36,15 @@ public enum Zone {
         return concreteIZones.stream().map(c -> (T)c).collect(Collectors.toList());
     }
 
-    // Each enum has an integer value associated with it to create the notion
-    // of one being bigger or "encompassing" the other. (The WORLD is >>> than a REGION)
-
-    // This makes error checking easier, we can prevent someone looking up the biggest
-    // CONTINENT in a CITIES with a simple number comparison.
-
+    /**
+     * The "bigness" of this instance, for example WORLD is bigger than DISTRICTS
+     */
     public int getSizeRank() {
+        // Each enum has an integer value associated with it to create the notion
+        // of one being bigger or "encompassing" the other. (The WORLD is >>> than a REGION)
+
+        // This makes error checking easier, we can prevent someone looking up the biggest
+        // CONTINENT in a CITIES with a simple number comparison.
         return 1 << (7 - this.ordinal());
     }
 }

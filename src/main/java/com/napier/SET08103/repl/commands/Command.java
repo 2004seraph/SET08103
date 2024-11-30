@@ -7,7 +7,7 @@ import com.napier.SET08103.repl.commands.implementations.RichPopulationInfo;
 /**
  * This is where a command name (like "leaderboard ...") is mapped to its implementation class,
  * by using Command.valueOf(...).
- *
+ * <p>
  * This means the enum value will be what the command name is.
  */
 public enum Command {
@@ -16,11 +16,12 @@ public enum Command {
     INFO(new RichPopulationInfo()),
     TOTAL(new PopulationOf());
 
-    private final ICommand command;
-
+    @SuppressWarnings("unused")
     public static final Command[] asArray = values();
 
-    private Command(ICommand command) {
+    private final ICommand command;
+
+    Command(ICommand command) {
         this.command = command;
     }
 

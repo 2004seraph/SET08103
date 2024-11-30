@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 
 public final class Region extends AbstractZone implements IFieldEnum<String>, IDistributedPopulation {
 
+    /**
+     * Creates a Region instance using whatever is LIKE the name passed in. LIKE referring to SQL string matching.
+     */
     public static Region fromName(String name, Connection conn) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement(
                 "SELECT DISTINCT(" + Country.REGION + "), " + Country.CONTINENT + " FROM " + Country.TABLE + " WHERE " + Country.REGION + " LIKE ?")) {
@@ -111,11 +114,11 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
 
     @Override
     public long getTotalPopulation(Connection conn) throws SQLException {
-//        SELECT country.Region, SUM(country.Population) AS Total
-//        FROM country
-//        WHERE CountryCode = ?
-//        GROUP BY country.Region
-//        ORDER BY country.Region
+        //SELECT country.Region, SUM(country.Population) AS Total
+        //FROM country
+        //WHERE CountryCode = ?
+        //GROUP BY country.Region
+        //ORDER BY country.Region
 
         try (PreparedStatement ps = conn.prepareStatement(
                 Model.buildStatement(

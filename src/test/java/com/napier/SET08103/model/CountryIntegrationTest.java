@@ -63,6 +63,7 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
         assertNull(createCountry.apply("UMI", "United States Minor").capital);
 
         // Misspelling
+        //noinspection SpellCheckingInspection
         assertThrows(IllegalArgumentException.class, () ->
                 Country.fromCountryCode("AUSS", conn));
         assertThrows(IllegalArgumentException.class, () ->
@@ -102,7 +103,7 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
                 .map(Object::toString).collect(Collectors.toCollection(HashSet::new));
         // Check if all states are present, regardless of ordering
         assertEquals(
-                new HashSet<String>(districtsOfAustralia),
+                new HashSet<>(districtsOfAustralia),
                 australiaDistrictsRequestAsUniqueStrings
         );
 

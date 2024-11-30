@@ -62,7 +62,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         ANTARCTICA("Antarctica"),
         SOUTH_AMERICA("South America");
 
-        public static final FieldEnum[] asList = values();
+        public static final FieldEnum[] asArray = values();
 
         private final String databaseName;
 
@@ -91,10 +91,16 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         }
     }
 
+    /**
+     * @return a list of all continent instances possible
+     */
     public static List<Continent> getAll() {
-        return Arrays.stream(FieldEnum.asList).map(Continent::fromValue).collect(Collectors.toList());
+        return Arrays.stream(FieldEnum.asArray).map(Continent::fromValue).collect(Collectors.toList());
     }
 
+    /**
+     * @return a list of all continent instances possible, as IZones
+     */
     public static List<IZone> getAllAsIZones() {
         return Zone.wrapIZone(getAll());
     }
@@ -183,10 +189,10 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
 
     @Override
     public long getTotalPopulation(final Connection conn) throws SQLException {
-//        SELECT country.Continent , SUM(country.Population) AS Total
-//        FROM country
-//        GROUP BY country.Continent
-//        ORDER BY country.Continent
+        //SELECT country.Continent , SUM(country.Population) AS Total
+        //FROM country
+        //GROUP BY country.Continent
+        //ORDER BY country.Continent
         try (PreparedStatement ps = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT",

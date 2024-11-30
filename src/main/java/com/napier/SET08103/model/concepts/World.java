@@ -31,7 +31,7 @@ public final class World extends AbstractZone {
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+    public List<IZone> getInnerZones(Connection conn) {
         return Zone.wrapIZone(Continent.getAll());
     }
 
