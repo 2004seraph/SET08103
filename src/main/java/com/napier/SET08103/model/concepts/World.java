@@ -15,20 +15,10 @@ import java.util.stream.Collectors;
 /**
  * Root of the tree of zones
  */
-public class World extends AbstractZone {
+public final class World extends AbstractZone {
     public static final World INSTANCE = new World();
 
     private World() { }
-
-    /**
-     * Will load the entire tree structure of zones into memory, will mean no delays in any of the
-     * query methods
-     * @param conn
-     * @throws SQLException
-     */
-    public static void preload(Connection conn) throws SQLException {
-        INSTANCE.getInnerZones(conn);
-    }
 
     @Override
     public Zone getZoneLevel() {
@@ -82,5 +72,10 @@ public class World extends AbstractZone {
                     throw new RuntimeException("Database error");
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "World";
     }
 }

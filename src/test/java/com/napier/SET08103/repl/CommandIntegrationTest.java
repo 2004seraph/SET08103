@@ -28,10 +28,22 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
         assertEquals(46,
                 ((List<IZone>)Repl.parseAndRun(conn,
                         Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe")).size());
+        // limit
+        assertEquals(10,
+                ((List<IZone>)Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--top", "10")).size());
+        // capitals
+        assertEquals(10,
+                ((List<IZone>)Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "capitals", "--in", "continent:europe", "--top", "10")).size());
+        assertEquals(46,
+                ((List<IZone>)Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "capitals", "--in", "continent:europe")).size());
 
         assertEquals(7,
                 ((List<IZone>)Repl.parseAndRun(conn,
                         Command.LEADERBOARD.name(), "--of", "continents", "--in", "world")).size());
+        // default value of world
         assertEquals(7,
                 ((List<IZone>)Repl.parseAndRun(conn,
                         Command.LEADERBOARD.name(), "--of", "continents")).size());
@@ -44,6 +56,24 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
         assertThrows(RuntimeException.class,
                 () -> Repl.parseAndRun(conn,
                         Command.LEADERBOARD.name(), "--of", "cities", "--in", "country:samLand"));
+
+        // absent required --of parameter
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--in", "country:united_kingdom"));
+
+        // negative limit
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--top", "-10"));
+
+        // duplicate parameters (--in is the only one that can have multiple)
+        assertThrows(RuntimeException.class,
+                () -> Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--in", "region:north_america"));
+        assertEquals(51, // a valid duplicate parameter will override the previous one, expected UNIX behaviour
+                ((List<IZone>)Repl.parseAndRun(conn,
+                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--in", "continent:asia")).size());
 
         // Impossible queries
         assertThrows(RuntimeException.class,

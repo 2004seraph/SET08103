@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 import static com.napier.SET08103.repl.Repl.parseZoneReference;
 
-public final class PopulationOf implements ICommand {
+public class PopulationOf implements ICommand {
     @Override
     public Options getOptions() {
         return new Options()
@@ -33,7 +33,7 @@ public final class PopulationOf implements ICommand {
     public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
         IZone target = parseZoneReference(args.getOptionProperties("in"), conn);
         long population = target.getTotalPopulation(conn);
-        System.out.println(target.toString() + ": " + population);
+        System.out.println("Population of " + target.toString() + ": " + population);
 
         return population;
     }

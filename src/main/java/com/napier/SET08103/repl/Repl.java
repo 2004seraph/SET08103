@@ -7,6 +7,7 @@ import org.apache.commons.cli.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -15,30 +16,29 @@ import java.util.Properties;
 public final class Repl {
     private Repl() { }
 
-    private static final String COMMAND = "pop";
-
-    public static void main(String[] args) {
-        // Left here as an example, as a database connection is inaccessible here
-
-//        try (final App app = new App()) {
-//            app.connect(
-//                    Objects.requireNonNullElse(
-//                            System.getenv("MYSQL_HOST"),
-//                            "localhost"),
-//                    Objects.requireNonNullElse(
-//                            System.getenv("MYSQL_ROOT_PASSWORD"),
-//                            "default")
-//            );
-//            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "capitals" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
-//            System.out.println();
-//            parseAndRun(new String[] { "leaderboard", "--top", "20", "--of", "cities" , "--in", "continent:Europe" }, app.getConnectionForIntegrationTesting());
-//            parseAndRun(new String[] { "total", "--in", "city:london" }, app.getConnectionForIntegrationTesting());
-//        }
+    public static void printWelcome() {
+        System.out.println("This is a REPL prompt. Type commands.");
+        System.out.println();
+        System.out.println("The results of all queries are cached in memory, and subsequent ones will make use of this cache where applicable.");
+        printTopLevelHelpString();
     }
 
-    public static void printHelpString(Options options) {
+    private static void printTopLevelHelpString() {
+        System.out.println();
+        System.out.println("Available commands: ");
+        System.out.println();
+
+        Arrays.asList(Command.asArray).forEach(e -> {
+            System.out.println(e);
+            printSubCommandHelpString(e);
+            System.out.println();
+        });
+        System.out.println("Exit with CRTL+C, or by typing 'quit'");
+    }
+
+    private static void printSubCommandHelpString(Command command) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(COMMAND + " subcommand [options]", options);
+        formatter.printHelp(command.toString().toLowerCase() + " [options]", command.Instance().getOptions());
     }
 
     /**
@@ -49,7 +49,8 @@ public final class Repl {
      */
     public static Object parseAndRun(String[] args, Connection conn) throws RuntimeException {
         if (args.length == 0) {
-            throw new java.lang.Error("Usage: " + COMMAND + " <total/leaderboard> [options]");
+            printTopLevelHelpString();
+            throw new java.lang.Error("No args supplied");
         }
 
         Command command;
@@ -57,6 +58,7 @@ public final class Repl {
             command = Command.valueOf(args[0].toUpperCase());
         } catch (IllegalArgumentException e) {
             System.out.println("Unknown subcommand");
+            printTopLevelHelpString();
             throw new RuntimeException(e);
         }
 
@@ -70,13 +72,14 @@ public final class Repl {
 
         } catch (ParseException e) {
             System.out.println("Syntax Error: ");
-            printHelpString(command.Instance().getOptions());
+            printSubCommandHelpString(command);
             throw new RuntimeException(e);
         } catch (SQLException e) {
             System.out.println("Database Error: ");
             throw new RuntimeException(e);
         } catch (RuntimeException e) {
             System.out.println("Command Error: ");
+            printSubCommandHelpString(command);
             throw new RuntimeException(e);
         }
     }
@@ -91,7 +94,8 @@ public final class Repl {
      *      "district:texas"
      *      "world"
      *      etc.
-     *
+     * Either a name or a primary key may be supplied where relevant.
+     * <p>
      * The user may use any case combination they want.
      *
      * @param p Parsed key:value properties for a specific command line argument
@@ -115,7 +119,7 @@ public final class Repl {
             case "country":
                 try {
                     return Country.fromName(p.get(zoneType).toString(), conn);
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     return Country.fromCountryCode(p.get(zoneType).toString(), conn);
                 }
             case "district":
@@ -123,7 +127,7 @@ public final class Repl {
             case "city":
                 try {
                     return City.fromName(p.get(zoneType).toString(), conn);
-                } catch (Exception e) {
+                } catch (IllegalArgumentException e) {
                     return City.fromId(Integer.parseInt(p.get(zoneType).toString()), conn);
                 }
             default:

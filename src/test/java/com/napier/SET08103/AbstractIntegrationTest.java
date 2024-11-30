@@ -15,7 +15,7 @@ public abstract class AbstractIntegrationTest {
     protected static final App app = new App();
 
     @BeforeAll
-    static void init() throws SQLException {
+    protected static void connectToDatabase() throws SQLException {
         app.connect(
                 Objects.requireNonNullElse(
                         System.getenv(Testing.MYSQL_HOST_ENVAR),

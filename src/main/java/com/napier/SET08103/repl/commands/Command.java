@@ -2,6 +2,7 @@ package com.napier.SET08103.repl.commands;
 
 import com.napier.SET08103.repl.commands.implementations.Leaderboard;
 import com.napier.SET08103.repl.commands.implementations.PopulationOf;
+import com.napier.SET08103.repl.commands.implementations.RichPopulationInfo;
 
 /**
  * This is where a command name (like "leaderboard ...") is mapped to its implementation class,
@@ -12,6 +13,7 @@ import com.napier.SET08103.repl.commands.implementations.PopulationOf;
 public enum Command {
     // Linking to a new instance of the implementation
     LEADERBOARD(new Leaderboard()),
+    INFO(new RichPopulationInfo()),
     TOTAL(new PopulationOf());
 
     private final ICommand command;

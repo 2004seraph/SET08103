@@ -21,11 +21,16 @@ public final class Testing {
     public static final String MYSQL_ROOT_PASSWORD_DEFAULT = "root";
 
     private static PrintStream originalOutput = System.out;
-    private static PrintStream nullOutput = new PrintStream(new OutputStream() {
+    private static final PrintStream nullOutput = new PrintStream(new OutputStream() {
         public void write(int b) {
             //DO NOTHING
         }
     });
+
+    /**
+     * Toggles System.out.println() console output.
+     * @param state
+     */
     public static void setOutputState(boolean state) {
         if (state) {
             System.setOut(originalOutput);
@@ -51,12 +56,21 @@ public final class Testing {
         throw new IllegalArgumentException("Executable did not throw");
     }
 
-    // Copied from https://stackoverflow.com/questions/13501142/java-arraylist-how-can-i-tell-if-two-lists-are-equal-order-not-mattering/13501200#13501200
-    // Easy way of comparing two lists, insensitive to ordering, but sensitive to element frequency.
-    // Useful for database tests (where order shouldn't matter, but there can be duplicate entries
-    // depending on the query).
-    // I have modified the code to make it work with generic types.
+    /**
+     * Easy way of comparing two lists, insensitive to ordering, but sensitive to element frequency.
+     * Useful for database tests (where order shouldn't matter, but there can be duplicate entries
+     * depending on the query).
+     * @param one
+     * @param two
+     * @return
+     * @param <T>
+     */
     public static <T extends Comparable<T>> boolean compareLists(List<T> one, List<T> two) {
+        // Copied from:
+        // https://stackoverflow.com/questions/13501142/java-arraylist-how-can-i-tell-if-two-lists-are-equal-order-not-mattering/13501200#13501200
+        //
+        // I have modified the code to make it work with generic types.
+
         if (one == null && two == null) {
             return true;
         }
