@@ -28,11 +28,11 @@ public final class City extends AbstractZone implements IEntity {
     public static final String DISTRICT = TABLE + ".District";
     public static final String COUNTRY_CODE = TABLE + ".CountryCode";
 
-//    SELECT *
-//    FROM city
-//    RIGHT OUTER JOIN country
-//    ON city.ID = country.Capital
-//    WHERE ID = 1
+    //SELECT *
+    //FROM city
+    //RIGHT OUTER JOIN country
+    //ON city.ID = country.Capital
+    //WHERE ID = 1
     private static final String CREATION_SQL =
             Model.buildStatement(
                     "SELECT *",
@@ -89,8 +89,7 @@ public final class City extends AbstractZone implements IEntity {
                 "SELECT * FROM " + TABLE +
                         " WHERE LOWER( Name ) LIKE ? ORDER BY " + POPULATION + " DESC"
         );
-        stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH)
-     + "%");
+        stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH) + "%");
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {

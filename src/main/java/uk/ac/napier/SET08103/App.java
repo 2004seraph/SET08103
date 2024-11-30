@@ -17,10 +17,11 @@ import java.util.Properties;
  * and interact with a database to produce reports
  */
 public final class App implements AutoCloseable {
+    // Config
     private static final int DB_MAX_CONN_RETRIES = 10;
     private static final int DB_LOGIN_TIMEOUT_SECONDS = 3;
 
-    public static Boolean isDriverLoaded()  {
+    private static Boolean isDriverLoaded()  {
         final Enumeration<Driver> list = DriverManager.getDrivers();
         while (list.hasMoreElements()) {
             final Driver driver = list.nextElement();

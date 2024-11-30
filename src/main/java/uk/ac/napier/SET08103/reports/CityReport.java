@@ -4,7 +4,6 @@ import uk.ac.napier.SET08103.model.concepts.City;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -15,9 +14,8 @@ public final class CityReport {
     /**
      * Executes an SQL query and extracts the results into city objects,
      * returning an ArrayList of city objects
-     * @param strSelect
-     * @return
      */
+    @SuppressWarnings("unused")
     public static ArrayList<City> build(Connection con, String strSelect)
     {
         try (Statement stmt = con.createStatement())
@@ -43,9 +41,8 @@ public final class CityReport {
 
     /**
      * Prints city objects to console
-     * @param cities
      */
-    public static void print(ArrayList<City> cities, Connection conn) throws SQLException {
+    public static void print(ArrayList<City> cities, Connection conn) {
         if (cities == null){
             System.out.println("No cities");
             return;
@@ -64,7 +61,7 @@ public final class CityReport {
 
             String city_string = String.format(
                     "%-36s %-46s %-24s %-10s",
-                    city.toString(), city.getCountry(), district, city.getTotalPopulation(conn));
+                    city, city.getCountry(), district, city.getTotalPopulation(conn));
             System.out.println(city_string);
         }
         System.out.println();

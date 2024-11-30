@@ -14,9 +14,8 @@ public final class CountryReport {
     /**
      * Executes an SQL query and extracts the results into country objects,
      * returning an ArrayList of country objects
-     * @param strSelect
-     * @return
      */
+    @SuppressWarnings("unused")
     public static ArrayList<Country> build(Connection con, String strSelect)
     {
         try (Statement stmt = con.createStatement())
@@ -41,7 +40,6 @@ public final class CountryReport {
 
     /**
      * Prints country objects to console
-     * @param countries
      */
     public static void print(ArrayList<Country> countries){
         if (countries == null){
@@ -60,7 +58,7 @@ public final class CountryReport {
 
             String country_string = String.format(
                     "%-4s %-45s %-14s %-26s %-11s %-9s",
-                    country.getPrimaryKey(), country.toString(), country.continent, country.region, country.population, country.capital);
+                    country.getPrimaryKey(), country, country.continent, country.region, country.population, country.capital);
             System.out.println(country_string);
         }
         System.out.println();
