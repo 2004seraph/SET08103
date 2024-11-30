@@ -4,7 +4,8 @@
 
 ## Team 3 Project Repository
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/2004seraph/SET08103/docker-image.yml?branch=master)
+[![GitHub Workflow Status (master)](https://img.shields.io/github/actions/workflow/status/2004seraph/SET08103/docker-image.yml?branch=master&label=master)](https://github.com/2004seraph/SET08103/actions?query=branch%3Amaster)
+[![GitHub Workflow Status (develop)](https://img.shields.io/github/actions/workflow/status/2004seraph/SET08103/docker-image.yml?branch=develop&label=develop)](https://github.com/2004seraph/SET08103/actions?query=branch%3Adevelop)
 [![LICENSE](https://img.shields.io/github/license/2004seraph/SET08103.svg?style=flat-square)](https://github.com/2004seraph/SET08103/blob/master/LICENSE)
 [![Releases](https://img.shields.io/github/release/2004seraph/SET08103/all.svg?style=flat-square)](https://github.com/2004seraph/SET08103/releases)
 [![codecov](https://codecov.io/gh/2004seraph/SET08103/branch/master/graph/badge.svg?token=EDH24ELB68)](https://codecov.io/gh/2004seraph/SET08103)
