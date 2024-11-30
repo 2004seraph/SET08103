@@ -1,18 +1,12 @@
 name: Dependabot auto-approve
 on: pull_request
 
-permissions:
-  pull-requests: write
-  contents: write
-  issues: write
+permissions: write-all
 
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
+    permissions: write-all
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == '2004seraph/SET08103'
     steps:
       - name: Dependabot metadata
