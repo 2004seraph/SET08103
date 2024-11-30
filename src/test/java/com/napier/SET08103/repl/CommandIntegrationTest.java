@@ -2,15 +2,21 @@ package com.napier.SET08103.repl;
 
 import com.napier.SET08103.AbstractIntegrationTest;
 import com.napier.SET08103.Testing;
+import com.napier.SET08103.model.concepts.Continent;
+import com.napier.SET08103.model.concepts.Country;
+import com.napier.SET08103.model.concepts.Region;
 import com.napier.SET08103.model.concepts.zone.IZone;
 import com.napier.SET08103.repl.commands.Command;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unchecked")
 public class CommandIntegrationTest extends AbstractIntegrationTest {
@@ -108,6 +114,71 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
 
         assertEquals(6078749450L,
                 ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "world")).longValue());
+
+        Testing.setOutputState(true);
+    }
+
+    @Test
+    void populationInfo() throws SQLException {
+        Connection conn = getAppDatabaseConnection();
+        Testing.setOutputState(false);
+
+        // --in
+
+        // Valid zones
+
+        assertEquals(Country.fromName("united kingdom", conn).getPopulationInfo(conn),
+                Repl.parseAndRun(conn, Command.INFO.name(), "--in", "country:united_kingdom"));
+        assertEquals(Continent.fromValue(Continent.FieldEnum.EUROPE).getPopulationInfo(conn),
+                Repl.parseAndRun(conn, Command.INFO.name(), "--in", "continent:europe"));
+        assertEquals(Region.fromName("Western Europe", conn).getPopulationInfo(conn),
+                Repl.parseAndRun(conn, Command.INFO.name(), "--in", "region:Western_Europe"));
+        // non equals case
+        assertNotEquals(Continent.fromValue(Continent.FieldEnum.EUROPE).getPopulationInfo(conn),
+                Repl.parseAndRun(conn, Command.INFO.name(), "--in", "region:Western_Europe"));
+
+        // Invalid zones that do not implement IDistributedPopulation
+
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--in", "city:london"))
+                .getClass() == IllegalArgumentException.class);
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--in", "district:texas"))
+                .getClass() == IllegalArgumentException.class);
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--in", "world"))
+                .getClass() == IllegalArgumentException.class);
+
+        // --of
+
+        assertEquals(7,
+                ((List<IZone>)Repl.parseAndRun(conn, Command.INFO.name(), "--of", "continents")).size());
+
+        assertEquals(239,
+                ((List<IZone>)Repl.parseAndRun(conn, Command.INFO.name(), "--of", "countries")).size());
+
+        // invalid
+
+        // Non IDistributedZones
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "capitals"))
+                .getClass() == IllegalArgumentException.class);
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "cities"))
+                .getClass() == IllegalArgumentException.class);
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "districts"))
+                .getClass() == IllegalArgumentException.class);
+
+        // wrong arg number
+
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "continents", "--in", "world"))
+                .getClass() == IllegalArgumentException.class);
+
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(new String[] { Command.INFO.name() }, conn))
+                .getClass() == IllegalArgumentException.class);
 
         Testing.setOutputState(true);
     }
