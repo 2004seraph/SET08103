@@ -70,6 +70,8 @@ public final class App implements AutoCloseable {
             // drop-in fallback.
             Console console = ConsoleCreator.console();
 
+            Repl.printWelcome();
+
             while (true) {
                 String line = console.readLine(" > ");
                 String[] subArgs = line.split("\\s+"); // split by any amount of whitespace
@@ -133,7 +135,11 @@ public final class App implements AutoCloseable {
                         "jdbc:mysql://" + dbHost + ":3306/world",
                         connectionProps);
 
-                System.out.println("Successfully connected to database");
+                System.out.println(
+                        "Successfully connected to " +
+                                con.getMetaData().getDatabaseProductName() +
+                                " database: " + con.getCatalog());
+                System.out.println();
                 break;
 
             } catch (SQLException e) {
