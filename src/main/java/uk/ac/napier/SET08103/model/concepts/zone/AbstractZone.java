@@ -57,7 +57,7 @@ public abstract class AbstractZone implements IZone {
         if ((other == null) || (getClass() != other.getClass()))
             return false; // City will never == Country, despite both potentially having the same primary key
 
-        AbstractZone otherZone = (AbstractZone)other;
+        final AbstractZone otherZone = (AbstractZone)other;
         if (otherZone instanceof IFieldEnum) // compare values if an enum
             return Objects.equals(((IFieldEnum<?>) otherZone).getValue(), ((IFieldEnum<?>)this).getValue());
         else if (otherZone instanceof IEntity) // compare primary keys if an entity

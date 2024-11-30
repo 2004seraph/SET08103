@@ -31,17 +31,17 @@ public final class World extends AbstractZone {
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) {
+    public List<IZone> getInnerZones(final Connection conn) {
         return Zone.wrapIZone(Continent.getAll());
     }
 
     @Override
-    public List<City> getCities(Connection conn) {
+    public List<City> getCities(final Connection conn) {
         final String cacheKey = this.getClass().getName() + "/instance" + "/cities";
         if (cacheMap.containsKey(cacheKey))
             return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
-        List<City> c = getInnerZones(conn)
+        final List<City> c = getInnerZones(conn)
                 .stream()
                 .flatMap(d -> {
                     try {
@@ -56,15 +56,15 @@ public final class World extends AbstractZone {
     }
 
     @Override
-    public long getTotalPopulation(Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement(
+    public long getTotalPopulation(final Connection conn) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT",
                         "SUM(", Country.POPULATION, ") AS Total",
                         "FROM", Country.TABLE
                 )
         )) {
-            try (ResultSet res = ps.executeQuery()) {
+            try (ResultSet res = stmt.executeQuery()) {
                 if (res.next()) {
                     return res.getLong("Total");
                 }

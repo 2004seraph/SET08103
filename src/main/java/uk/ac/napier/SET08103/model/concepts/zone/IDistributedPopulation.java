@@ -10,5 +10,5 @@ import java.sql.SQLException;
  * demographics, i.e. those in cities and those outside cities
  */
 public interface IDistributedPopulation {
-    PopulationInfo getPopulationInfo(Connection conn) throws SQLException;
+    PopulationInfo getPopulationInfo(final Connection conn) throws SQLException;
 }

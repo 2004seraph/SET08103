@@ -37,7 +37,7 @@ public final class WorldIntegrationTest extends AbstractIntegrationTest {
                 )
         ); ResultSet res = stmt.executeQuery()) {
 
-            List<City> citiesOfTheWorld = World.INSTANCE.getCities(conn);
+            final List<City> citiesOfTheWorld = World.INSTANCE.getCities(conn);
 
             int total = 0;
             while (res.next()) {
@@ -47,7 +47,7 @@ public final class WorldIntegrationTest extends AbstractIntegrationTest {
             assertEquals(total, citiesOfTheWorld.size());
 
             // test caching
-            List<City> citiesOfTheWorldFromCache = World.INSTANCE.getCities(conn);
+            final List<City> citiesOfTheWorldFromCache = World.INSTANCE.getCities(conn);
             Assertions.assertTrue(Testing.compareLists(wrapIZone(citiesOfTheWorldFromCache), wrapIZone(citiesOfTheWorld)));
 
         } catch (SQLException e) {

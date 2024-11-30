@@ -1,8 +1,9 @@
 package uk.ac.napier.SET08103.repl.commands.implementations;
 
-import uk.ac.napier.SET08103.reports.CapitalReport;
-import uk.ac.napier.SET08103.reports.CityReport;
-import uk.ac.napier.SET08103.reports.CountryReport;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import uk.ac.napier.SET08103.model.concepts.City;
 import uk.ac.napier.SET08103.model.concepts.Country;
 import uk.ac.napier.SET08103.model.concepts.World;
@@ -10,15 +11,15 @@ import uk.ac.napier.SET08103.model.concepts.zone.AbstractZone;
 import uk.ac.napier.SET08103.model.concepts.zone.IZone;
 import uk.ac.napier.SET08103.model.concepts.zone.Zone;
 import uk.ac.napier.SET08103.repl.commands.ICommand;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import uk.ac.napier.SET08103.reports.CapitalReport;
+import uk.ac.napier.SET08103.reports.CityReport;
+import uk.ac.napier.SET08103.reports.CountryReport;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -64,11 +65,12 @@ public final class Leaderboard implements ICommand {
 
     @SuppressWarnings("CommentedOutCode")
     @Override
-    public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
+    public Object execute(final CommandLine args, final Connection conn)
+            throws SQLException, RuntimeException, ParseException {
         assert args.getOptionValue("of") != null;
 
         // --of
-        Zone areaType;
+        final Zone areaType = Zone.valueOf(args.getOptionValue("of").toUpperCase(Locale.ENGLISH));
 
         // --in
         Zone aggregateAreaType = Zone.WORLD;
@@ -76,8 +78,6 @@ public final class Leaderboard implements ICommand {
 
         // --top
         int top = -1;
-
-        areaType = Zone.valueOf(args.getOptionValue("of").toUpperCase());
 
         // The implementation can actually do more than what the client asked for
 //        if (areaType.getSizeRank() > Zone.COUNTRIES.getSizeRank())
@@ -88,7 +88,7 @@ public final class Leaderboard implements ICommand {
             if (args.getOptionProperties("in").size() != 1)
                 throw new RuntimeException("Only one pairing allowed for the --in parameter");
 
-            Properties p = args.getOptionProperties("in");
+            final Properties p = args.getOptionProperties("in");
 
             aggregateArea = (AbstractZone) parseZoneReference(p, conn);
             aggregateAreaType = aggregateArea.getZoneLevel();
@@ -104,7 +104,7 @@ public final class Leaderboard implements ICommand {
         }
 
         // within
-        int levelsDown = Integer.numberOfLeadingZeros(areaType.getSizeRank()) -
+        final int levelsDown = Integer.numberOfLeadingZeros(areaType.getSizeRank()) -
                 Integer.numberOfLeadingZeros(aggregateAreaType.getSizeRank())
                 - ((areaType == Zone.CAPITALS) ? 1 : 0);
 
@@ -121,16 +121,17 @@ public final class Leaderboard implements ICommand {
             }
         });
 
-        List<IZone> res = ((top != -1) ? expansion.stream().limit(top).collect(Collectors.toList()) : expansion);
+        final List<IZone> res = ((top != -1) ? expansion.stream().limit(top).collect(Collectors.toList()) : expansion);
 
         showLeaderboard(areaType == Zone.CAPITALS, res, conn);
 
         return res;
     }
 
-    private static void showLeaderboard(boolean onlyCapitals, List<IZone> zones, Connection conn) throws SQLException {
+    private static void showLeaderboard(final boolean onlyCapitals, final List<IZone> zones, final Connection conn)
+            throws SQLException {
         if (onlyCapitals) {
-            List<City> res = Zone.unwrapIZone(zones);
+            final List<City> res = Zone.unwrapIZone(zones);
             CapitalReport.print((ArrayList<City>) res, conn);
             return;
         }
@@ -139,13 +140,13 @@ public final class Leaderboard implements ICommand {
             case CAPITALS:
             case CITIES:
                 {
-                    List<City> res = Zone.unwrapIZone(zones);
+                    final List<City> res = Zone.unwrapIZone(zones);
                     CityReport.print((ArrayList<City>) res, conn);
                 }
                 break;
             case COUNTRIES:
                 {
-                    List<Country> res = Zone.unwrapIZone(zones);
+                    final List<Country> res = Zone.unwrapIZone(zones);
                     CountryReport.print((ArrayList<Country>) res);
                 }
                 break;

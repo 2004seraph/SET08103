@@ -1,15 +1,16 @@
 package uk.ac.napier.SET08103.model;
 
+import org.junit.jupiter.api.Test;
 import uk.ac.napier.SET08103.AbstractIntegrationTest;
 import uk.ac.napier.SET08103.model.concepts.Country;
 import uk.ac.napier.SET08103.model.concepts.District;
 import uk.ac.napier.SET08103.model.concepts.zone.IZone;
-import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
-    static final List<String> texasCities = List.of(
+    private static final List<String> texasCities = List.of(
             "Houston",
             "Dallas",
             "San Antonio",
@@ -50,24 +51,25 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings({"SpellCheckingInspection", "ExtractMethodRecommender"})
     @Test
-    public void districtCreate() {
+    void districtCreate() {
         final Connection conn = getAppDatabaseConnection();
 
         final String NON_EQUAL_DISTRICT = "Texas";
+
         final BiConsumer<String, String> createValidDistrict = (name, countryCode) -> {
             AtomicReference<District> x = new AtomicReference<>();
             assertAll(() -> x.set(District.fromName(
                     name,
                     Country.fromCountryCode(countryCode, conn),
                     conn)));
-            assertEquals(name.toLowerCase(), x.get().toString().toLowerCase());
+            assertEquals(name.toLowerCase(Locale.ENGLISH), x.get().toString().toLowerCase(Locale.ENGLISH));
 
             assertAll(() -> District.fromName(
                     name,
                     conn));
 
             // getValue() on IFieldEnum
-            assertEquals(name.toLowerCase(), x.get().getValue().toLowerCase());
+            assertEquals(name.toLowerCase(Locale.ENGLISH), x.get().getValue().toLowerCase(Locale.ENGLISH));
 
             // Testing positive .equals()
             try {
@@ -114,7 +116,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void zoneInfo() throws SQLException {
+    void zoneInfo() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         // Outer zone
@@ -149,7 +151,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getTotalPopulation() {
+    void getTotalPopulation() {
         final Connection conn = getAppDatabaseConnection();
 
         final BiFunction<String, String, Long> getDistrictPopulation = (cc, name) -> {

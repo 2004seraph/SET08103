@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ReplIntegrationTest extends AbstractIntegrationTest {
     @Test
-    public void disconnected() throws SQLException {
-        Connection conn = getAppDatabaseConnection();
+    void disconnected() throws SQLException {
+        final Connection conn = getAppDatabaseConnection();
         conn.close();
         Testing.setOutputState(false);
 
@@ -35,8 +35,8 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void invalidSubCommand() {
-        Connection conn = getAppDatabaseConnection();
+    void invalidSubCommand() {
+        final Connection conn = getAppDatabaseConnection();
 
         Testing.setOutputState(false);
 
@@ -69,15 +69,15 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void parseZoneReference() {
-        Connection conn = getAppDatabaseConnection();
+    void parseZoneReference() {
+        final Connection conn = getAppDatabaseConnection();
 
-        BiConsumer<String, IZone> tryParseZoneRef = (ref, actual) -> {
-            CommandLine args;
+        final BiConsumer<String, IZone> tryParseZoneRef = (ref, actual) -> {
             IZone retrievedZone;
             try {
-                args = parseCommandLine(new TestCommand(), new String[]{ "--in", ref });
-                Properties p = args.getOptionProperties("in");
+                final CommandLine args = parseCommandLine(new TestCommand(), new String[]{ "--in", ref });
+                final Properties p = args.getOptionProperties("in");
+
                 retrievedZone = Repl.parseZoneReference(p, conn);
 
             } catch (ParseException | SQLException e) {
@@ -169,12 +169,12 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Override
-        public Object execute(CommandLine args, Connection conn) throws InternalError {
+        public Object execute(final CommandLine args, final Connection conn) throws InternalError {
             return null;
         }
     }
 
-    private CommandLine parseCommandLine(ICommand command, String[] args) throws ParseException {
+    private CommandLine parseCommandLine(final ICommand command, final String[] args) throws ParseException {
         return new DefaultParser().parse(
                 command.getOptions(),
                 args,

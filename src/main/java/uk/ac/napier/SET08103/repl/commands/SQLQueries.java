@@ -1,5 +1,6 @@
 package uk.ac.napier.SET08103.repl.commands;
 
+@SuppressWarnings({"SameReturnValue", "unused"})
 public final class SQLQueries {
 
     // Prevents instantiation, i.e. writing `SQLQueries sq = new SQLQueries();`

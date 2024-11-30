@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -38,23 +39,24 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
      * @return A Country instance
      * @throws IllegalArgumentException if no country exists with the given code
      */
-    public static Country fromCountryCode(String countryCode, Connection conn) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement(
+    public static Country fromCountryCode(final String countryCode, final Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM " + TABLE + " WHERE " + PRIMARY_KEY + " = ?");
-        ps.setString(1, countryCode);
-        ResultSet res = ps.executeQuery();
+        stmt.setString(1, countryCode);
 
-        if (res.next()) {
-            Country c = new Country(
-                    countryCode,
-                    Region.fromName(res.getString(REGION), conn),
-                    res.getInt(CAPITAL),
-                    conn);
-            c.name = res.getString(NAME);
-            return c;
+        try (stmt; ResultSet res = stmt.executeQuery()) {
+            if (res.next()) {
+                final Country newInstance = new Country(
+                        countryCode,
+                        Region.fromName(res.getString(REGION), conn),
+                        res.getInt(CAPITAL),
+                        conn);
+                newInstance.name = res.getString(NAME);
+                return newInstance;
+            }
+            else
+                throw new IllegalArgumentException("No country with code: " + countryCode);
         }
-        else
-            throw new IllegalArgumentException("No country with code: " + countryCode);
     }
 
     /**
@@ -63,15 +65,15 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
      * @return A Country instance
      * @throws IllegalArgumentException if no country is found with a name LIKE the one given
      */
-    public static Country fromName(String name, Connection conn) throws SQLException {
+    public static Country fromName(final String name, final Connection conn) throws SQLException {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Invalid City name");
 
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM " + TABLE +
                         " WHERE LOWER( Name ) LIKE ? ORDER BY " + POPULATION + " DESC"
         );
-        stmt.setString(1, "%" + name.toLowerCase() + "%");
+        stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH) + "%");
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
@@ -90,56 +92,60 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     public final long population;
     public final City capital;
 
-    private Country(String countryCode, Region region, int capitalId, Connection conn) throws SQLException {
+    private Country(final String countryCode, final Region region, final int capitalId, final Connection conn)
+            throws SQLException {
         this.countryCode = countryCode;
         this.region = region;
         this.continent = (Continent)region.getOuterZone();
         this.population = getTotalPopulation(conn);
 
         // Some "countries" have no capital, like Antarctica
-        this.capital = (capitalId != NULL_CAPITAL) ? City.fromIdAsCapital(capitalId, this, conn) : null;
+        this.capital = (capitalId != NULL_CAPITAL) ?
+                City.fromIdAsCapital(capitalId, this, conn) : null;
     }
 
     @Override
-    public List<City> getCities(Connection conn) throws SQLException {
+    public List<City> getCities(final Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + countryCode + "/cities";
         if (cacheMap.containsKey(cacheKey))
             return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
-        List<City> c = getInnerZones(conn)
+        final List<City> res = getInnerZones(conn)
                 .stream()
-                .flatMap(d -> {
+                .flatMap(districts -> {
                     try {
-                        List<City> d2 = d.getCities(conn);
-                        return d2.stream();
+                        final List<City> lowerLevelQuery = districts.getCities(conn);
+                        return lowerLevelQuery.stream();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
 
-        cacheMap.put(cacheKey, Zone.wrapIZone(c));
-        return c;
+        cacheMap.put(cacheKey, Zone.wrapIZone(res));
+        return res;
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+    public List<IZone> getInnerZones(final Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + countryCode + "/innerZones";
         if (cacheMap.containsKey(cacheKey))
             return cacheMap.get(cacheKey);
 
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT DISTINCT " + City.DISTRICT + " FROM " + City.TABLE +
                         " WHERE " + City.COUNTRY_CODE + " = ?"
         );
         stmt.setString(1, countryCode);
 
-        List<IZone> districts = new ArrayList<>();
-        boolean nullDistricts = false;
+        final List<IZone> districts = new ArrayList<>();
+
         try (stmt; ResultSet res = stmt.executeQuery()) {
+            boolean nullDistricts = false;
+
             while (res.next()) {
-                District d = District.fromName(res.getString(City.DISTRICT), this, conn);
-                if (d != null) {
-                    districts.add(d);
+                final District district = District.fromName(res.getString(City.DISTRICT), this, conn);
+                if (district != null) {
+                    districts.add(district);
                 } else {
                     nullDistricts = true;
                 }
@@ -152,7 +158,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
             //      ContinentIntegrationTest.zoneInfo:131->lambda$zoneInfo$8:124 expected: <581> but was: <578>
             // if the entire "if" statement is commented
             if (nullDistricts) {
-                PreparedStatement nullDistrictStmt = conn.prepareStatement(
+                final PreparedStatement nullDistrictStmt = conn.prepareStatement(
                         Model.buildStatement(
                                 "SELECT * FROM", City.TABLE,
                                 "WHERE", City.COUNTRY_CODE, "= ?", "AND",
@@ -164,8 +170,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
 
                 try (nullDistrictStmt; ResultSet nullDistrictRes = nullDistrictStmt.executeQuery()) {
                     while (nullDistrictRes.next()) {
-                        City c = City.fromId(nullDistrictRes.getInt(City.PRIMARY_KEY), conn);
-                        districts.add(c);
+                        districts.add(City.fromId(nullDistrictRes.getInt(City.PRIMARY_KEY), conn));
                     }
                 }
             }
@@ -177,7 +182,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     }
 
     @Override
-    public PopulationInfo getPopulationInfo(Connection conn) throws SQLException {
+    public PopulationInfo getPopulationInfo(final Connection conn) throws SQLException {
         return new PopulationInfo(
                 this,
                 getTotalPopulation(conn),
@@ -194,8 +199,8 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     }
 
     @Override
-    public long getTotalPopulation(Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(
+    public long getTotalPopulation(final Connection conn) throws SQLException {
+        final PreparedStatement stmt = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT", POPULATION, "FROM",
                         TABLE, "WHERE", PRIMARY_KEY, "= ?"

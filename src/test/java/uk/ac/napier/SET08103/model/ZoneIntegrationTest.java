@@ -22,7 +22,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
     @Test
-    public void equals() throws SQLException {
+    void equals() throws SQLException {
         Connection conn = getAppDatabaseConnection();
 
         assertNotEquals(City.fromName("Dallas", conn), Country.fromCountryCode("USA", conn));
@@ -33,7 +33,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void districtInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
+    void districtInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         District texas = District.fromName("Texas", "USA", conn);
@@ -42,7 +42,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void regionInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
+    void regionInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         Region caribbean = Region.fromName("Caribbean", conn);
@@ -50,7 +50,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void continentInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
+    void continentInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         assertTrue(Testing.compareLists(

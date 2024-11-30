@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class CountryIntegrationTest extends AbstractIntegrationTest {
 
-    final List<String> districtsOfAustralia = List.of(
+    private final static List<String> districtsOfAustralia = List.of(
             "New South Wales",
             "Victoria",
             "Queensland",
@@ -39,9 +39,9 @@ final class CountryIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void countryCreate() throws SQLException {
-        Connection conn = getAppDatabaseConnection();
+        final Connection conn = getAppDatabaseConnection();
 
-        BiFunction<String, String, Country> createCountry = (cc, name) -> {
+        final BiFunction<String, String, Country> createCountry = (cc, name) -> {
             // fromId
             final AtomicReference<Country> fromCC = new AtomicReference<>();
             assertAll(() -> fromCC.set(Country.fromCountryCode(cc, conn)));
@@ -101,8 +101,8 @@ final class CountryIntegrationTest extends AbstractIntegrationTest {
         Assertions.assertEquals(new HashSet<>(districtsOfAustralia), australiaDistrictsRequestAsUniqueStrings);
 
         // getCities()
-        Consumer<Country> checkCities = (country) -> {
-            List<String> cityNames = new ArrayList<>();
+        final Consumer<Country> checkCities = (country) -> {
+            final List<String> cityNames = new ArrayList<>();
             List<City> citiesRequest;
 
             try (PreparedStatement stmt = conn.prepareStatement(

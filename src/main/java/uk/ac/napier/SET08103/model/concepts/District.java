@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public final class District extends AbstractZone implements IFieldEnum<String> {
@@ -42,7 +43,8 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
                 "SELECT " + City.DISTRICT + ", " + City.COUNTRY_CODE + " FROM " + City.TABLE +
                         " WHERE LOWER( " + City.DISTRICT + " ) LIKE ? AND " + City.COUNTRY_CODE + " = ?"
         );
-        stmt.setString(1, name.toLowerCase());
+        stmt.setString(1, name.toLowerCase(Locale.ENGLISH)
+    );
         stmt.setString(2, country.countryCode);
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
@@ -78,7 +80,8 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
                         "ORDER BY Total", "DESC"
                 )
         );
-        stmt.setString(1, "%" + name.toLowerCase() + "%");
+        stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH)
+     + "%");
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {

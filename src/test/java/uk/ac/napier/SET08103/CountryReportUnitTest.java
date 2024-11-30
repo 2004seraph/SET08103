@@ -12,18 +12,18 @@ import java.util.ArrayList;
 public final class CountryReportUnitTest {
 
     @Test
-    public void printCountryReportTestNull(){
+    void printCountryReportTestNull(){
         CountryReport.print(null);
     }
 
     @Test
-    public void printCountryReportTestEmpty(){
+    void printCountryReportTestEmpty(){
         ArrayList<Country> countries = new ArrayList<>();
         CountryReport.print(countries);
     }
 
     @Test
-    public void printCountryReportContainsNull(){
+    void printCountryReportContainsNull(){
         ArrayList<Country> countries = new ArrayList<>();
         countries.add(null);
         CountryReport.print(countries);

@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CommandIntegrationTest extends AbstractIntegrationTest {
 
     @Test
-    public void leaderboard() {
-        Connection conn = getAppDatabaseConnection();
+    void leaderboard() {
+        final Connection conn = getAppDatabaseConnection();
 
         Testing.setOutputState(false);
 
@@ -81,8 +81,8 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void populationOf() {
-        Connection conn = getAppDatabaseConnection();
+    void populationOf() {
+        final Connection conn = getAppDatabaseConnection();
         Testing.setOutputState(false);
 
         assertEquals(7285000, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "city:london")).longValue());
@@ -101,8 +101,8 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void populationInfo() throws SQLException {
-        Connection conn = getAppDatabaseConnection();
+    void populationInfo() throws SQLException {
+        final Connection conn = getAppDatabaseConnection();
         Testing.setOutputState(false);
 
         // --in

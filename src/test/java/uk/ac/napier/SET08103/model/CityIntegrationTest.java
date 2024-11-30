@@ -1,14 +1,15 @@
 package uk.ac.napier.SET08103.model;
 
-import uk.ac.napier.SET08103.AbstractIntegrationTest;
-import uk.ac.napier.SET08103.model.concepts.zone.Zone;
-import uk.ac.napier.SET08103.model.concepts.City;
 import org.junit.jupiter.api.Test;
+import uk.ac.napier.SET08103.AbstractIntegrationTest;
+import uk.ac.napier.SET08103.model.concepts.City;
+import uk.ac.napier.SET08103.model.concepts.zone.Zone;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
@@ -18,17 +19,17 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("SpellCheckingInspection")
     @Test
-    public void createValid() throws SQLException {
+    void createValid() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
-        BiConsumer<Integer, String> createCity = (id, name) -> {
+        final BiConsumer<Integer, String> createCity = (id, name) -> {
             { // fromId
                 // Placeholder variable for the lambda expression
                 final AtomicReference<City> x = new AtomicReference<>();
                 // Ensure it was created without an error
                 assertAll(() -> x.set(City.fromId(id, conn)));
                 // Ensure it is actually the correct city
-                assertEquals(name.toLowerCase(), x.get().toString().toLowerCase());
+                assertEquals(name.toLowerCase(Locale.ENGLISH), x.get().toString().toLowerCase(Locale.ENGLISH));
             }
             { // fromName, same as above, but with name and id swapped
                 final AtomicReference<City> x = new AtomicReference<>();
@@ -66,7 +67,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("SpellCheckingInspection")
     @Test
-    public void createInValid() {
+    void createInValid() {
         final Connection conn = getAppDatabaseConnection();
 
         // Both name and id must be invalid and create no city
@@ -83,7 +84,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getTotalPopulation() throws SQLException {
+    void getTotalPopulation() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         final City kabul = City.fromId(1, conn);
@@ -95,7 +96,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("SpellCheckingInspection")
     @Test
-    public void isCapital() throws SQLException {
+    void isCapital() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         final City kabul = City.fromId(1, conn);
@@ -112,7 +113,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getAllCapitals() throws SQLException {
+    void getAllCapitals() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         final List<City> capitals = City.allCapitals(conn);

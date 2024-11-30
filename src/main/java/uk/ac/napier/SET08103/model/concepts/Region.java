@@ -21,14 +21,19 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
     /**
      * Creates a Region instance using whatever is LIKE the name passed in. LIKE referring to SQL string matching.
      */
-    public static Region fromName(String name, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement(
-                "SELECT DISTINCT(" + Country.REGION + "), " + Country.CONTINENT + " FROM " + Country.TABLE + " WHERE " + Country.REGION + " LIKE ?")) {
-            ps.setString(1, "%" + name + "%");
+    public static Region fromName(final String name, final Connection conn) throws SQLException {
+        try (PreparedStatement stmt
+                     = conn.prepareStatement(
+                "SELECT DISTINCT(" + Country.REGION + "), " + Country.CONTINENT +
+                        " FROM " + Country.TABLE + " WHERE " + Country.REGION + " LIKE ?")) {
 
-            try (ResultSet res = ps.executeQuery()) {
+            stmt.setString(1, "%" + name + "%");
+
+            try (ResultSet res = stmt.executeQuery()) {
                 if (res.next()) {
-                    return new Region(res.getString(Country.REGION), Continent.fromDatabaseString(res.getString(Country.CONTINENT)));
+                    return new Region(
+                            res.getString(Country.REGION),
+                            Continent.fromDatabaseString(res.getString(Country.CONTINENT)));
                 }
                 else
                     throw new IllegalArgumentException("No region with name: " + name);
@@ -39,13 +44,13 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
     private final String name;
     private final Continent continent;
 
-    private Region(String name, Continent continent) {
+    private Region(final String name, final Continent continent) {
         this.name = name;
         this.continent = continent;
     }
 
     @Override
-    public List<City> getCities(Connection conn) throws SQLException {
+    public List<City> getCities(final Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + continent + "/" + name + "/cities";
         if (cacheMap.containsKey(cacheKey))
             return Zone.unwrapIZone(cacheMap.get(cacheKey));
@@ -65,7 +70,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+    public List<IZone> getInnerZones(final Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + continent + "/" + name + "/innerZones";
         if (cacheMap.containsKey(cacheKey))
             return cacheMap.get(cacheKey);
@@ -96,7 +101,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
     }
 
     @Override
-    public PopulationInfo getPopulationInfo(Connection conn) throws SQLException {
+    public PopulationInfo getPopulationInfo(final Connection conn) throws SQLException {
         return new PopulationInfo(
                 this,
                 getTotalPopulation(conn),
@@ -113,7 +118,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
     }
 
     @Override
-    public long getTotalPopulation(Connection conn) throws SQLException {
+    public long getTotalPopulation(final Connection conn) throws SQLException {
         //SELECT country.Region, SUM(country.Population) AS Total
         //FROM country
         //WHERE CountryCode = ?

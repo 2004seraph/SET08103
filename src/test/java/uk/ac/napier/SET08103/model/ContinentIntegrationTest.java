@@ -1,13 +1,13 @@
 package uk.ac.napier.SET08103.model;
 
+import org.junit.jupiter.api.Test;
 import uk.ac.napier.SET08103.AbstractIntegrationTest;
+import uk.ac.napier.SET08103.Testing;
 import uk.ac.napier.SET08103.model.concepts.City;
 import uk.ac.napier.SET08103.model.concepts.Continent;
 import uk.ac.napier.SET08103.model.concepts.Country;
 import uk.ac.napier.SET08103.model.concepts.types.PopulationInfo;
 import uk.ac.napier.SET08103.model.concepts.zone.IZone;
-import uk.ac.napier.SET08103.Testing;
-import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -25,23 +26,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ContinentIntegrationTest extends AbstractIntegrationTest {
 
-    final static List<String> northAmericaRegionNames = List.of(
+    private final static List<String> northAmericaRegionNames = List.of(
             "Caribbean",
             "Central America",
             "North America");
 
     @SuppressWarnings("ExtractMethodRecommender")
     @Test
-    public void continentCreate() {
-        Connection conn = getAppDatabaseConnection();
+    void continentCreate() {
+        final Connection conn = getAppDatabaseConnection();
 
-        BiConsumer<String, String> createContinentLike = (search, actual) -> {
+        final BiConsumer<String, String> createContinentLike = (search, actual) -> {
             // Placeholder variable for the lambda expression
-            AtomicReference<Continent> x = new AtomicReference<>();
+            final AtomicReference<Continent> x = new AtomicReference<>();
             // Ensure it was created without an error
             assertAll(() -> x.set(Continent.likeDatabaseString(search, conn)));
             // Ensure it is actually the correct city
-            assertEquals(actual.toLowerCase(), x.get().toString().toLowerCase());
+            assertEquals(actual.toLowerCase(Locale.ENGLISH), x.get().toString().toLowerCase(Locale.ENGLISH));
         };
 
         // likeDatabaseString()
@@ -75,13 +76,13 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void zoneInfo() throws SQLException {
-        Connection conn = getAppDatabaseConnection();
+    void zoneInfo() throws SQLException {
+        final Connection conn = getAppDatabaseConnection();
 
         assertNull(Continent.fromValue(Continent.FieldEnum.ASIA).getOuterZone());
 
         // getInnerZones
-        List<IZone> northAmericaRegions = Continent.fromDatabaseString("North America")
+        final List<IZone> northAmericaRegions = Continent.fromDatabaseString("North America")
                 .getInnerZones(conn);
         assertEquals(northAmericaRegions.size(), northAmericaRegionNames.size());
         assertEquals(
@@ -91,15 +92,15 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
                         .collect(Collectors.toCollection(HashSet::new)));
 
         // getCities
-        Consumer<Continent> checkCities = (continent) -> {
-            List<String> cityNames = new ArrayList<>();
+        final Consumer<Continent> checkCities = (continent) -> {
+            final List<String> cityNames = new ArrayList<>();
             List<City> citiesRequest;
 
-//            SELECT city.Name
-//            FROM city
-//            INNER JOIN country
-//            ON city.CountryCode = country.Code
-//            WHERE Continent = "South America";
+            //SELECT city.Name
+            //FROM city
+            //INNER JOIN country
+            //ON city.CountryCode = country.Code
+            //WHERE Continent = "South America";
 
             try (PreparedStatement stmt = conn.prepareStatement(
                     Model.buildStatement(
@@ -134,26 +135,26 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
         };
 
         // might as well just check every single continent
-        for (Continent.FieldEnum c : Continent.FieldEnum.asArray)
+        for (final Continent.FieldEnum c : Continent.FieldEnum.asArray)
             checkCities.accept(Continent.fromValue(c));
     }
 
     @Test
-    public void getPopulation() throws SQLException {
+    void getPopulation() throws SQLException {
         Connection conn = getAppDatabaseConnection();
 
         // population in cities
-//        SELECT country.Continent, SUM(city.Population) AS CityPop
-//        FROM city
-//        INNER JOIN country
-//        ON country.Code = city.CountryCode
-//        GROUP BY country.Continent
+        //SELECT country.Continent, SUM(city.Population) AS CityPop
+        //FROM city
+        //INNER JOIN country
+        //ON country.Code = city.CountryCode
+        //GROUP BY country.Continent
 
         // total population
-//        SELECT country.Continent , SUM(country.Population) AS Total
-//        FROM country
-//        GROUP BY country.Continent
-//        ORDER BY country.Continent
+        //SELECT country.Continent , SUM(country.Population) AS Total
+        //FROM country
+        //GROUP BY country.Continent
+        //ORDER BY country.Continent
 
         PopulationInfo naInfo = Continent.fromValue(Continent.FieldEnum.NORTH_AMERICA).getPopulationInfo(conn);
         assertEquals(482993000,

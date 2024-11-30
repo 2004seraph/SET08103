@@ -24,7 +24,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
 
     public static Continent likeDatabaseString(final String name, final Connection conn) throws SQLException {
         // Select the continent with the higher population
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT SUM(" + Country.POPULATION + ") as Total, " + Country.CONTINENT +
                         " FROM " + Country.TABLE +
                         " WHERE LOWER( " + Country.CONTINENT + " ) LIKE ? GROUP BY " +
@@ -35,21 +35,21 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                return Continent.fromDatabaseString(res.getString(Country.CONTINENT));
+                return fromDatabaseString(res.getString(Country.CONTINENT));
             } else
                 throw new IllegalArgumentException("No Continent with name like: " + name);
         }
     }
 
-    public static Continent fromDatabaseString(String name) {
+    public static Continent fromDatabaseString(final String name) {
         return new Continent(FieldEnum.parse(name));
     }
 
-    public static Continent fromValue(FieldEnum value) {
+    public static Continent fromValue(final FieldEnum value) {
         return new Continent(value);
     }
 
-    public static Continent valueOf(String name) {
+    public static Continent valueOf(final String name) {
         return new Continent(FieldEnum.valueOf(name));
     }
 
@@ -66,7 +66,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
 
         private final String databaseName;
 
-        FieldEnum(String databaseName) {
+        FieldEnum(final String databaseName) {
             this.databaseName = databaseName;
         }
 
@@ -75,14 +75,14 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         }
 
         @SuppressWarnings("OptionalGetWithoutIsPresent")
-        public static FieldEnum parse(String databaseName) {
-            return Arrays.stream(FieldEnum.values())
+        public static FieldEnum parse(final String databaseName) {
+            return Arrays.stream(values())
                     .filter(c -> c.databaseName.equalsIgnoreCase(databaseName))
                     .findFirst().get();
         }
 
         public Continent getInstance() {
-            return Continent.fromValue(this);
+            return fromValue(this);
         }
 
         @Override
@@ -105,6 +105,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         return Zone.wrapIZone(getAll());
     }
 
+
     private final FieldEnum name;
 
     public Continent(final FieldEnum name) {
@@ -124,7 +125,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         if (cacheMap.containsKey(cacheKey))
             return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
-        List<City> c = getInnerZones(conn)
+        final List<City> c = getInnerZones(conn)
                 .stream()
                 .flatMap(d -> {
                     try {
@@ -144,13 +145,13 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         if (cacheMap.containsKey(cacheKey))
             return cacheMap.get(cacheKey);
 
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT DISTINCT " + Country.REGION + " FROM " + Country.TABLE +
                         " WHERE " + Country.CONTINENT + " = ?"
         );
         stmt.setString(1, name.getDatabaseName());
 
-        List<IZone> regions = new ArrayList<>();
+        final List<IZone> regions = new ArrayList<>();
         try (stmt; ResultSet res = stmt.executeQuery()) {
             while (res.next())
                 regions.add(Region.fromName(res.getString(Country.REGION), conn));

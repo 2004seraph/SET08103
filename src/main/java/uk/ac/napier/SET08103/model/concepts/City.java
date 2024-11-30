@@ -1,10 +1,10 @@
 package uk.ac.napier.SET08103.model.concepts;
 
+import uk.ac.napier.SET08103.model.Model;
 import uk.ac.napier.SET08103.model.concepts.zone.AbstractZone;
 import uk.ac.napier.SET08103.model.concepts.zone.IZone;
 import uk.ac.napier.SET08103.model.concepts.zone.Zone;
 import uk.ac.napier.SET08103.model.db.IEntity;
-import uk.ac.napier.SET08103.model.Model;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -88,7 +89,8 @@ public final class City extends AbstractZone implements IEntity {
                 "SELECT * FROM " + TABLE +
                         " WHERE LOWER( Name ) LIKE ? ORDER BY " + POPULATION + " DESC"
         );
-        stmt.setString(1, "%" + name.toLowerCase() + "%");
+        stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH)
+     + "%");
 
         try (stmt; ResultSet res = stmt.executeQuery()) {
             if (res.next()) {

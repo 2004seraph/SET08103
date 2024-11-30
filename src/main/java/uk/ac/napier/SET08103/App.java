@@ -21,9 +21,9 @@ public final class App implements AutoCloseable {
     private static final int DB_LOGIN_TIMEOUT_SECONDS = 3;
 
     public static Boolean isDriverLoaded()  {
-        Enumeration<Driver> list = DriverManager.getDrivers();
+        final Enumeration<Driver> list = DriverManager.getDrivers();
         while (list.hasMoreElements()) {
-            Driver driver = list.nextElement();
+            final Driver driver = list.nextElement();
             if (driver.toString().contains("mysql")) {
                 return true;
             }
@@ -68,16 +68,16 @@ public final class App implements AutoCloseable {
         else {
             // Standard Java Console object is null if used within an IDE setting, this package provides a
             // drop-in fallback.
-            Console console = ConsoleCreator.console();
+            final Console console = ConsoleCreator.console();
 
             Repl.printWelcome();
 
             while (true) {
-                String line = console.readLine(" > ");
+                final String line = console.readLine(" > ");
                 if (line == null)
                     break;
 
-                String[] subArgs = line.split("\\s+"); // split by any amount of whitespace
+                final String[] subArgs = line.split("\\s+"); // split by any amount of whitespace
 
                 if (subArgs.length == 1 && Objects.equals(subArgs[0], "quit"))
                     break;
@@ -95,7 +95,7 @@ public final class App implements AutoCloseable {
         if (!isDriverLoaded())
             throw new RuntimeException("Database driver not loaded");
 
-        Properties connectionProps = new Properties();
+        final Properties connectionProps = new Properties();
         connectionProps.put("user", "root");
         connectionProps.put("password", dbPassword);
         connectionProps.put("useSSL", false);

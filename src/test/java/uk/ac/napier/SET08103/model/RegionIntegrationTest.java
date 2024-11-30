@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 final class RegionIntegrationTest extends AbstractIntegrationTest {
 
-    final static List<String> northAmericaCountryNames = List.of(
+    private final static List<String> northAmericaCountryNames = List.of(
             "Bermuda",
             "Canada",
             "Greenland",
@@ -31,8 +31,8 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
             "United States");
 
     @Test
-    public void regionCreate() {
-        Connection conn = getAppDatabaseConnection();
+    void regionCreate() {
+        final Connection conn = getAppDatabaseConnection();
 
         // Middle East
         assertAll(() ->
@@ -54,11 +54,11 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
 
 
     @Test
-    public void zoneInfo() throws SQLException {
+    void zoneInfo() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         // getInnerZones()
-        List<IZone> northAmericaCountries = Region.fromName("North America", conn)
+        final List<IZone> northAmericaCountries = Region.fromName("North America", conn)
                 .getInnerZones(conn);
 
         assertEquals(northAmericaCountries.size(), northAmericaCountryNames.size());
@@ -69,7 +69,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
                         .collect(Collectors.toCollection(HashSet::new)));
 
         // getCities()
-        Consumer<Region> checkCities = (region) -> {
+        final Consumer<Region> checkCities = (region) -> {
             List<String> cityNames = new ArrayList<>();
             List<City> citiesRequest;
 
@@ -109,7 +109,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getPopulation() throws SQLException {
+    void getPopulation() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         // total pop
@@ -126,7 +126,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
 //        ON country.Code = city.CountryCode
 //        GROUP BY country.Region
 
-        PopulationInfo melanesiaInfo = Region.fromName("melanesia", conn).getPopulationInfo(conn);
+        final PopulationInfo melanesiaInfo = Region.fromName("melanesia", conn).getPopulationInfo(conn);
         assertEquals(6472000,
                 melanesiaInfo.total);
         assertEquals(484459,

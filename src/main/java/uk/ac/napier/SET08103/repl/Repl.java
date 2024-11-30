@@ -11,6 +11,7 @@ import uk.ac.napier.SET08103.repl.commands.Command;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -50,10 +51,11 @@ public final class Repl {
     /**
      * Prints parameter help for a given Command
      */
-    private static void printSubCommandHelpString(Command command) {
+    private static void printSubCommandHelpString(final Command command) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(
-                command.toString().toLowerCase() + " [options]", command.Instance().getOptions());
+                command.toString().toLowerCase(Locale.ENGLISH)
+     + " [options]", command.Instance().getOptions());
     }
 
     /**
@@ -62,7 +64,7 @@ public final class Repl {
      * @param conn database connection
      * @return an object representing the evaluated output of the command
      */
-    public static Object parseAndRun(String[] args, Connection conn) throws RuntimeException {
+    public static Object parseAndRun(final String[] args, final Connection conn) throws RuntimeException {
         if (args.length == 0) {
             printTopLevelHelpString();
             throw new java.lang.Error("No args supplied");
@@ -70,7 +72,7 @@ public final class Repl {
 
         Command command;
         try {
-            command = Command.valueOf(args[0].toUpperCase());
+            command = Command.valueOf(args[0].toUpperCase(Locale.ENGLISH));
         } catch (IllegalArgumentException e) {
             System.out.println("Unknown subcommand");
             printTopLevelHelpString();
@@ -99,7 +101,7 @@ public final class Repl {
         }
     }
 
-    public static Object parseAndRun(Connection conn, String... args) throws RuntimeException {
+    public static Object parseAndRun(final Connection conn, final String... args) throws RuntimeException {
         return parseAndRun(args, conn);
     }
 
@@ -119,12 +121,13 @@ public final class Repl {
      * @throws RuntimeException Any kind of parse error
      * @throws SQLException Not found in the database, or any other issue relating to the database
      */
-    public static IZone parseZoneReference(Properties p, Connection conn)
+    public static IZone parseZoneReference(final Properties p, final Connection conn)
             throws RuntimeException, SQLException {
 
         final String zoneType = p.keys().nextElement().toString().replace('_', ' ');
 
-        switch (zoneType.toLowerCase()) {
+        switch (zoneType.toLowerCase(Locale.ENGLISH)
+    ) {
             case "world":
                 return World.INSTANCE;
             case "continent":

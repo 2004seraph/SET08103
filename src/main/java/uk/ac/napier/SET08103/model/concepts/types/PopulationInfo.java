@@ -13,9 +13,9 @@ public class PopulationInfo implements Comparable<PopulationInfo> {
     public final long outsideCities;
 
     public PopulationInfo(
-            IZone location,
+            final IZone location,
             long total,
-            long inCities
+            final long inCities
     ) {
         this.location = location;
         this.total = total;
@@ -36,7 +36,7 @@ public class PopulationInfo implements Comparable<PopulationInfo> {
     /**
      * Outputs this instance's data to the console in table format, for a population report
      */
-    public void print(Connection conn) throws SQLException {
+    public void print(final Connection conn) throws SQLException {
         System.out.printf(
                 "%-45s %-22s %-22s %-22s",
 
@@ -56,7 +56,7 @@ public class PopulationInfo implements Comparable<PopulationInfo> {
     }
 
     @Override
-    public int compareTo(PopulationInfo o) {
+    public int compareTo(final PopulationInfo o) {
         return this.location.compareTo(o.location);
     }
 }

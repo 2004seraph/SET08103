@@ -6,11 +6,12 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 public final class CapitalReport {
-    public static void print(ArrayList<City> cities, Connection conn) {
-        if (cities == null){
-            System.out.println("No cities");
-            return;
-        }
+    /**
+     * Outputs a list of Capitals in the table format required for a Capital report
+     * @param cities Capitals
+     */
+    public static void print(final ArrayList<City> cities, final Connection conn) {
+        assert cities != null;
 
         // Print header
         System.out.printf(
@@ -18,10 +19,10 @@ public final class CapitalReport {
                 "Name", "Country", "Population");
 
         // Prints each city
-        for (City city : cities){
+        for (final City city : cities){
             if (city == null) continue;
 
-            String city_string = String.format(
+            final String city_string = String.format(
                     "%-36s %-46s %-10s",
                     city, city.getCountry(), city.getTotalPopulation(conn));
             System.out.println(city_string);

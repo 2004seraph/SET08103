@@ -13,7 +13,7 @@ public final class Model {
      * @return a string with spaces automatically inserted between each argument
      */
     public static String buildStatement(String ... strings) {
-        StringBuilder query = new StringBuilder();
+        final StringBuilder query = new StringBuilder();
         for (String s : strings)
             query.append(s).append(" ");
 
