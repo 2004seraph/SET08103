@@ -27,6 +27,8 @@ These commands assume a Linux environment with Docker and Maven installed.
    `docker compose -f docker-compose.yml -f docker-compose.windows.linux.yml up db`
 3. Open an interactive REPL prompt: `MYSQL_ROOT_PASSWORD=root java -jar target/pop.jar` (ensuring zero arguments)
 4. Ask for help with the commands: `help`
+   > [!INFO]
+   > Assume common UNIX-like CLI tool behaviour
 5. Run your query and see the output! You will be able to fulfil any requirement (and more!) using the commands in the prompt.
 
 ## Requirements
