@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.napier.SET08103</groupId>
+    <groupId>uk.ac.napier.SET08103</groupId>
     <artifactId>group-3</artifactId>
     <version>0.1-0</version>
 
@@ -60,7 +60,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>com.napier.SET08103.App</mainClass>
+                            <mainClass>uk.ac.napier.SET08103.App</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -102,7 +102,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <mainClass>com.napier.SET08103.App</mainClass>
+                    <mainClass>uk.ac.napier.SET08103.App</mainClass>
 <!--                    <arguments>-->
 <!--                        <argument>${app.db.password}</argument>-->
 <!--                    </arguments>-->
