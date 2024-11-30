@@ -119,19 +119,20 @@ public final class Leaderboard implements ICommand {
 
         List<IZone> res = ((top != -1) ? expansion.stream().limit(top).collect(Collectors.toList()) : expansion);
 
-        showLeaderboard(res, conn);
+        showLeaderboard(areaType == Zone.CAPITALS, res, conn);
 
         return res;
     }
 
-    private static void showLeaderboard(List<IZone> zones, Connection conn) throws SQLException {
+    private static void showLeaderboard(boolean onlyCapitals, List<IZone> zones, Connection conn) throws SQLException {
+        if (onlyCapitals) {
+            List<City> res = Zone.unwrapIZone(zones);
+            CapitalReport.print((ArrayList<City>) res, conn);
+            return;
+        }
+
         switch (zones.get(0).getZoneLevel()) {
             case CAPITALS:
-                {
-                    List<City> res = Zone.unwrapIZone(zones);
-                    CapitalReport.print((ArrayList<City>) res, conn);
-                }
-                break;
             case CITIES:
                 {
                     List<City> res = Zone.unwrapIZone(zones);

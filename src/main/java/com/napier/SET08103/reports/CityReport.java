@@ -60,9 +60,11 @@ public final class CityReport {
         for (City city : cities){
             if (city == null) continue;
 
+            String district = (city.getDistrict() == null) ? "-" : city.getDistrict().toString();
+
             String city_string = String.format(
                     "%-36s %-46s %-24s %-10s",
-                    city.toString(), city.getCountry(), city.getDistrict(), city.getTotalPopulation(conn));
+                    city.toString(), city.getCountry(), district, city.getTotalPopulation(conn));
             System.out.println(city_string);
         }
         System.out.println();
