@@ -1,5 +1,6 @@
 package uk.ac.napier.SET08103.repl;
 
+import org.junit.jupiter.api.Test;
 import uk.ac.napier.SET08103.AbstractIntegrationTest;
 import uk.ac.napier.SET08103.Testing;
 import uk.ac.napier.SET08103.model.concepts.Continent;
@@ -7,55 +8,44 @@ import uk.ac.napier.SET08103.model.concepts.Country;
 import uk.ac.napier.SET08103.model.concepts.Region;
 import uk.ac.napier.SET08103.model.concepts.zone.IZone;
 import uk.ac.napier.SET08103.repl.commands.Command;
-import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public class CommandIntegrationTest extends AbstractIntegrationTest {
 
     @Test
-    void leaderboard() {
+    public void leaderboard() {
         Connection conn = getAppDatabaseConnection();
 
         Testing.setOutputState(false);
 
-        assertEquals(239,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "countries")).size());
+        assertEquals(239, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "countries")).size());
 
-        assertEquals(46,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe")).size());
+        assertEquals(46, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe")).size());
         // limit
-        assertEquals(10,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--top", "10")).size());
+        assertEquals(10, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--top", "10")).size());
         // capitals
-        assertEquals(10,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "capitals", "--in", "continent:europe", "--top", "10")).size());
-        assertEquals(46,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "capitals", "--in", "continent:europe")).size());
+        assertEquals(10, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "capitals", "--in", "continent:europe", "--top", "10")).size());
+        assertEquals(46, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "capitals", "--in", "continent:europe")).size());
 
-        assertEquals(7,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "continents", "--in", "world")).size());
+        assertEquals(7, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "continents", "--in", "world")).size());
         // default value of world
-        assertEquals(7,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "continents")).size());
+        assertEquals(7, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "continents")).size());
 
-        assertEquals(71,
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--in", "district:england", "--of", "cities")).size());
+        assertEquals(71, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--in", "district:england", "--of", "cities")).size());
 
         // non existent zone
         assertThrows(RuntimeException.class,
@@ -76,9 +66,8 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
         assertThrows(RuntimeException.class,
                 () -> Repl.parseAndRun(conn,
                         Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--in", "region:north_america"));
-        assertEquals(51, // a valid duplicate parameter will override the previous one, expected UNIX behaviour
-                ((List<IZone>)Repl.parseAndRun(conn,
-                        Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--in", "continent:asia")).size());
+        assertEquals(51, ((List<IZone>) Repl.parseAndRun(conn,
+                Command.LEADERBOARD.name(), "--of", "countries", "--in", "continent:europe", "--in", "continent:asia")).size());
 
         // Impossible queries
         assertThrows(RuntimeException.class,
@@ -92,33 +81,27 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void populationOf() {
+    public void populationOf() {
         Connection conn = getAppDatabaseConnection();
         Testing.setOutputState(false);
 
-        assertEquals(7285000,
-                ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "city:london")).longValue());
+        assertEquals(7285000, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "city:london")).longValue());
 
-        assertEquals(9208281,
-                ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "district:texas")).longValue());
+        assertEquals(9208281, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "district:texas")).longValue());
 
-        assertEquals(278357000,
-                ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "country:usa")).longValue());
+        assertEquals(278357000, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "country:usa")).longValue());
 
-        assertEquals(144674200,
-                ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "region:europe")).longValue());
+        assertEquals(144674200, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "region:europe")).longValue());
 
-        assertEquals(3705025700L,
-                ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "continent:asia")).longValue());
+        assertEquals(3705025700L, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "continent:asia")).longValue());
 
-        assertEquals(6078749450L,
-                ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "world")).longValue());
+        assertEquals(6078749450L, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "world")).longValue());
 
         Testing.setOutputState(true);
     }
 
     @Test
-    void populationInfo() throws SQLException {
+    public void populationInfo() throws SQLException {
         Connection conn = getAppDatabaseConnection();
         Testing.setOutputState(false);
 
@@ -126,12 +109,9 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
 
         // Valid zones
 
-        assertEquals(Country.fromName("united kingdom", conn).getPopulationInfo(conn),
-                Repl.parseAndRun(conn, Command.INFO.name(), "--in", "country:united_kingdom"));
-        assertEquals(Continent.fromValue(Continent.FieldEnum.EUROPE).getPopulationInfo(conn),
-                Repl.parseAndRun(conn, Command.INFO.name(), "--in", "continent:europe"));
-        assertEquals(Region.fromName("Western Europe", conn).getPopulationInfo(conn),
-                Repl.parseAndRun(conn, Command.INFO.name(), "--in", "region:Western_Europe"));
+        assertEquals(Country.fromName("united kingdom", conn).getPopulationInfo(conn), Repl.parseAndRun(conn, Command.INFO.name(), "--in", "country:united_kingdom"));
+        assertEquals(Continent.fromValue(Continent.FieldEnum.EUROPE).getPopulationInfo(conn), Repl.parseAndRun(conn, Command.INFO.name(), "--in", "continent:europe"));
+        assertEquals(Region.fromName("Western Europe", conn).getPopulationInfo(conn), Repl.parseAndRun(conn, Command.INFO.name(), "--in", "region:Western_Europe"));
         // non equals case
         assertNotEquals(Continent.fromValue(Continent.FieldEnum.EUROPE).getPopulationInfo(conn),
                 Repl.parseAndRun(conn, Command.INFO.name(), "--in", "region:Western_Europe"));
@@ -150,11 +130,9 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
 
         // --of
 
-        assertEquals(7,
-                ((List<IZone>)Repl.parseAndRun(conn, Command.INFO.name(), "--of", "continents")).size());
+        assertEquals(7, ((List<IZone>) Repl.parseAndRun(conn, Command.INFO.name(), "--of", "continents")).size());
 
-        assertEquals(239,
-                ((List<IZone>)Repl.parseAndRun(conn, Command.INFO.name(), "--of", "countries")).size());
+        assertEquals(239, ((List<IZone>) Repl.parseAndRun(conn, Command.INFO.name(), "--of", "countries")).size());
 
         // invalid
 

@@ -5,7 +5,7 @@
     <envs>
       <env name="MYSQL_ROOT_PASSWORD" value="root" />
     </envs>
-    <option name="MAIN_CLASS_NAME" value="com.napier.SET08103.App" />
+    <option name="MAIN_CLASS_NAME" value="uk.ac.napier.SET08103.App" />
     <module name="SET08103" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/target/classes" />
     <extension name="coverage">

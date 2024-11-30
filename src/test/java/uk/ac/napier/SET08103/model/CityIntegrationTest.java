@@ -18,7 +18,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("SpellCheckingInspection")
     @Test
-    void createValid() throws SQLException {
+    public void createValid() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         BiConsumer<Integer, String> createCity = (id, name) -> {
@@ -66,7 +66,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("SpellCheckingInspection")
     @Test
-    void createInValid() {
+    public void createInValid() {
         final Connection conn = getAppDatabaseConnection();
 
         // Both name and id must be invalid and create no city
@@ -83,7 +83,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getTotalPopulation() throws SQLException {
+    public void getTotalPopulation() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         final City kabul = City.fromId(1, conn);
@@ -93,8 +93,9 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
         assertEquals(7285000, london.getTotalPopulation(conn));
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
-    void isCapital() throws SQLException {
+    public void isCapital() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         final City kabul = City.fromId(1, conn);
@@ -111,7 +112,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getAllCapitals() throws SQLException {
+    public void getAllCapitals() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         final List<City> capitals = City.allCapitals(conn);

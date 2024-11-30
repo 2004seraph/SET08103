@@ -15,15 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.*;
 import static uk.ac.napier.SET08103.model.concepts.zone.Zone.wrapIZone;
 
 public final class ZoneIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
     @Test
-    void equals() throws SQLException {
+    public void equals() throws SQLException {
         Connection conn = getAppDatabaseConnection();
 
         assertNotEquals(City.fromName("Dallas", conn), Country.fromCountryCode("USA", conn));
@@ -34,7 +33,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void districtInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
+    public void districtInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         District texas = District.fromName("Texas", "USA", conn);
@@ -43,7 +42,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void regionInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
+    public void regionInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         Region caribbean = Region.fromName("Caribbean", conn);
@@ -51,7 +50,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void continentInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
+    public void continentInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 
         assertTrue(Testing.compareLists(
@@ -94,18 +93,15 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
                     var continentToCities = Continent.fromValue(continent).getInnerZones(4, conn);
                     assertTrue(Testing.compareLists(
                             continentToCities,
-                            wrapIZone(Continent.fromValue(continent).getCities(conn)))
-                    );
+                            wrapIZone(Continent.fromValue(continent).getCities(conn))));
 
                     // Ensure it bottoms out at the city level and just returns the same thing each time
                     assertTrue(Testing.compareLists(
                             continentToCities,
-                            Continent.fromValue(continent).getInnerZones(5, conn))
-                    );
+                            Continent.fromValue(continent).getInnerZones(5, conn)));
                     assertTrue(Testing.compareLists(
                             continentToCities,
-                            Continent.fromValue(continent).getInnerZones(6, conn))
-                    );
+                            Continent.fromValue(continent).getInnerZones(6, conn)));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);

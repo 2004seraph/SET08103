@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public final class CountryReportIntegrationTest extends AbstractIntegrationTest {
     @Test
-    void printCountryReport() throws SQLException {
+    public void printCountryReport() throws SQLException {
         ArrayList<Country> countries = new ArrayList<>();
         Country country = Country.fromCountryCode("GBR", app.getConnectionForIntegrationTesting());
         countries.add(country);

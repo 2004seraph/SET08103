@@ -36,7 +36,7 @@ public final class World extends AbstractZone {
     }
 
     @Override
-    public List<City> getCities(Connection conn) throws SQLException {
+    public List<City> getCities(Connection conn) {
         final String cacheKey = this.getClass().getName() + "/instance" + "/cities";
         if (cacheMap.containsKey(cacheKey))
             return Zone.unwrapIZone(cacheMap.get(cacheKey));

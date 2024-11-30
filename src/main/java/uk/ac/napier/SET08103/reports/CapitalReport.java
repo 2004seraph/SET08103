@@ -3,11 +3,10 @@ package uk.ac.napier.SET08103.reports;
 import uk.ac.napier.SET08103.model.concepts.City;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public final class CapitalReport {
-    public static void print(ArrayList<City> cities, Connection conn) throws SQLException {
+    public static void print(ArrayList<City> cities, Connection conn) {
         if (cities == null){
             System.out.println("No cities");
             return;

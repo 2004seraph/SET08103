@@ -32,7 +32,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
 
     @SuppressWarnings("ExtractMethodRecommender")
     @Test
-    void continentCreate() {
+    public void continentCreate() {
         Connection conn = getAppDatabaseConnection();
 
         BiConsumer<String, String> createContinentLike = (search, actual) -> {
@@ -75,7 +75,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void zoneInfo() throws SQLException {
+    public void zoneInfo() throws SQLException {
         Connection conn = getAppDatabaseConnection();
 
         assertNull(Continent.fromValue(Continent.FieldEnum.ASIA).getOuterZone());
@@ -139,7 +139,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getPopulation() throws SQLException {
+    public void getPopulation() throws SQLException {
         Connection conn = getAppDatabaseConnection();
 
         // population in cities

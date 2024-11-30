@@ -145,9 +145,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
 
     @Override
     public long getTotalPopulation(Connection conn) throws SQLException {
-        return getCities(conn).stream().mapToLong(c -> {
-            return c.getTotalPopulation(conn);
-        }).reduce(0, Long::sum);
+        return getCities(conn).stream().mapToLong(c -> c.getTotalPopulation(conn)).reduce(0, Long::sum);
     }
 
     @Override

@@ -31,7 +31,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
             "United States");
 
     @Test
-    void regionCreate() {
+    public void regionCreate() {
         Connection conn = getAppDatabaseConnection();
 
         // Middle East
@@ -54,7 +54,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
 
 
     @Test
-    void zoneInfo() throws SQLException {
+    public void zoneInfo() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         // getInnerZones()
@@ -109,7 +109,7 @@ final class RegionIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getPopulation() throws SQLException {
+    public void getPopulation() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         // total pop

@@ -14,12 +14,13 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 
-import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public final class ReplIntegrationTest extends AbstractIntegrationTest {
     @Test
-    void disconnected() throws SQLException {
+    public void disconnected() throws SQLException {
         Connection conn = getAppDatabaseConnection();
         conn.close();
         Testing.setOutputState(false);
@@ -34,7 +35,7 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void invalidSubCommand() {
+    public void invalidSubCommand() {
         Connection conn = getAppDatabaseConnection();
 
         Testing.setOutputState(false);
@@ -43,10 +44,8 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
         assertThrows(Error.class,() -> Repl.parseAndRun(conn, new String[] {}));
 
         // Unknown subcommand
-        assertEquals(IllegalArgumentException.class,
-                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "among")).getClass());
-        assertEquals(IllegalArgumentException.class,
-                Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "")).getClass());
+        assertEquals(IllegalArgumentException.class, Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "among")).getClass());
+        assertEquals(IllegalArgumentException.class, Testing.getExceptionCause(() -> Repl.parseAndRun(conn, "")).getClass());
 
         // Valid command, but invalid sub args
         assertTrue(ParseException.class.isAssignableFrom( // ParseException is the superclass of MissingOptionException
@@ -70,7 +69,7 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void parseZoneReference() {
+    public void parseZoneReference() {
         Connection conn = getAppDatabaseConnection();
 
         BiConsumer<String, IZone> tryParseZoneRef = (ref, actual) -> {

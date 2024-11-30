@@ -48,9 +48,9 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
             "Midland",
             "Odessa");
 
-    @SuppressWarnings("SpellCheckingInspection")
+    @SuppressWarnings({"SpellCheckingInspection", "ExtractMethodRecommender"})
     @Test
-    void districtCreate() {
+    public void districtCreate() {
         final Connection conn = getAppDatabaseConnection();
 
         final String NON_EQUAL_DISTRICT = "Texas";
@@ -114,7 +114,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void zoneInfo() throws SQLException {
+    public void zoneInfo() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
 
         // Outer zone
@@ -149,7 +149,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void getTotalPopulation() {
+    public void getTotalPopulation() {
         final Connection conn = getAppDatabaseConnection();
 
         final BiFunction<String, String, Long> getDistrictPopulation = (cc, name) -> {

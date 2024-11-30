@@ -1,13 +1,14 @@
 package uk.ac.napier.SET08103.model;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import uk.ac.napier.SET08103.AbstractIntegrationTest;
 import uk.ac.napier.SET08103.Testing;
-import uk.ac.napier.SET08103.model.concepts.types.PopulationInfo;
 import uk.ac.napier.SET08103.model.concepts.City;
 import uk.ac.napier.SET08103.model.concepts.Country;
 import uk.ac.napier.SET08103.model.concepts.Region;
+import uk.ac.napier.SET08103.model.concepts.types.PopulationInfo;
 import uk.ac.napier.SET08103.model.concepts.zone.IZone;
-import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,9 +22,10 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class CountryIntegrationTest extends AbstractIntegrationTest {
+final class CountryIntegrationTest extends AbstractIntegrationTest {
 
     final List<String> districtsOfAustralia = List.of(
             "New South Wales",
@@ -49,18 +51,18 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
             assertAll(() -> fromName.set(Country.fromName(name, conn)));
 
             // Same?
-            assertEquals(fromName.get(), fromCC.get());
+            Assertions.assertEquals(fromName.get(), fromCC.get());
 
             return fromCC.get();
         };
 
-        assertEquals(City.fromId(3813, conn), createCountry.apply("USA", "United States").capital);
-        assertEquals(City.fromId(4068, conn), createCountry.apply("ZWE", "Zimbabwe").capital);
+        Assertions.assertEquals(City.fromId(3813, conn), createCountry.apply("USA", "United States").capital);
+        Assertions.assertEquals(City.fromId(4068, conn), createCountry.apply("ZWE", "Zimbabwe").capital);
 
         // NULL capital
-        assertNull(createCountry.apply("ATA", "Antarctica").capital);
+        Assertions.assertNull(createCountry.apply("ATA", "Antarctica").capital);
         // Partial name
-        assertNull(createCountry.apply("UMI", "United States Minor").capital);
+        Assertions.assertNull(createCountry.apply("UMI", "United States Minor").capital);
 
         // Misspelling
         //noinspection SpellCheckingInspection
@@ -84,28 +86,19 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
 
         // getOuterZone() : Austria in Western Europe
         final Country austria = Country.fromCountryCode("AUT", conn);
-        assertEquals(
-                Region.fromName("Western Europe", conn),
-                austria.getOuterZone()
-        );
-        assertNotEquals(
-                Region.fromName("Caribbean", conn),
-                austria.getOuterZone()
-        );
+        Assertions.assertEquals(Region.fromName("Western Europe", conn), austria.getOuterZone());
+        Assertions.assertNotEquals(Region.fromName("Caribbean", conn), austria.getOuterZone());
 
         // getInnerZones() : States of Australia
         final Country australia = Country.fromCountryCode("AUS", conn);
         final List<IZone> australiaDistrictsRequest = australia.getInnerZones(conn);
         // In case the request returns duplicated elements that will get hidden by the set conversion
-        assertEquals(australiaDistrictsRequest.size(), districtsOfAustralia.size());
+        Assertions.assertEquals(australiaDistrictsRequest.size(), districtsOfAustralia.size());
         final HashSet<String> australiaDistrictsRequestAsUniqueStrings = australiaDistrictsRequest
                 .stream()
                 .map(Object::toString).collect(Collectors.toCollection(HashSet::new));
         // Check if all states are present, regardless of ordering
-        assertEquals(
-                new HashSet<>(districtsOfAustralia),
-                australiaDistrictsRequestAsUniqueStrings
-        );
+        Assertions.assertEquals(new HashSet<>(districtsOfAustralia), australiaDistrictsRequestAsUniqueStrings);
 
         // getCities()
         Consumer<Country> checkCities = (country) -> {
@@ -129,9 +122,9 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
                 throw new RuntimeException(e);
             }
 
-            assertFalse(citiesRequest.isEmpty());
-            assertEquals(cityNames.size(), citiesRequest.size());
-            assertTrue(Testing.compareLists(
+            Assertions.assertFalse(citiesRequest.isEmpty());
+            Assertions.assertEquals(cityNames.size(), citiesRequest.size());
+            Assertions.assertTrue(Testing.compareLists(
                     cityNames,
                     citiesRequest.stream().map(Object::toString).collect(Collectors.toList())));
         };
@@ -156,22 +149,16 @@ public final class CountryIntegrationTest extends AbstractIntegrationTest {
         final Connection conn = getAppDatabaseConnection();
 
         PopulationInfo usaInfo = Country.fromCountryCode("USA", conn).getPopulationInfo(conn);
-        assertEquals(278357000,
-                usaInfo.total);
-        assertEquals(78625774,
-                usaInfo.inCities);
-        assertEquals(278357000 - 78625774,
-                usaInfo.outsideCities);
+        Assertions.assertEquals(278357000, usaInfo.total);
+        Assertions.assertEquals(78625774, usaInfo.inCities);
+        Assertions.assertEquals(278357000 - 78625774, usaInfo.outsideCities);
 
         // No population
-        assertEquals(0,
-                Country.fromCountryCode("ATA", conn).getPopulationInfo(conn).total);
+        Assertions.assertEquals(0, Country.fromCountryCode("ATA", conn).getPopulationInfo(conn).total);
 
         // null districts
         PopulationInfo arubaInfo = Country.fromCountryCode("ABW", conn).getPopulationInfo(conn);
-        assertEquals(103000,
-                arubaInfo.total);
-        assertEquals(29034,
-                arubaInfo.inCities);
+        Assertions.assertEquals(103000, arubaInfo.total);
+        Assertions.assertEquals(29034, arubaInfo.inCities);
     }
 }
