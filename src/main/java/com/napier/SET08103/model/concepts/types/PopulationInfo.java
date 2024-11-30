@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class PopulationInfo {
-
     public final IZone location;
 
     public final long total;
@@ -38,5 +37,13 @@ public class PopulationInfo {
                 this.inCities + " (" + Math.round(((double)this.inCities / (double)this.total) * 100D) + "%)",
                 this.outsideCities + " (" + Math.round(((double)this.outsideCities / (double)this.total) * 100D) + "%)");
         System.out.println();
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if ((other == null) || !(other.getClass().isInstance(this)))
+            return false;
+
+        return this.location.equals(((PopulationInfo)other).location);
     }
 } // info --in country:usa
