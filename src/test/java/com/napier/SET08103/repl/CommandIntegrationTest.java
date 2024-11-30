@@ -123,6 +123,8 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
         Connection conn = getAppDatabaseConnection();
         Testing.setOutputState(false);
 
+        // --in
+
         // Valid zones
 
         assertEquals(Country.fromName("united kingdom", conn).getPopulationInfo(conn),
@@ -145,6 +147,37 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
                 .getClass() == IllegalArgumentException.class);
         assertTrue(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--in", "world"))
+                .getClass() == IllegalArgumentException.class);
+
+        // --of
+
+        assertEquals(7,
+                ((List<IZone>)Repl.parseAndRun(conn, Command.INFO.name(), "--of", "continents")).size());
+
+        assertEquals(239,
+                ((List<IZone>)Repl.parseAndRun(conn, Command.INFO.name(), "--of", "countries")).size());
+
+        // invalid
+
+        // Non IDistributedZones
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "capitals"))
+                .getClass() == IllegalArgumentException.class);
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "cities"))
+                .getClass() == IllegalArgumentException.class);
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "districts"))
+                .getClass() == IllegalArgumentException.class);
+
+        // wrong arg number
+
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "continents", "--in", "world"))
+                .getClass() == IllegalArgumentException.class);
+
+        assertTrue(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(new String[] { Command.INFO.name() }, conn))
                 .getClass() == IllegalArgumentException.class);
 
         Testing.setOutputState(true);

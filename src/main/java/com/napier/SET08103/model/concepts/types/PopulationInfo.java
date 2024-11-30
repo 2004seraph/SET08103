@@ -5,7 +5,7 @@ import com.napier.SET08103.model.concepts.zone.IZone;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PopulationInfo {
+public class PopulationInfo implements Comparable<PopulationInfo> {
     public final IZone location;
 
     public final long total;
@@ -23,12 +23,14 @@ public class PopulationInfo {
         this.outsideCities = total - inCities;
     }
 
-    public void print(Connection conn) throws SQLException {
+    public static void printHeaders() {
         System.out.printf(
                 "%-45s %-22s %-22s %-22s",
                 "Name", "Total Population", "Urban Population", "Rural Population");
         System.out.println();
+    }
 
+    public void print(Connection conn) throws SQLException {
         System.out.printf(
                 "%-45s %-22s %-22s %-22s",
 
@@ -46,4 +48,9 @@ public class PopulationInfo {
 
         return this.location.equals(((PopulationInfo)other).location);
     }
-} // info --in country:usa
+
+    @Override
+    public int compareTo(PopulationInfo o) {
+        return this.location.compareTo(o.location);
+    }
+}

@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 import static com.napier.SET08103.repl.Repl.parseZoneReference;
 
-public class PopulationOf implements ICommand {
+public final class PopulationOf implements ICommand {
     @Override
     public Options getOptions() {
         return new Options()
