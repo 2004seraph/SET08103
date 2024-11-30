@@ -15,6 +15,9 @@
 > [!IMPORTANT]
 > You may want to read this if you're an examiner.
 
+> [!INFO]
+> Assume common UNIX-like CLI tool behaviour
+
 These commands assume a Linux environment with Docker and Maven installed.
 
 1. Package the app: `mvn -DskipTests package`
@@ -27,8 +30,16 @@ These commands assume a Linux environment with Docker and Maven installed.
    `docker compose -f docker-compose.yml -f docker-compose.windows.linux.yml up db`
 3. Open an interactive REPL prompt: `MYSQL_ROOT_PASSWORD=root java -jar target/pop.jar` (ensuring zero arguments)
 4. Ask for help with the commands: `help`
-    > Assume common UNIX-like CLI tool behaviour
 5. Run your query and see the output! You will be able to fulfil any requirement (and more!) using the commands in the prompt.
+
+You can also directly evaluate commands from the shell by passing them to the package as command line arguments:
+
+```
+~ $ MYSQL_ROOT_PASSWORD=root java -jar target/pop.jar total --in world
+Successfully connected to MySQL database: world
+
+Population of World: 6078749450
+```
 
 ## Requirements
 
