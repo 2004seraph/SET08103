@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static uk.ac.napier.SET08103.model.concepts.zone.Zone.wrapIZone;
 
 public final class WorldIntegrationTest extends AbstractIntegrationTest {
@@ -24,6 +25,8 @@ public final class WorldIntegrationTest extends AbstractIntegrationTest {
 
         // ensure there are indeed 7 continents
         assertEquals(World.INSTANCE.getInnerZones(conn).size(), 7);
+
+        assertNull(World.INSTANCE.getOuterZone());
     }
 
     @Test
