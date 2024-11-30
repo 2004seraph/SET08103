@@ -74,6 +74,9 @@ public final class App implements AutoCloseable {
 
             while (true) {
                 String line = console.readLine(" > ");
+                if (line == null)
+                    break;
+
                 String[] subArgs = line.split("\\s+"); // split by any amount of whitespace
 
                 if (subArgs.length == 1 && Objects.equals(subArgs[0], "quit"))
