@@ -14,6 +14,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.11.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.mysql</groupId>
@@ -44,8 +56,8 @@
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.5.0</version>
+            <artifactId>junit-jupiter</artifactId>
+            <!-- ALL JUnit artefact versions are handled by the JUnit BOM -->
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -56,6 +68,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.7.1</version>
+
                 <configuration>
                     <finalName>pop</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
@@ -83,19 +96,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.20</version> <!-- done -->
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.1.1</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>5.1.1</version>
-                    </dependency>
-                </dependencies>
+                <version>3.5.1</version>
+                <!-- Newest Surefire does not need an adapter for JUnit -->
             </plugin>
 
             <plugin>

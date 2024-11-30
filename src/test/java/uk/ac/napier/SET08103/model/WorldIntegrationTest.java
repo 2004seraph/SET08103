@@ -19,7 +19,7 @@ import static uk.ac.napier.SET08103.model.concepts.zone.Zone.wrapIZone;
 public final class WorldIntegrationTest extends AbstractIntegrationTest {
 
     @Test
-    void zoneInfo() throws SQLException {
+    void zoneInfo() {
         final Connection conn = getAppDatabaseConnection();
 
         // ensure there are indeed 7 continents
