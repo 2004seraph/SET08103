@@ -17,7 +17,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
@@ -49,6 +48,7 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
             "Midland",
             "Odessa");
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     void districtCreate() {
         final Connection conn = getAppDatabaseConnection();
@@ -84,15 +84,14 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
             }
         };
 
-        final Consumer<String> createInvalidDistrict = (name) -> {
-            assertThrows(IllegalArgumentException.class, () -> District.fromName(name, conn));
-        };
-        final BiConsumer<String, String> createInvalidDistrictWithCountry = (name, countryCode) -> {
-            assertThrows(IllegalArgumentException.class, () -> District.fromName(
-                    name,
-                    Country.fromCountryCode(countryCode, conn),
-                    conn));
-        };
+        final Consumer<String> createInvalidDistrict = (name) ->
+                assertThrows(IllegalArgumentException.class, () -> District.fromName(name, conn));
+
+        final BiConsumer<String, String> createInvalidDistrictWithCountry = (name, countryCode) ->
+                assertThrows(IllegalArgumentException.class, () -> District.fromName(
+                        name,
+                        Country.fromCountryCode(countryCode, conn),
+                        conn));
 
         // Valid
         createValidDistrict.accept("kabol", "AFG"); // First entry
@@ -136,13 +135,13 @@ public final class DistrictIntegrationTest extends AbstractIntegrationTest {
 
         // Check if all cities are present, regardless of ordering
         assertEquals(
-                new HashSet<String>(texasCities),
+                new HashSet<>(texasCities),
                 texasCitiesRequestAsUniqueStrings
         );
 
         // getCities(), should be the same as getInnerZones()
         assertEquals(
-                new HashSet<String>(texasCities),
+                new HashSet<>(texasCities),
                 texas.getCities(conn)
                         .stream()
                         .map(Object::toString)

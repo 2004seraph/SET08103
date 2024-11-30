@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class CityIntegrationTest extends AbstractIntegrationTest {
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     void createValid() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
@@ -63,6 +64,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
         }
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Test
     void createInValid() {
         final Connection conn = getAppDatabaseConnection();
@@ -114,6 +116,6 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
 
         final List<City> capitals = City.allCapitals(conn);
         assertTrue(Arrays.asList(capitals.stream().map(City::toString).toArray()).contains("London"));
-        assertTrue(capitals.stream().allMatch(c -> c.isCapital()));
+        assertTrue(capitals.stream().allMatch(City::isCapital));
     }
 }

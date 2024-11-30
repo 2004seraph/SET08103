@@ -23,6 +23,9 @@ public class PopulationInfo implements Comparable<PopulationInfo> {
         this.outsideCities = total - inCities;
     }
 
+    /**
+     * Prints the column headers for a population report
+     */
     public static void printHeaders() {
         System.out.printf(
                 "%-45s %-22s %-22s %-22s",
@@ -30,6 +33,9 @@ public class PopulationInfo implements Comparable<PopulationInfo> {
         System.out.println();
     }
 
+    /**
+     * Outputs this instance's data to the console in table format, for a population report
+     */
     public void print(Connection conn) throws SQLException {
         System.out.printf(
                 "%-45s %-22s %-22s %-22s",

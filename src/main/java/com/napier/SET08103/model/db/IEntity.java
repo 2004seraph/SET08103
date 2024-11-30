@@ -6,5 +6,5 @@ package com.napier.SET08103.model.db;
  * Intended for use in SQL string query building.
  */
 public interface IEntity {
-    public String getPrimaryKey();
+    String getPrimaryKey();
 }

@@ -35,9 +35,8 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     /**
      * Returns a Country instance from a given primary key
      * @param countryCode "USA"
-     * @param conn
      * @return A Country instance
-     * @throws SQLException
+     * @throws IllegalArgumentException if no country exists with the given code
      */
     public static Country fromCountryCode(String countryCode, Connection conn) throws SQLException {
         PreparedStatement ps = conn.prepareStatement(
@@ -61,9 +60,8 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
     /**
      * Returns a Country instance from a name. In the event of multiple matches, the country with the
      * higher population is chosen.
-     * @param conn
      * @return A Country instance
-     * @throws SQLException
+     * @throws IllegalArgumentException if no country is found with a name LIKE the one given
      */
     public static Country fromName(String name, Connection conn) throws SQLException {
         if (name == null || name.isEmpty())

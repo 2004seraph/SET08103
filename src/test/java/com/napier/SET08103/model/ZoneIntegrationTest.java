@@ -16,21 +16,21 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static com.napier.SET08103.model.concepts.zone.Zone.wrapIZone;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public final class ZoneIntegrationTest extends AbstractIntegrationTest {
 
+    @SuppressWarnings("AssertBetweenInconvertibleTypes")
     @Test
     void equals() throws SQLException {
         Connection conn = getAppDatabaseConnection();
 
-        assertFalse(City.fromName("Dallas", conn).equals(Country.fromCountryCode("USA", conn)));
-        assertFalse(Country.fromCountryCode("USA", conn).equals(City.fromName("Dallas", conn)));
+        assertNotEquals(City.fromName("Dallas", conn), Country.fromCountryCode("USA", conn));
+        assertNotEquals(Country.fromCountryCode("USA", conn), City.fromName("Dallas", conn));
 
-        assertTrue(City.fromId(3800, conn).equals(City.fromName("Dallas", conn)));
-        assertTrue(City.fromName("Dallas", conn).equals(City.fromId(3800, conn)));
+        assertEquals(City.fromId(3800, conn), City.fromName("Dallas", conn));
+        assertEquals(City.fromName("Dallas", conn), City.fromId(3800, conn));
     }
 
     @Test
@@ -112,7 +112,7 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
             }
         };
 
-        for (Continent.FieldEnum c : Continent.FieldEnum.asList)
+        for (Continent.FieldEnum c : Continent.FieldEnum.asArray)
             assertAll(() -> testContinents.accept(c));
     }
 }

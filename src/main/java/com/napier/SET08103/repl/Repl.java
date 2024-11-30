@@ -16,13 +16,21 @@ import java.util.Properties;
 public final class Repl {
     private Repl() { }
 
+    /**
+     * Prints CLI intro to the app for when the package is first invoked
+     */
     public static void printWelcome() {
         System.out.println("This is a REPL prompt. Type commands.");
         System.out.println();
-        System.out.println("The results of all queries are cached in memory, and subsequent ones will make use of this cache where applicable.");
+        System.out.println(
+                "The results of all queries are cached in memory, " +
+                        "and subsequent ones will make use of this cache where applicable.");
         printTopLevelHelpString();
     }
 
+    /**
+     * Prints help for the entire package
+     */
     private static void printTopLevelHelpString() {
         System.out.println();
         System.out.println("Available commands: ");
@@ -36,15 +44,19 @@ public final class Repl {
         System.out.println("Exit with CRTL+C, or by typing 'quit'");
     }
 
+    /**
+     * Prints parameter help for a given Command
+     */
     private static void printSubCommandHelpString(Command command) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(command.toString().toLowerCase() + " [options]", command.Instance().getOptions());
+        formatter.printHelp(
+                command.toString().toLowerCase() + " [options]", command.Instance().getOptions());
     }
 
     /**
      * Command entry point to the REPL
-     * @param args
-     * @param conn
+     * @param args command arguments
+     * @param conn database connection
      * @return an object representing the evaluated output of the command
      */
     public static Object parseAndRun(String[] args, Connection conn) throws RuntimeException {
@@ -100,9 +112,9 @@ public final class Repl {
      *
      * @param p Parsed key:value properties for a specific command line argument
      * @param conn Connects to the database to get the specific zone instance referenced
-     * @return
-     * @throws RuntimeException
-     * @throws SQLException
+     * @return An IZone instance which you can call getZoneType() on to know what to cast it to
+     * @throws RuntimeException Any kind of parse error
+     * @throws SQLException Not found in the database, or any other issue relating to the database
      */
     public static IZone parseZoneReference(Properties p, Connection conn)
             throws RuntimeException, SQLException {

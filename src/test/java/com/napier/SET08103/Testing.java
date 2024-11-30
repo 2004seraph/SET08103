@@ -15,8 +15,11 @@ public final class Testing {
     private Testing() { }
 
     // Test constants
+    @SuppressWarnings("SpellCheckingInspection")
     public static final String MYSQL_HOST_ENVAR = "MYSQL_HOST";
+    @SuppressWarnings("SpellCheckingInspection")
     public static final String MYSQL_ROOT_PASSWORD_ENVAR = "MYSQL_ROOT_PASSWORD";
+    @SuppressWarnings("SpellCheckingInspection")
     public static final String MYSQL_HOST_ENVAR_DEFAULT = "localhost";
     public static final String MYSQL_ROOT_PASSWORD_DEFAULT = "root";
 
@@ -28,8 +31,7 @@ public final class Testing {
     });
 
     /**
-     * Toggles System.out.println() console output.
-     * @param state
+     * Toggles System.out.println() console output
      */
     public static void setOutputState(boolean state) {
         if (state) {
@@ -44,8 +46,8 @@ public final class Testing {
 
     /**
      * Gets the reason for a top-level throw for a given JUnit executable function
-     * @param executable
-     * @return
+     * @param executable An anonymous function "() -> { ... }"
+     * @return An exception
      */
     public static Throwable getExceptionCause(Executable executable) {
         try {
@@ -60,10 +62,7 @@ public final class Testing {
      * Easy way of comparing two lists, insensitive to ordering, but sensitive to element frequency.
      * Useful for database tests (where order shouldn't matter, but there can be duplicate entries
      * depending on the query).
-     * @param one
-     * @param two
-     * @return
-     * @param <T>
+     * @param <T> A type implementing Comparable<T>, i.e. IZone
      */
     public static <T extends Comparable<T>> boolean compareLists(List<T> one, List<T> two) {
         // Copied from:
@@ -75,9 +74,7 @@ public final class Testing {
             return true;
         }
 
-        if ((one == null && two != null)
-                || one != null && two == null
-                || one.size() != two.size()) {
+        if (one == null || two == null || one.size() != two.size()) {
             return false;
         }
 

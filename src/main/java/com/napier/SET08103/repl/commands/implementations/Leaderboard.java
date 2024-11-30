@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 
 import static com.napier.SET08103.repl.Repl.parseZoneReference;
 
+/**
+ * For generating every type of report, excluding population reports
+ */
 public final class Leaderboard implements ICommand {
 
     @Override
@@ -59,6 +62,7 @@ public final class Leaderboard implements ICommand {
                 );
     }
 
+    @SuppressWarnings("CommentedOutCode")
     @Override
     public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
         assert args.getOptionValue("of") != null;

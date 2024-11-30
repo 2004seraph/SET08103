@@ -16,7 +16,7 @@ public abstract class AbstractZone implements IZone {
      * This cache spans different instances of the same underlying zone
      * so creating the key for the ASIA continent on one instance will make its
      * cache available to other continent instances of ASIA.
-     *
+     * <p>
      * This also means that if one calls Asia.getCities(), it will preload the cache
      * with all the intermediate zones required to retrieve such data.
      */
@@ -24,7 +24,7 @@ public abstract class AbstractZone implements IZone {
 
     /**
      * Flattens a list of all descendant zones of the given distance in levels from this zone instance
-     * 
+     * <p>
      * For example:
      * districtInstance.getInnerZones(1, conn) -> List<City>,
      * continentInstance.getInnerZones(3, conn) -> List<District>
@@ -32,7 +32,6 @@ public abstract class AbstractZone implements IZone {
      * @param traverseDown How many tree levels down from the current one to traverse
      * @param conn Database connection
      * @return A List of all zone instances from that level
-     * @throws SQLException
      */
     public List<IZone> getInnerZones(final int traverseDown, final Connection conn) throws SQLException {
         if (traverseDown < 1)

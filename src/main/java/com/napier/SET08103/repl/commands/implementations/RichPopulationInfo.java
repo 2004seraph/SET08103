@@ -9,7 +9,6 @@ import com.napier.SET08103.repl.commands.ICommand;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,6 +18,9 @@ import java.util.stream.Collectors;
 
 import static com.napier.SET08103.repl.Repl.parseZoneReference;
 
+/**
+ * For generating population reports
+ */
 public final class RichPopulationInfo implements ICommand {
     @Override
     public Options getOptions() {
@@ -44,7 +46,7 @@ public final class RichPopulationInfo implements ICommand {
     }
 
     @Override
-    public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
+    public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException {
         if (args.hasOption("in") && args.hasOption("of"))
             throw new IllegalArgumentException("--of and --in are mutually exclusive for this command");
 

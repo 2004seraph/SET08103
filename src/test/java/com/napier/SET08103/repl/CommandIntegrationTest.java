@@ -15,8 +15,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
 public class CommandIntegrationTest extends AbstractIntegrationTest {
@@ -139,15 +138,15 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
 
         // Invalid zones that do not implement IDistributedPopulation
 
-        assertTrue(Testing.getExceptionCause(
+        assertSame(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--in", "city:london"))
-                .getClass() == IllegalArgumentException.class);
-        assertTrue(Testing.getExceptionCause(
+                .getClass(), IllegalArgumentException.class);
+        assertSame(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--in", "district:texas"))
-                .getClass() == IllegalArgumentException.class);
-        assertTrue(Testing.getExceptionCause(
+                .getClass(), IllegalArgumentException.class);
+        assertSame(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--in", "world"))
-                .getClass() == IllegalArgumentException.class);
+                .getClass(), IllegalArgumentException.class);
 
         // --of
 
@@ -160,25 +159,25 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
         // invalid
 
         // Non IDistributedZones
-        assertTrue(Testing.getExceptionCause(
+        assertSame(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "capitals"))
-                .getClass() == IllegalArgumentException.class);
-        assertTrue(Testing.getExceptionCause(
+                .getClass(), IllegalArgumentException.class);
+        assertSame(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "cities"))
-                .getClass() == IllegalArgumentException.class);
-        assertTrue(Testing.getExceptionCause(
+                .getClass(), IllegalArgumentException.class);
+        assertSame(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "districts"))
-                .getClass() == IllegalArgumentException.class);
+                .getClass(), IllegalArgumentException.class);
 
         // wrong arg number
 
-        assertTrue(Testing.getExceptionCause(
+        assertSame(Testing.getExceptionCause(
                         () -> Repl.parseAndRun(conn, Command.INFO.name(), "--of", "continents", "--in", "world"))
-                .getClass() == IllegalArgumentException.class);
+                .getClass(), IllegalArgumentException.class);
 
-        assertTrue(Testing.getExceptionCause(
-                        () -> Repl.parseAndRun(new String[] { Command.INFO.name() }, conn))
-                .getClass() == IllegalArgumentException.class);
+        assertSame(Testing.getExceptionCause(
+                        () -> Repl.parseAndRun(new String[]{Command.INFO.name()}, conn))
+                .getClass(), IllegalArgumentException.class);
 
         Testing.setOutputState(true);
     }

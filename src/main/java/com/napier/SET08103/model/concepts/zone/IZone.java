@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface IZone extends Comparable<IZone> {
     // Tree
-    public Zone getZoneLevel();                                             // Rank
-    public IZone getOuterZone();                                            // Parent
-    public List<IZone> getInnerZones(final Connection conn) throws SQLException;  // Children
+    Zone getZoneLevel();                                                    // Rank
+    IZone getOuterZone();                                                   // Parent
+    List<IZone> getInnerZones(final Connection conn) throws SQLException;   // Children
 
     // Domain specific
     List<City> getCities(final Connection conn) throws SQLException;
-    public long getTotalPopulation(final Connection conn) throws SQLException;
+    long getTotalPopulation(final Connection conn) throws SQLException;
 }

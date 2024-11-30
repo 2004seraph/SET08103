@@ -81,9 +81,7 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
                 Properties p = args.getOptionProperties("in");
                 retrievedZone = Repl.parseZoneReference(p, conn);
 
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            } catch (SQLException e) {
+            } catch (ParseException | SQLException e) {
                 throw new RuntimeException(e);
             }
 
@@ -155,7 +153,7 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
                 tryParseZoneRef.accept("CITY:COLCHESTER", City.fromId(521, conn)));
     }
 
-    private class TestCommand implements ICommand {
+    private static class TestCommand implements ICommand {
         @Override
         public Options getOptions() {
             return new Options()
@@ -172,7 +170,7 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Override
-        public Object execute(CommandLine args, Connection conn) throws SQLException, InternalError, ParseException {
+        public Object execute(CommandLine args, Connection conn) throws InternalError {
             return null;
         }
     }

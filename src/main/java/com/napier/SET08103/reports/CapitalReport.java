@@ -24,7 +24,7 @@ public final class CapitalReport {
 
             String city_string = String.format(
                     "%-36s %-46s %-10s",
-                    city.toString(), city.getCountry(), city.getTotalPopulation(conn));
+                    city, city.getCountry(), city.getTotalPopulation(conn));
             System.out.println(city_string);
         }
         System.out.println();

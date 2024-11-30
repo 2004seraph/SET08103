@@ -102,4 +102,4 @@ Each square is a file, color-coded to how much of it is being tested.
 - The `./start.sh` file starts the entire project, it works similarly to above, and will build the project if it needs
 to, but if you edit it, you will need to rerun `./build.sh`
 - To completely reset all the docker containers, run: `docker compose rm`, and select "Yes"
-- Changing `MYSQL_ROOT_PASSWORD` requires `docker compose rm` to be ran
+- Changing `MYSQL_ROOT_PASSWORD` requires `docker compose rm` to be run

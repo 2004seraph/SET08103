@@ -30,6 +30,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
             "Central America",
             "North America");
 
+    @SuppressWarnings("ExtractMethodRecommender")
     @Test
     void continentCreate() {
         Connection conn = getAppDatabaseConnection();
@@ -133,7 +134,7 @@ public final class ContinentIntegrationTest extends AbstractIntegrationTest {
         };
 
         // might as well just check every single continent
-        for (Continent.FieldEnum c : Continent.FieldEnum.asList)
+        for (Continent.FieldEnum c : Continent.FieldEnum.asArray)
             checkCities.accept(Continent.fromValue(c));
     }
 
