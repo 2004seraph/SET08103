@@ -35,9 +35,6 @@ public final class CountryReport {
         }
         catch (Exception e)
         {
-//            System.out.println(e.getMessage());
-//            System.out.println("Failed to get country details");
-//            return null;
             throw new RuntimeException(e);
         }
     }

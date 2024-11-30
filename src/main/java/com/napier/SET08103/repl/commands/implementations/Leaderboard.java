@@ -1,6 +1,9 @@
 package com.napier.SET08103.repl.commands.implementations;
 
+import com.napier.SET08103.CityReport;
+import com.napier.SET08103.CountryReport;
 import com.napier.SET08103.model.concepts.City;
+import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.World;
 import com.napier.SET08103.model.concepts.zone.AbstractZone;
 import com.napier.SET08103.model.concepts.zone.IZone;
@@ -13,6 +16,7 @@ import org.apache.commons.cli.ParseException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -121,11 +125,24 @@ public final class Leaderboard implements ICommand {
 
     private static void showLeaderboard(List<IZone> zones, Connection conn) throws SQLException {
         switch (zones.get(0).getZoneLevel()) {
+            case CAPITALS:
             case CITIES:
+                {
+                    List<City> res = Zone.unwrapIZone(zones);
+                    CityReport.print((ArrayList<City>) res, conn);
+                }
                 break;
-        }
-        for (IZone z : zones) {
-            System.out.println(z.toString() + ": " + z.getTotalPopulation(conn));
+            case COUNTRIES:
+                {
+                    List<Country> res = Zone.unwrapIZone(zones);
+                    CountryReport.print((ArrayList<Country>) res);
+                }
+                break;
+            default:
+                for (IZone z : zones) {
+                    System.out.println(z.toString() + ": " + z.getTotalPopulation(conn));
+                }
+                break;
         }
     }
 }

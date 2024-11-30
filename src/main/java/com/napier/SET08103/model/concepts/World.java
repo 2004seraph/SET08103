@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Root of the tree of zones
  */
-public class World extends AbstractZone {
+public final class World extends AbstractZone {
     public static final World INSTANCE = new World();
 
     private World() { }
