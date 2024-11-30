@@ -12,7 +12,8 @@
 
 ## Usage
 
-You may want to read this if you're an examiner.
+> [!NOTE]
+> You may want to read this if you're an examiner.
 
 These commands assume a Linux environment with Docker and Maven installed.
 
@@ -30,6 +31,7 @@ These commands assume a Linux environment with Docker and Maven installed.
 
 ## Requirements
 
+> [!NOTE]
 > 31 requirements of 32 have been implemented, which is 96.9%.
 
 ### Evidence
