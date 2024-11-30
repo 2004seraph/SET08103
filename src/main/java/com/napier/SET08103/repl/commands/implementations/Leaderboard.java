@@ -1,5 +1,6 @@
 package com.napier.SET08103.repl.commands.implementations;
 
+import com.napier.SET08103.reports.CapitalReport;
 import com.napier.SET08103.reports.CityReport;
 import com.napier.SET08103.reports.CountryReport;
 import com.napier.SET08103.model.concepts.City;
@@ -126,6 +127,11 @@ public final class Leaderboard implements ICommand {
     private static void showLeaderboard(List<IZone> zones, Connection conn) throws SQLException {
         switch (zones.get(0).getZoneLevel()) {
             case CAPITALS:
+                {
+                    List<City> res = Zone.unwrapIZone(zones);
+                    CapitalReport.print((ArrayList<City>) res, conn);
+                }
+                break;
             case CITIES:
                 {
                     List<City> res = Zone.unwrapIZone(zones);
