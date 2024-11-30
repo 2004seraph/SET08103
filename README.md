@@ -15,7 +15,7 @@
 > [!IMPORTANT]
 > You may want to read this if you're an examiner.
 
-> [!INFO]
+> [!NOTE]
 > Assume common UNIX-like CLI tool behaviour
 
 These commands assume a Linux environment with Docker and Maven installed.
