@@ -1,7 +1,7 @@
 package com.napier.SET08103.repl.commands.implementations;
 
-import com.napier.SET08103.CityReport;
-import com.napier.SET08103.CountryReport;
+import com.napier.SET08103.reports.CityReport;
+import com.napier.SET08103.reports.CountryReport;
 import com.napier.SET08103.model.concepts.City;
 import com.napier.SET08103.model.concepts.Country;
 import com.napier.SET08103.model.concepts.World;

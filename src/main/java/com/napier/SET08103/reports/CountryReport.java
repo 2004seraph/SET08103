@@ -1,4 +1,4 @@
-package com.napier.SET08103;
+package com.napier.SET08103.reports;
 
 import com.napier.SET08103.model.concepts.Country;
 

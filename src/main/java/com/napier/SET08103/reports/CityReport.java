@@ -1,7 +1,6 @@
-package com.napier.SET08103;
+package com.napier.SET08103.reports;
 
 import com.napier.SET08103.model.concepts.City;
-import com.napier.SET08103.model.concepts.Country;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package com.napier.SET08103;
+package com.napier.SET08103.repl.commands;
 
 public final class SQLQueries {
 
