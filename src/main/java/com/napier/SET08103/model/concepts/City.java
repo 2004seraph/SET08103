@@ -44,7 +44,7 @@ public final class City extends AbstractZone implements IEntity {
      * Returns a City instance with a given primary key
      * @param id
      * @param conn
-     * @return
+     * @return A City instance
      * @throws SQLException No entries found with that id
      */
     public static City fromId(int id, Connection conn) throws SQLException {
