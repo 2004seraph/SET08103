@@ -43,12 +43,15 @@ Population of World: 6078749450
 
 ## Requirements
 
-> [!NOTE]
 > **31** requirements of **32** have been implemented, which is **96.9%**.
 
 ### Evidence
 
-Very long results have been reduced to the beginning and ending dozen or so. The command has been included for you to reproduce it yourself.
+> [!NOTE]
+> Very long results have been reduced to the beginning and ending dozen or so. 
+
+> [!NOTE]
+> The command has been included for you to reproduce each screenshot. Bear in mind they were all ran in the package's interactive REPL mode.
 
 | ID | Name                                                                                                                                                     | Met | Screenshot                                                                                                                  |
 |----|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----|-----------------------------------------------------------------------------------------------------------------------------|
