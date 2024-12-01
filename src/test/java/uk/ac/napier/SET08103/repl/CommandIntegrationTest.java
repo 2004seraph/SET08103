@@ -24,6 +24,9 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
 
         Testing.setOutputState(false);
 
+        // no --of parameter
+
+
         assertEquals(239, ((List<IZone>) Repl.parseAndRun(conn,
                 Command.LEADERBOARD.name(), "--of", "countries")).size());
 

@@ -33,6 +33,16 @@ public final class ZoneIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void invalidInnerTraversal() {
+        Connection conn = getAppDatabaseConnection();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                Region.fromName("Caribbean", conn).getInnerZones(0, conn));
+        assertThrows(IllegalArgumentException.class, () ->
+                Region.fromName("Caribbean", conn).getInnerZones(-1, conn));
+    }
+
+    @Test
     void districtInnerTraversal() throws SQLException { // Tests method getInnerZones() on AbstractZone
         Connection conn = getAppDatabaseConnection();
 

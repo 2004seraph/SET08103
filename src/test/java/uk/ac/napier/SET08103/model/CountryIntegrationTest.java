@@ -78,6 +78,8 @@ final class CountryIntegrationTest extends AbstractIntegrationTest {
         // Invalid
         assertThrows(IllegalArgumentException.class, () ->
                 Country.fromCountryCode("", conn));
+        assertThrows(IllegalArgumentException.class, () ->
+                Country.fromCountryCode(null, conn));
     }
 
     @Test

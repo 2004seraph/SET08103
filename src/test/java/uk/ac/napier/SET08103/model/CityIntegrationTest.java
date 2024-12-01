@@ -80,6 +80,7 @@ public final class CityIntegrationTest extends AbstractIntegrationTest {
         createCity.accept(0, "bajookieland");
         createCity.accept(-12, "erghieiugfbwiefbuiwuhfiuwhrfiwhurfiwu");
         createCity.accept(-12, "");
+        createCity.accept(-12, null);
         createCity.accept(65347860, "123");
     }
 
