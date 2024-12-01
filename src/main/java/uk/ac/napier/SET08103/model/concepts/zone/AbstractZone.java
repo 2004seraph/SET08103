@@ -35,7 +35,7 @@ public abstract class AbstractZone implements IZone {
      */
     public List<IZone> getInnerZones(final int traverseDown, final Connection conn) throws SQLException {
         if (traverseDown < 1)
-            throw new RuntimeException("Invalid depth");
+            throw new IllegalArgumentException("Invalid depth");
 
         List<IZone> treeExpansion = getInnerZones(conn);
 
