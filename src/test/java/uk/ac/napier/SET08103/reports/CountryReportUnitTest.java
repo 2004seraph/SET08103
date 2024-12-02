@@ -1,4 +1,4 @@
-package uk.ac.napier.SET08103;
+package uk.ac.napier.SET08103.reports;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +9,6 @@ import uk.ac.napier.SET08103.model.concepts.City;
 import uk.ac.napier.SET08103.model.concepts.Continent;
 import uk.ac.napier.SET08103.model.concepts.Country;
 import uk.ac.napier.SET08103.model.concepts.Region;
-import uk.ac.napier.SET08103.reports.CountryReport;
 
 import java.util.ArrayList;
 
@@ -28,20 +27,25 @@ public final class CountryReportUnitTest {
 
     @Mock
     Region mockRegion;
-
     @Mock
     Continent mockContinent;
-
     @Mock
     City mockCapital;
 
     @Test
-    void printCountryReportTestNull(){
+    void printNullCollection(){
         CountryReport.print(null);
     }
 
     @Test
-    void printCountryReportTestEmpty(){
+    void printNullMember(){
+        ArrayList<Country> countries = new ArrayList<>();
+        countries.add(null);
+        assertAll(() -> CountryReport.print(countries));
+    }
+
+    @Test
+    void printValid(){
         ArrayList<Country> countries = new ArrayList<>();
 
         mockCountry = mock(Country.class);
@@ -60,13 +64,6 @@ public final class CountryReportUnitTest {
 
         countries.add(mockCountry);
 
-        assertAll(() -> CountryReport.print(countries));
-    }
-
-    @Test
-    void printCountryReportContainsNull(){
-        ArrayList<Country> countries = new ArrayList<>();
-        countries.add(null);
         assertAll(() -> CountryReport.print(countries));
     }
 }
