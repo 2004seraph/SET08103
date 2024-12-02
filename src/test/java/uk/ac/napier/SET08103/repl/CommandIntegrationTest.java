@@ -16,7 +16,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
-public class CommandIntegrationTest extends AbstractIntegrationTest {
+public final class CommandIntegrationTest extends AbstractIntegrationTest {
+
+    @Test
+    void languageReport() {
+
+    }
 
     @Test
     void leaderboard() {

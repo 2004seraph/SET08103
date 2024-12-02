@@ -1,5 +1,6 @@
 package uk.ac.napier.SET08103.repl.commands;
 
+import uk.ac.napier.SET08103.repl.commands.implementations.LanguageStats;
 import uk.ac.napier.SET08103.repl.commands.implementations.Leaderboard;
 import uk.ac.napier.SET08103.repl.commands.implementations.PopulationOf;
 import uk.ac.napier.SET08103.repl.commands.implementations.RichPopulationInfo;
@@ -14,7 +15,8 @@ public enum Command {
     // Linking to a new instance of the implementation
     LEADERBOARD(new Leaderboard()),
     INFO(new RichPopulationInfo()),
-    TOTAL(new PopulationOf());
+    TOTAL(new PopulationOf()),
+    LANGUAGES(new LanguageStats());
 
     @SuppressWarnings("unused")
     public static final Command[] asArray = values();
