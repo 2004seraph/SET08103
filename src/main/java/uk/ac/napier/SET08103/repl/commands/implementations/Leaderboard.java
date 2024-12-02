@@ -152,7 +152,7 @@ public final class Leaderboard implements ICommand {
                 break;
             default:
                 for (IZone z : zones) {
-                    System.out.println(z.toString() + ": " + z.getTotalPopulation(conn));
+                    System.out.printf("%-15s %,15d%n", z.toString(), z.getTotalPopulation(conn));
                 }
                 break;
         }
