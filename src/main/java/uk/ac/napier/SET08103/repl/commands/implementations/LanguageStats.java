@@ -1,4 +1,21 @@
 package uk.ac.napier.SET08103.repl.commands.implementations;
 
-public class LanguageStats {
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import uk.ac.napier.SET08103.repl.commands.ICommand;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public final class LanguageStats implements ICommand {
+    @Override
+    public Options getOptions() {
+        return new Options();
+    }
+
+    @Override
+    public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
+        return null;
+    }
 }

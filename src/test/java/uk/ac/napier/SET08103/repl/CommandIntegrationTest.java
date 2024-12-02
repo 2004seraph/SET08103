@@ -16,16 +16,18 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
-public class CommandIntegrationTest extends AbstractIntegrationTest {
+public final class CommandIntegrationTest extends AbstractIntegrationTest {
+
+    @Test
+    void languageReport() {
+
+    }
 
     @Test
     void leaderboard() {
         final Connection conn = getAppDatabaseConnection();
 
         Testing.setOutputState(false);
-
-        // no --of parameter
-
 
         assertEquals(239, ((List<IZone>) Repl.parseAndRun(conn,
                 Command.LEADERBOARD.name(), "--of", "countries")).size());
