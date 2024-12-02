@@ -24,9 +24,6 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
 
         Testing.setOutputState(false);
 
-        // no --of parameter
-
-
         assertEquals(239, ((List<IZone>) Repl.parseAndRun(conn,
                 Command.LEADERBOARD.name(), "--of", "countries")).size());
 
@@ -86,7 +83,7 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     @Test
     void populationOf() {
         final Connection conn = getAppDatabaseConnection();
-        Testing.setOutputState(false);
+//        Testing.setOutputState(false);
 
         assertEquals(7285000, ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "city:london")).longValue());
 
