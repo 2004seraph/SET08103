@@ -33,7 +33,7 @@ public abstract class AbstractZone implements IZone {
      * @param conn Database connection
      * @return A List of all zone instances from that level
      */
-    public List<IZone> getInnerZones(final int traverseDown, final Connection conn) throws SQLException {
+    public final List<IZone> getInnerZones(final int traverseDown, final Connection conn) throws SQLException {
         if (traverseDown < 1)
             throw new IllegalArgumentException("Invalid depth");
 
@@ -53,7 +53,7 @@ public abstract class AbstractZone implements IZone {
     }
 
     @Override
-    public boolean equals(final Object other) {
+    public final boolean equals(final Object other) {
         if ((other == null) || (getClass() != other.getClass()))
             return false; // City will never == Country, despite both potentially having the same primary key
 

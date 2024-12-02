@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Represents a Country entity from the database
  */
+
 public final class Country extends AbstractZone implements IEntity, IDistributedPopulation {
 
     // no spelling mistakes

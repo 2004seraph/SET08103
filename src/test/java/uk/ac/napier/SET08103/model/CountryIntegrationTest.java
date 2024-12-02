@@ -56,8 +56,12 @@ final class CountryIntegrationTest extends AbstractIntegrationTest {
             return fromCC.get();
         };
 
-        Assertions.assertEquals(City.fromId(3813, conn), createCountry.apply("USA", "United States").capital);
-        Assertions.assertEquals(City.fromId(4068, conn), createCountry.apply("ZWE", "Zimbabwe").capital);
+        Assertions.assertEquals(
+                City.fromId(3813, conn),
+                createCountry.apply("USA", "United States").capital);
+        Assertions.assertEquals(
+                City.fromId(4068, conn),
+                createCountry.apply("ZWE", "Zimbabwe").capital);
 
         // NULL capital
         Assertions.assertNull(createCountry.apply("ATA", "Antarctica").capital);
@@ -156,7 +160,9 @@ final class CountryIntegrationTest extends AbstractIntegrationTest {
         Assertions.assertEquals(278357000 - 78625774, usaInfo.outsideCities);
 
         // No population
-        Assertions.assertEquals(0, Country.fromCountryCode("ATA", conn).getPopulationInfo(conn).total);
+        Assertions.assertEquals(
+                0,
+                Country.fromCountryCode("ATA", conn).getPopulationInfo(conn).total);
 
         // null districts
         PopulationInfo arubaInfo = Country.fromCountryCode("ABW", conn).getPopulationInfo(conn);
