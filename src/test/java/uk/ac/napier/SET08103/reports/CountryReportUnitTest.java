@@ -34,7 +34,7 @@ public final class CountryReportUnitTest {
 
     @Test
     void printNullCollection(){
-        CountryReport.print(null);
+        assertAll(() -> CountryReport.print(null));
     }
 
     @Test

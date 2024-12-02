@@ -32,7 +32,9 @@ public final class CityReportUnitTest {
 
     @Test
     void printNullCollection(){
-        CountryReport.print(null);
+        conn = mock(Connection.class);
+
+        assertAll(() -> CityReport.print(null, conn));
     }
 
     @Test
