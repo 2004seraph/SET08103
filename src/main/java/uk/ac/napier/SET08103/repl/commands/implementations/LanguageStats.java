@@ -42,33 +42,43 @@ public final class LanguageStats implements ICommand {
 
                 // Populations of each language in each country
                 "(",
-                    "SELECT",
-                        Country.PRIMARY_KEY,            ",",
-                        "countrylanguage.`Language`",   ",",
-                        Country.POPULATION,             ",",
-                        "((countrylanguage.Percentage / 100) *", Country.POPULATION, ") AS Speakers",
-                    "FROM", Country.TABLE,
-                    "INNER JOIN", "countrylanguage",
-                    "ON", Country.PRIMARY_KEY, "=", "countrylanguage.CountryCode",
+                "SELECT",
+                Country.PRIMARY_KEY,            ",",
+                "countrylanguage.`Language`",   ",",
+                Country.POPULATION,             ",",
+                "((countrylanguage.Percentage / 100) *", Country.POPULATION, ") AS Speakers",
+                "FROM", Country.TABLE,
+                "INNER JOIN", "countrylanguage",
+                "ON", Country.PRIMARY_KEY, "=", "countrylanguage.CountryCode",
                 ") AS language_populations",
 
                 "GROUP BY Lang",
                 "ORDER BY Total",
                 "DESC",
                 "LIMIT 5"
-        ))) {
+                ));
+             PreparedStatement worldPop = conn.prepareStatement(
+                     Model.buildStatement(
+                             "SELECT SUM(" + Country.POPULATION + ") FROM " + Country.TABLE + ";"));
 
-            try (ResultSet res = stmt.executeQuery()) {
-                // Print header
+             ResultSet popRes = worldPop.executeQuery();
+
+             ResultSet langRes = stmt.executeQuery()) {
+
+            // Print header
+            System.out.printf(
+                    "%-16s %18s %20s%n",
+                    "Language", "Speakers", "% of Population");
+
+            //noinspection AssertWithSideEffects
+            assert popRes.next();
+
+            while (langRes.next()) {
+                long pop = langRes.getLong("Total");
+
                 System.out.printf(
-                        "%-16s %18s%n",
-                        "Language", "Speakers");
-
-                while (res.next()) {
-                    System.out.printf(
-                            "%-16s %,18d%n",
-                            res.getString("Lang"), res.getLong("Total"));
-                }
+                        "%-16s %,18d %20s%n",
+                        langRes.getString("Lang"), pop, Math.round(((float) pop / popRes.getLong(1)) * 100L) + "%");
             }
         }
         return null;
