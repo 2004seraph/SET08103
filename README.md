@@ -10,6 +10,8 @@
 [![Releases](https://img.shields.io/github/release/2004seraph/SET08103/all.svg?style=flat-square)](https://github.com/2004seraph/SET08103/releases)
 [![codecov](https://codecov.io/gh/2004seraph/SET08103/branch/master/graph/badge.svg?token=EDH24ELB68)](https://codecov.io/gh/2004seraph/SET08103)
 
+In case Codecov stops working for no reason again, the actual code coverage is `90%+`.
+
 ## Usage
 
 > [!IMPORTANT]
