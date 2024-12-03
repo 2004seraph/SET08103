@@ -61,12 +61,12 @@ public final class LanguageStats implements ICommand {
             try (ResultSet res = stmt.executeQuery()) {
                 // Print header
                 System.out.printf(
-                        "%-16s %-16s%n",
+                        "%-16s %18s%n",
                         "Language", "Speakers");
 
                 while (res.next()) {
                     System.out.printf(
-                            "%-16s %-16d%n",
+                            "%-16s %,18d%n",
                             res.getString("Lang"), res.getLong("Total"));
                 }
             }
