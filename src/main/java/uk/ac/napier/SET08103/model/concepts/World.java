@@ -76,6 +76,6 @@ public final class World extends AbstractZone {
 
     @Override
     public String toString() {
-        return "World";
+        return "the world";
     }
 }
