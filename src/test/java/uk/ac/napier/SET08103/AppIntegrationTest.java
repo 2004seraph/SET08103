@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AppIntegrationTest {
 
+
     @Test
     void checkDriver() {
         assertTrue(App.isDriverLoaded());
