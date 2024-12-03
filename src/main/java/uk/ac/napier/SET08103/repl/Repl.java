@@ -139,7 +139,7 @@ public final class Repl {
     /**
      * Prints help for the entire package
      */
-    private static void printTopLevelHelpString() {
+    public static void printTopLevelHelpString() {
         System.out.println();
         System.out.println("Available commands: ");
         System.out.println();

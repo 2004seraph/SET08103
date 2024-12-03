@@ -1,9 +1,6 @@
 package uk.ac.napier.SET08103.repl.commands;
 
-import uk.ac.napier.SET08103.repl.commands.implementations.LanguageStats;
-import uk.ac.napier.SET08103.repl.commands.implementations.Leaderboard;
-import uk.ac.napier.SET08103.repl.commands.implementations.PopulationOf;
-import uk.ac.napier.SET08103.repl.commands.implementations.RichPopulationInfo;
+import uk.ac.napier.SET08103.repl.commands.implementations.*;
 
 /**
  * This is where a command name (like "leaderboard ...") is mapped to its implementation class,
@@ -13,6 +10,7 @@ import uk.ac.napier.SET08103.repl.commands.implementations.RichPopulationInfo;
  */
 public enum Command {
     // Linking to a new instance of the implementation
+    HELP(new Help()),
     LEADERBOARD(new Leaderboard()),
     INFO(new RichPopulationInfo()),
     TOTAL(new PopulationOf()),
