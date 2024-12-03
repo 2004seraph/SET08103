@@ -1,2 +1,2 @@
-ignore:
-  - "src/main/java/uk/ac/napier/SET08103/repl/commands/SQLQueries.java"
+#ignore:
+#  - "src/main/java/uk/ac/napier/SET08103/repl/commands/SQLQueries.java"
