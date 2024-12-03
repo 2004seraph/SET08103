@@ -25,7 +25,8 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
      * @throws SQLException If the given country does not exist, or if it has no such district with the
      * given name
      */
-    public static District fromName(String name, String countryCode, Connection conn) throws SQLException {
+    public static District fromName(final String name, final String countryCode, final Connection conn)
+            throws SQLException {
         return District.fromName(name, Country.fromCountryCode(countryCode, conn), conn);
     }
 
@@ -35,20 +36,21 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
      * @throws SQLException If the given country does not exist, or if it has no such district with the
      * given name
      */
-    public static District fromName(String name, Country country, Connection conn) throws SQLException {
+    public static District fromName(final String name, final Country country, final Connection conn)
+            throws SQLException {
         if (Objects.equals(name, nullFieldValue))
             return null;
 
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT " + City.DISTRICT + ", " + City.COUNTRY_CODE + " FROM " + City.TABLE +
                         " WHERE LOWER( " + City.DISTRICT + " ) LIKE ? AND " + City.COUNTRY_CODE + " = ?"
         );
         stmt.setString(1, name.toLowerCase(Locale.ENGLISH));
         stmt.setString(2, country.countryCode);
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                District d = new District(res.getString(City.DISTRICT));
+                final District d = new District(res.getString(City.DISTRICT));
                 d.country = country;
                 return d;
             } else
@@ -61,11 +63,11 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
      * population is used
      * @throws SQLException No results found for this name
      */
-    public static District fromName(String name, Connection conn) throws SQLException {
+    public static District fromName(final String name, final Connection conn) throws SQLException {
         if (Objects.equals(name, nullFieldValue))
             return null;
 
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT",
 
@@ -81,9 +83,9 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
         );
         stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH) + "%");
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
-                District d = new District(res.getString(City.DISTRICT));
+                final District d = new District(res.getString(City.DISTRICT));
                 d.country = Country.fromCountryCode(res.getString(City.COUNTRY_CODE), conn);
                 return d;
             } else
@@ -94,18 +96,18 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
     private final String name;
     private Country country;
 
-    private District(String name) {
+    private District(final String name) {
         this.name = name;
     }
 
     @Override
-    public List<City> getCities(Connection conn) throws SQLException {
+    public List<City> getCities(final Connection conn) throws SQLException {
         final String cacheKey = this.getClass().getName() + "/" + country.countryCode + "/" + name + "/cities";
         if (cacheMap.containsKey(cacheKey))
             return Zone.unwrapIZone(cacheMap.get(cacheKey));
 
         // Will always be unique values, due to primary key usage
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT " + City.PRIMARY_KEY + " FROM " + City.TABLE +
                         " WHERE " + City.DISTRICT + " = ?" + " AND " +
                         City.COUNTRY_CODE + " = ?"
@@ -125,7 +127,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) throws SQLException {
+    public List<IZone> getInnerZones(final Connection conn) throws SQLException {
         return Zone.wrapIZone(getCities(conn));
     }
 
@@ -145,7 +147,7 @@ public final class District extends AbstractZone implements IFieldEnum<String> {
     }
 
     @Override
-    public long getTotalPopulation(Connection conn) throws SQLException {
+    public long getTotalPopulation(final Connection conn) throws SQLException {
         return getCities(conn).stream().mapToLong(c -> c.getTotalPopulation(conn)).reduce(0, Long::sum);
     }
 

@@ -22,14 +22,14 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
      * Creates a Region instance using whatever is LIKE the name passed in. LIKE referring to SQL string matching.
      */
     public static Region fromName(final String name, final Connection conn) throws SQLException {
-        try (PreparedStatement stmt
+        try (final PreparedStatement stmt
                      = conn.prepareStatement(
                 "SELECT DISTINCT(" + Country.REGION + "), " + Country.CONTINENT +
                         " FROM " + Country.TABLE + " WHERE " + Country.REGION + " LIKE ?")) {
 
             stmt.setString(1, "%" + name + "%");
 
-            try (ResultSet res = stmt.executeQuery()) {
+            try (final ResultSet res = stmt.executeQuery()) {
                 if (res.next()) {
                     return new Region(
                             res.getString(Country.REGION),
@@ -76,14 +76,14 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
             return cacheMap.get(cacheKey);
 
         // Will always be unique because country is a db entity
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT DISTINCT * FROM " + Country.TABLE +
                         " WHERE " + Country.REGION + " = ?"
         );
         stmt.setString(1, name);
 
-        List<IZone> countries = new ArrayList<>();
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        final List<IZone> countries = new ArrayList<>();
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             while (res.next())
                 countries.add(
                         Country.fromCountryCode(
@@ -125,7 +125,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
         //GROUP BY country.Region
         //ORDER BY country.Region
 
-        try (PreparedStatement ps = conn.prepareStatement(
+        try (final PreparedStatement ps = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT",
                             Country.REGION, ",",
@@ -137,7 +137,7 @@ public final class Region extends AbstractZone implements IFieldEnum<String>, ID
         )) {
             ps.setString(1, name);
 
-            try (ResultSet res = ps.executeQuery()) {
+            try (final ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
                     return res.getInt("Total");
                 }

@@ -33,7 +33,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         );
         stmt.setString(1, "%" + name + "%");
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 return fromDatabaseString(res.getString(Country.CONTINENT));
             } else
@@ -152,7 +152,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         stmt.setString(1, name.getDatabaseName());
 
         final List<IZone> regions = new ArrayList<>();
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             while (res.next())
                 regions.add(Region.fromName(res.getString(Country.REGION), conn));
         }
@@ -205,7 +205,7 @@ public final class Continent extends AbstractZone implements IFieldEnum<Continen
         )) {
             ps.setString(1, name.getDatabaseName());
 
-            try (ResultSet res = ps.executeQuery()) {
+            try (final ResultSet res = ps.executeQuery()) {
                 if (res.next()) {
                     return res.getLong("Total");
                 }

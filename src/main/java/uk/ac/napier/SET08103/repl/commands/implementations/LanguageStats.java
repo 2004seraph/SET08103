@@ -36,7 +36,7 @@ public final class LanguageStats implements ICommand {
     //LIMIT 5;
     @Override
     public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
-        try (PreparedStatement stmt = conn.prepareStatement(Model.buildStatement(
+        try (final PreparedStatement stmt = conn.prepareStatement(Model.buildStatement(
                 "SELECT language_populations.`Language` AS Lang, SUM(language_populations.Speakers) AS Total",
                 "FROM",
 
@@ -57,13 +57,13 @@ public final class LanguageStats implements ICommand {
                 "DESC",
                 "LIMIT 5"
                 ));
-             PreparedStatement worldPop = conn.prepareStatement(
+             final PreparedStatement worldPop = conn.prepareStatement(
                      Model.buildStatement(
                              "SELECT SUM(" + Country.POPULATION + ") FROM " + Country.TABLE + ";"));
 
-             ResultSet popRes = worldPop.executeQuery();
+             final ResultSet popRes = worldPop.executeQuery();
 
-             ResultSet langRes = stmt.executeQuery()) {
+             final ResultSet langRes = stmt.executeQuery()) {
 
             // Print header
             System.out.printf(
@@ -73,7 +73,7 @@ public final class LanguageStats implements ICommand {
             popRes.next();
 
             while (langRes.next()) {
-                long pop = langRes.getLong("Total");
+                final long pop = langRes.getLong("Total");
 
                 System.out.printf(
                         "%-16s %,18d %20s%n",

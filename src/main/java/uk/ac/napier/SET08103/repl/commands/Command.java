@@ -21,7 +21,7 @@ public enum Command {
 
     private final ICommand command;
 
-    Command(ICommand command) {
+    Command(final ICommand command) {
         this.command = command;
     }
 

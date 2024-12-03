@@ -57,14 +57,14 @@ public final class World extends AbstractZone {
 
     @Override
     public long getTotalPopulation(final Connection conn) throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement(
+        try (final PreparedStatement stmt = conn.prepareStatement(
                 Model.buildStatement(
                         "SELECT",
                         "SUM(", Country.POPULATION, ") AS Total",
                         "FROM", Country.TABLE
                 )
         )) {
-            try (ResultSet res = stmt.executeQuery()) {
+            try (final ResultSet res = stmt.executeQuery()) {
                 if (res.next()) {
                     return res.getLong("Total");
                 }

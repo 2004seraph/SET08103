@@ -109,7 +109,6 @@ public final class Leaderboard implements ICommand {
                 - ((areaType == Zone.CAPITALS) ? 1 : 0);
 
         List<IZone> expansion = aggregateArea.getInnerZones(levelsDown, conn);
-
         if (areaType == Zone.CAPITALS)
             expansion = expansion.stream().filter(z -> ((City) z).isCapital()).collect(Collectors.toList());
 
