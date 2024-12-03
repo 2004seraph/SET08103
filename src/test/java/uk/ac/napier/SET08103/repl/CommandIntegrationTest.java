@@ -19,6 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class CommandIntegrationTest extends AbstractIntegrationTest {
 
     @Test
+    void help() {
+        final Connection conn = getAppDatabaseConnection();
+
+        Testing.setOutputState(false);
+
+        assertAll(() -> Repl.parseAndRun(conn, Command.HELP.name()));
+
+        Testing.setOutputState(true);
+    }
+
+    @Test
     void languageReport() {
         final Connection conn = getAppDatabaseConnection();
 
