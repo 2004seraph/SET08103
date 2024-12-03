@@ -10,6 +10,8 @@
 [![Releases](https://img.shields.io/github/release/2004seraph/SET08103/all.svg?style=flat-square)](https://github.com/2004seraph/SET08103/releases)
 [![codecov](https://codecov.io/gh/2004seraph/SET08103/branch/master/graph/badge.svg?token=EDH24ELB68)](https://codecov.io/gh/2004seraph/SET08103)
 
+Irritatingly, Codecov has straight up just stopped working on the commit (`0357257abe7f2f7ba03cbaa515bcade757f3b1ca`) where I tried adding a configuration file (`codecov.yml`) and now simply refuses to do anything anymore. I've tried deleting the file, regenerating the API token, deleting and reinstalling the GitHub app, deleting the repository data on their website, and reactivating codecov for the repository. Nothing seems to work anymore. This seems to be an ![issue](https://community.codecov.com/t/codecov-yml-ignore-not-working/794) encountered by others with no clear fix.
+
 ## Usage
 
 > [!IMPORTANT]
