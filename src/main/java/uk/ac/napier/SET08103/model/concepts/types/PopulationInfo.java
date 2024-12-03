@@ -28,8 +28,8 @@ public class PopulationInfo implements Comparable<PopulationInfo> {
      */
     public static void printHeaders() {
         System.out.printf(
-                "%-45s %-22s %-22s %-22s",
-                "Name", "Total Population", "Urban Population", "Rural Population");
+                "%-45s %22s | %18s %5s | %18s %5s |",
+                "Name", "Total Population", "Urban Population", "%", "Rural Population", "%");
         System.out.println();
     }
 
@@ -38,12 +38,12 @@ public class PopulationInfo implements Comparable<PopulationInfo> {
      */
     public void print(final Connection conn) throws SQLException {
         System.out.printf(
-                "%-45s %-22s %-22s %-22s",
+                "%-45s %,22d | %,18d %5s | %,18d %5s |",
 
                 location.toString(),
                 location.getTotalPopulation(conn),
-                this.inCities + " (" + Math.round(((double)this.inCities / (double)this.total) * 100D) + "%)",
-                this.outsideCities + " (" + Math.round(((double)this.outsideCities / (double)this.total) * 100D) + "%)");
+                this.inCities, "(" + Math.round(((double)this.inCities / (double)this.total) * 100D) + "%)",
+                this.outsideCities, "(" + Math.round(((double)this.outsideCities / (double)this.total) * 100D) + "%)");
         System.out.println();
     }
 

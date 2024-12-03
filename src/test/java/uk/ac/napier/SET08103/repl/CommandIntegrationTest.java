@@ -22,7 +22,7 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     void leaderboard() {
         final Connection conn = getAppDatabaseConnection();
 
-        Testing.setOutputState(false);
+//        Testing.setOutputState(false);
 
         assertEquals(239, ((List<IZone>) Repl.parseAndRun(conn,
                 Command.LEADERBOARD.name(), "--of", "countries")).size());
@@ -103,7 +103,7 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     @Test
     void populationInfo() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
-        Testing.setOutputState(false);
+//        Testing.setOutputState(false);
 
         // --in
 

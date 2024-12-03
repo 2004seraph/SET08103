@@ -23,7 +23,7 @@ public final class CapitalReport {
             if (city == null) continue;
 
             final String city_string = String.format(
-                    "%-36s %-46s %-10s",
+                    "%-36s %-46s %,10d",
                     city, city.getCountry(), city.getTotalPopulation(conn));
             System.out.println(city_string);
         }
