@@ -50,7 +50,7 @@ public final class CityReport {
 
         // Print header
         System.out.printf(
-                "%-36s %-46s %-24s %-10s%n",
+                "%-36s %-46s %-24s %18s%n",
                 "Name", "Country", "District", "Population");
 
         // Prints each city
@@ -60,7 +60,7 @@ public final class CityReport {
             String district = (city.getDistrict() == null) ? "-" : city.getDistrict().toString();
 
             String city_string = String.format(
-                    "%-36s %-46s %-24s %-10s",
+                    "%-36s %-46s %-24s %,18d",
                     city, city.getCountry(), district, city.getTotalPopulation(conn));
             System.out.println(city_string);
         }

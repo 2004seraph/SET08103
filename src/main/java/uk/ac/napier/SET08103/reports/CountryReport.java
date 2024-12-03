@@ -49,7 +49,7 @@ public final class CountryReport {
 
         // Print header
         System.out.printf(
-                "%-4s %-45s %-14s %-26s %-11s %-9s%n",
+                "%-4s %-45s %-14s %-26s %18s %-9s%n",
                 "Code", "Name", "Continent", "Region", "Population", "Capital");
 
         // Prints each country
@@ -57,7 +57,7 @@ public final class CountryReport {
             if (country == null) continue;
 
             String country_string = String.format(
-                    "%-4s %-45s %-14s %-26s %-11s %-9s",
+                    "%-4s %-45s %-14s %-26s %,18d %-9s",
                     country.getPrimaryKey(), country, country.continent, country.region, country.population, country.capital);
             System.out.println(country_string);
         }
