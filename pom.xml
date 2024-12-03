@@ -139,12 +139,12 @@
                 <!-- Newest Surefire does not need an adapter for JUnit -->
 
                 <!-- Fixes https://github.com/stefanbirkner/system-lambda/issues/31 -->
-                <configuration>
-                    <argLine>
-                        --add-opens java.base/java.util=ALL-UNNAMED
-                        --add-opens java.base/java.lang=ALL-UNNAMED
-                    </argLine>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <argLine>-->
+<!--                        &#45;&#45;add-opens java.base/java.util=ALL-UNNAMED-->
+<!--                        &#45;&#45;add-opens java.base/java.lang=ALL-UNNAMED-->
+<!--                    </argLine>-->
+<!--                </configuration>-->
             </plugin>
 
             <plugin>
