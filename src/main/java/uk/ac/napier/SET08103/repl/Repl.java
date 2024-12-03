@@ -115,7 +115,7 @@ public final class Repl {
      */
     private static Object parseAndRunSubCommand(final Command command, final Connection conn, final String[] args) {
         try {
-            CommandLine subArgs = new DefaultParser().parse(
+            final CommandLine subArgs = new DefaultParser().parse(
                     command.Instance().getOptions(),
                     args,
                     false // true = throw, false so it ignores the first arg
@@ -157,7 +157,7 @@ public final class Repl {
      */
     private static void printSubCommandHelpString(final Command command) {
         // Blame Apache Commons CLI for this odd syntax
-        boolean noOpts = command.Instance().getOptions().getOptions().isEmpty();
+        final boolean noOpts = command.Instance().getOptions().getOptions().isEmpty();
 
         final HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(command.toString().toLowerCase(Locale.ENGLISH)

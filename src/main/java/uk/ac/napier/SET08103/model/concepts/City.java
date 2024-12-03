@@ -46,22 +46,22 @@ public final class City extends AbstractZone implements IEntity {
      * @return A City instance
      * @throws IllegalArgumentException No entries found with that id
      */
-    public static City fromId(int id, Connection conn) throws SQLException {
+    public static City fromId(final int id, final Connection conn) throws SQLException {
         // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
-        try (PreparedStatement ps = conn.prepareStatement(CREATION_SQL)) {
-            ps.setInt(1, id);
+        try (final PreparedStatement stmt = conn.prepareStatement(CREATION_SQL)) {
+            stmt.setInt(1, id);
 
-            try (ResultSet res = ps.executeQuery()) {
+            try (final ResultSet res = stmt.executeQuery()) {
                 if (!res.next())
                     throw new IllegalArgumentException("No city with ID: " + id);
 
-                City c = new City(id, res.getInt(Country.CAPITAL));
+                final City c = new City(id, res.getInt(Country.CAPITAL));
 
                 c.population = res.getInt(POPULATION);
                 c.name = res.getString(NAME);
 
                 // Some cities can be in a NULL district
-                String districtName = res.getString(City.DISTRICT);
+                final String districtName = res.getString(City.DISTRICT);
                 c.parentZone = (!Objects.equals(districtName, District.nullFieldValue)) ?
                         District.fromName(
                                 districtName,
@@ -81,17 +81,17 @@ public final class City extends AbstractZone implements IEntity {
      * @return An instance of City
      * @throws IllegalArgumentException No entries found with a name like the one given
      */
-    public static City fromName(String name, Connection conn) throws SQLException {
+    public static City fromName(final String name, final Connection conn) throws SQLException {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Invalid City name");
 
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM " + TABLE +
                         " WHERE LOWER( Name ) LIKE ? ORDER BY " + POPULATION + " DESC"
         );
         stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH) + "%");
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 return fromId(res.getInt(PRIMARY_KEY), conn);
             } else
@@ -103,15 +103,15 @@ public final class City extends AbstractZone implements IEntity {
      * Returns every capital in the world
      */
     public static List<City> allCapitals(Connection conn) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement(
+        final PreparedStatement stmt = conn.prepareStatement(
                 "SELECT " + Country.CAPITAL + " FROM " + Country.TABLE
         );
 
-        List<City> capitals = new ArrayList<>();
+        final List<City> capitals = new ArrayList<>();
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             while (res.next()) {
-                int key = res.getInt(1);
+                final int key = res.getInt(1);
                 if (key != 0)
                     capitals.add(City.fromId(key, conn));
             }
@@ -126,24 +126,24 @@ public final class City extends AbstractZone implements IEntity {
      * This function is only meant to be called by the Country class to set its own capital City instance,
      * using the public function causes infinite recursion.
      */
-    static City fromIdAsCapital(int id, Country country, Connection conn) throws SQLException {
+    static City fromIdAsCapital(final int id, final Country country, final Connection conn) throws SQLException {
 
         // Note to self: if this city is NOT a capital, ALL Country fields will be NULL
-        try (PreparedStatement ps = conn.prepareStatement(CREATION_SQL)) {
-            ps.setInt(1, id);
+        try (final PreparedStatement stmt = conn.prepareStatement(CREATION_SQL)) {
+            stmt.setInt(1, id);
 
-            try (ResultSet res = ps.executeQuery()) {
+            try (final ResultSet res = stmt.executeQuery()) {
                 if (!res.next())
                     throw new IllegalArgumentException("No city with ID: " + id);
 
-                City c = new City(id, res.getInt(Country.CAPITAL));
+                final City c = new City(id, res.getInt(Country.CAPITAL));
 
                 c.population = res.getInt(POPULATION);
                 c.name = res.getString(NAME);
 
                 // Some cities can be in a NULL district
                 // Country is pre-computed this time
-                String districtName = res.getString(City.DISTRICT);
+                final String districtName = res.getString(City.DISTRICT);
                 c.parentZone = (!Objects.equals(districtName, District.nullFieldValue)) ?
                         District.fromName(
                                 districtName,
@@ -165,7 +165,7 @@ public final class City extends AbstractZone implements IEntity {
     private int population;
     private String name;
 
-    private City(int primaryKey, int countryCapital) {
+    private City(final int primaryKey, final int countryCapital) {
         this.id = primaryKey;
         this.zone = (id == countryCapital) ? Zone.CAPITALS : Zone.CITIES;
     }
@@ -199,12 +199,12 @@ public final class City extends AbstractZone implements IEntity {
     }
 
     @Override
-    public List<IZone> getInnerZones(Connection conn) {
+    public List<IZone> getInnerZones(final Connection conn) {
         return List.of(this);
     }
 
     @Override
-    public List<City> getCities(Connection conn) {
+    public List<City> getCities(final Connection conn) {
         // required behaviour for tree searching, because sometimes a city can be in a NULL district
         return List.of(this);
     }
@@ -226,7 +226,7 @@ public final class City extends AbstractZone implements IEntity {
 
     // INFINITE RECURSION IF THIS IS NOT OVERRIDDEN BY THIS CLASS !!!!
     @Override
-    public long getTotalPopulation(Connection conn) {
+    public long getTotalPopulation(final Connection conn) {
         return this.population;
     }
 

@@ -12,7 +12,7 @@ public final class Model {
      * @param strings varargs
      * @return a string with spaces automatically inserted between each argument
      */
-    public static String buildStatement(String ... strings) {
+    public static String buildStatement(final String ... strings) {
         final StringBuilder query = new StringBuilder();
         for (String s : strings)
             query.append(s).append(" ");

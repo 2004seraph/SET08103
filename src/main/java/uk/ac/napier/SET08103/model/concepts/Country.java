@@ -45,7 +45,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
                 "SELECT * FROM " + TABLE + " WHERE " + PRIMARY_KEY + " = ?");
         stmt.setString(1, countryCode);
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 final Country newInstance = new Country(
                         countryCode,
@@ -76,7 +76,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
         );
         stmt.setString(1, "%" + name.toLowerCase(Locale.ENGLISH) + "%");
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 return fromCountryCode(res.getString(PRIMARY_KEY), conn);
             } else
@@ -140,7 +140,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
 
         final List<IZone> districts = new ArrayList<>();
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             boolean nullDistricts = false;
 
             while (res.next()) {
@@ -169,7 +169,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
                 nullDistrictStmt.setString(1, countryCode);
                 nullDistrictStmt.setString(2, District.nullFieldValue);
 
-                try (nullDistrictStmt; ResultSet nullDistrictRes = nullDistrictStmt.executeQuery()) {
+                try (nullDistrictStmt; final ResultSet nullDistrictRes = nullDistrictStmt.executeQuery()) {
                     while (nullDistrictRes.next()) {
                         districts.add(City.fromId(nullDistrictRes.getInt(City.PRIMARY_KEY), conn));
                     }
@@ -209,7 +209,7 @@ public final class Country extends AbstractZone implements IEntity, IDistributed
         );
         stmt.setString(1, this.countryCode);
 
-        try (stmt; ResultSet res = stmt.executeQuery()) {
+        try (stmt; final ResultSet res = stmt.executeQuery()) {
             if (res.next()) {
                 return res.getInt(POPULATION);
             } else

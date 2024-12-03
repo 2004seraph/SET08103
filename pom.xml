@@ -9,9 +9,10 @@
     <version>1.0</version>
 
     <properties>
-        <maven.compiler.source>10</maven.compiler.source>
-        <maven.compiler.target>10</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <java.version>11</java.version>
+         <maven.compiler.source>${java.version}</maven.compiler.source>
+         <maven.compiler.target>${java.version}</maven.compiler.target>
+         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +53,19 @@
             <groupId>de.audioattack.io</groupId>
             <artifactId>console</artifactId>
             <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -123,6 +137,14 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
                 <!-- Newest Surefire does not need an adapter for JUnit -->
+
+                <!-- Fixes https://github.com/stefanbirkner/system-lambda/issues/31 -->
+<!--                <configuration>-->
+<!--                    <argLine>-->
+<!--                        &#45;&#45;add-opens java.base/java.util=ALL-UNNAMED-->
+<!--                        &#45;&#45;add-opens java.base/java.lang=ALL-UNNAMED-->
+<!--                    </argLine>-->
+<!--                </configuration>-->
             </plugin>
 
             <plugin>

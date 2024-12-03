@@ -21,7 +21,7 @@ public final class App implements AutoCloseable {
     private static final int DB_MAX_CONN_RETRIES = 10;
     private static final int DB_LOGIN_TIMEOUT_SECONDS = 3;
 
-    private static Boolean isDriverLoaded()  {
+    static Boolean isDriverLoaded()  {
         final Enumeration<Driver> list = DriverManager.getDrivers();
         while (list.hasMoreElements()) {
             final Driver driver = list.nextElement();
@@ -33,15 +33,15 @@ public final class App implements AutoCloseable {
         return false;
     }
 
-    public static void main(String[] args) throws SQLException {
-        try (App a = new App()) {
+    public static void main(final String[] args) throws SQLException {
+        try (final App a = new App()) {
             a.connect(
                     Objects.requireNonNullElse(
                             System.getenv("MYSQL_HOST"),
                             "localhost"),
                     Objects.requireNonNullElse(
                             System.getenv("MYSQL_ROOT_PASSWORD"),
-                            "default")
+                            "root")
                     );
 
             a.run(args);
@@ -63,7 +63,7 @@ public final class App implements AutoCloseable {
         return con;
     }
 
-    public void run(String[] args) {
+    private void run(final String[] args) {
         if (args.length != 0)
             Repl.parseAndRun(args, con); // command passed via arguments, do not start the prompt
         else {
@@ -92,7 +92,7 @@ public final class App implements AutoCloseable {
         }
     }
 
-    public void connect(String dbHost, String dbPassword) throws RuntimeException, SQLException {
+    void connect(final String dbHost, final String dbPassword) throws RuntimeException, SQLException {
         if (!isDriverLoaded())
             throw new RuntimeException("Database driver not loaded");
 

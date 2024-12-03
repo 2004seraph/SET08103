@@ -14,7 +14,7 @@ public final class PopulationInfo implements Comparable<PopulationInfo> {
 
     public PopulationInfo(
             final IZone location,
-            long total,
+            final long total,
             final long inCities
     ) {
         this.location = location;

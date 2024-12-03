@@ -16,7 +16,8 @@ public final class Help implements ICommand {
     }
 
     @Override
-    public Object execute(CommandLine args, Connection conn) throws SQLException, RuntimeException, ParseException {
+    public Object execute(final CommandLine args, final Connection conn)
+            throws SQLException, RuntimeException, ParseException {
         Repl.printTopLevelHelpString();
 
         return null;
