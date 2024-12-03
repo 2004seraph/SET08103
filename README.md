@@ -41,6 +41,12 @@ Successfully connected to MySQL database: world
 Population of World: 6078749450
 ```
 
+Any command that takes a specific place as an argument may have either a name or a primary key supplied (Numeric ID for cities, or country code for countries). If a name is supplied, the place with the highest population will be used in the event of multiple matches.
+
+Places with spaces in their name may be referenced with underscores, so to select the region "Southern Europe", you can use southern_europe.
+
+All commands are case insensitive, including arguments.
+
 ## Requirements
 
 > **32** requirements of **32** have been implemented, which is **100%**.
