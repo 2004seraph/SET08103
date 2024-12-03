@@ -22,8 +22,11 @@ public final class CommandIntegrationTest extends AbstractIntegrationTest {
     void languageReport() {
         final Connection conn = getAppDatabaseConnection();
 
-        Repl.parseAndRun(conn,
-                Command.LANGUAGES.name());
+        Testing.setOutputState(false);
+
+        assertAll(() -> Repl.parseAndRun(conn, Command.LANGUAGES.name()));
+
+        Testing.setOutputState(true);
     }
 
     @Test
