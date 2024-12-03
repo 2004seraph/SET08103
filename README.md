@@ -43,9 +43,11 @@ Population of World: 6078749450
 
 Any command that takes a specific place as an argument may have either a name or a primary key supplied (Numeric ID for cities, or country code for countries). If a name is supplied, the place with the highest population will be used in the event of multiple matches.
 
-Places with spaces in their name may be referenced with underscores, so to select the region "Southern Europe", you can use southern_europe.
+Places with spaces in their name may be referenced with underscores, so to select the region "Southern Europe", you can use southern_europe. You can also just type "europe" and it will select the place with the higher population.
 
 All commands are case insensitive, including arguments.
+
+Refer to the requirements screenshots for usage examples.
 
 ## Requirements
 
