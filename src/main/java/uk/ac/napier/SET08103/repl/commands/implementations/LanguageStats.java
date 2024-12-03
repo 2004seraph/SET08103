@@ -70,8 +70,7 @@ public final class LanguageStats implements ICommand {
                     "%-16s %18s %20s%n",
                     "Language", "Speakers", "% of Population");
 
-            //noinspection AssertWithSideEffects
-            assert popRes.next();
+            popRes.next();
 
             while (langRes.next()) {
                 long pop = langRes.getLong("Total");
