@@ -18,7 +18,7 @@
 > [!NOTE]
 > Assume common UNIX-like CLI tool behaviour
 
-These commands assume a Linux environment with Docker and Maven installed.
+These commands assume a Windows or Linux environment, with Docker, Java 10 and Maven installed.
 
 1. Package the app: `mvn -DskipTests package`
 2. Start the database Docker container using a config which allows the app to be run outside it's Docker container: 
