@@ -71,7 +71,6 @@ public final class LanguageStats implements ICommand {
                 }
             }
         }
-
         return null;
     }
 }

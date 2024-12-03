@@ -86,7 +86,7 @@ Population of World: 6078749450
 | 29 | The population of a country.                                                                                                                             | Yes | ![Screenshot of terminal](./doc/demo/requirements/29.png)                                                                   |
 | 30 | The population of a district.                                                                                                                            | Yes | ![Screenshot of terminal](./doc/demo/requirements/30.png)                                                                   |
 | 31 | The population of a city.                                                                                                                                | Yes | ![Screenshot of terminal](./doc/demo/requirements/31.png)                                                                   |
-| 32 | The number of people who speak Chinese, English, Hindi, Spanish, and Arabic, from greatest to smallest, including the percentage of the world population | No  |                                                                                                                             |
+| 32 | The number of people who speak Chinese, English, Hindi, Spanish, and Arabic, from greatest to smallest, including the percentage of the world population | Yes |                                                                                                                             |
 
 ## Coverage
 
