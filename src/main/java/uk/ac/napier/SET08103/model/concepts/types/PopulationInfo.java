@@ -5,7 +5,7 @@ import uk.ac.napier.SET08103.model.concepts.zone.IZone;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PopulationInfo implements Comparable<PopulationInfo> {
+public final class PopulationInfo implements Comparable<PopulationInfo> {
     public final IZone location;
 
     public final long total;
