@@ -36,7 +36,7 @@ public final class PopulationOf implements ICommand {
         final IZone target = parseZoneReference(args.getOptionProperties("in"), conn);
         final long population = target.getTotalPopulation(conn);
 
-        System.out.printf("Population of %-45s %,8d%n", target, population);
+        System.out.printf("Population of %-45s %,18d%n", target, population);
 
         return population;
     }

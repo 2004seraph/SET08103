@@ -51,7 +51,8 @@ public final class WorldIntegrationTest extends AbstractIntegrationTest {
 
             // test caching
             final List<City> citiesOfTheWorldFromCache = World.INSTANCE.getCities(conn);
-            Assertions.assertTrue(Testing.compareLists(wrapIZone(citiesOfTheWorldFromCache), wrapIZone(citiesOfTheWorld)));
+            Assertions.assertTrue(
+                    Testing.compareLists(wrapIZone(citiesOfTheWorldFromCache), wrapIZone(citiesOfTheWorld)));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

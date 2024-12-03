@@ -18,6 +18,14 @@ jobs:
           distribution: 'adopt'
       - name: Unit Tests
         run: mvn -Dtest='!*IntegrationTest' test
+      - name: CodeCov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./target/site/jacoco
+          flags: Unit Tests
+          verbose: false
+          slug: 2004seraph/SET08103
 
   integration-tests:
     name: Integration Tests
