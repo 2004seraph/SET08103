@@ -12,6 +12,8 @@
 
 Irritatingly, Codecov has straight up just stopped working on the commit (`0357257abe7f2f7ba03cbaa515bcade757f3b1ca`) where I tried adding a configuration file (`codecov.yml`) and now simply refuses to do anything anymore. I've tried deleting the file, regenerating the API token, deleting and reinstalling the GitHub app, deleting the repository data on their website, removing the OAuth connection on my GitHub account, and reactivating codecov for the repository. Nothing seems to work anymore. This seems to be an [issue](https://community.codecov.com/t/codecov-yml-ignore-not-working/794) encountered by others with no clear fix.
 
+Weirdly, the workflow steps seem to run fine if a branch is reverted to before the config file was added (as can be seen in `bugfix/before-codecov-config-2`). Something seems to have completely broken on Codecov's end, and I the only solution I see is requesting to their customer support for my account to be terminated and recreating the Codecov data entierly.
+
 The coverage was `84%` and climbing before it broke.
 
 ## Usage
