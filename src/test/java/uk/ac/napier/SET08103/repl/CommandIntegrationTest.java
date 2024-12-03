@@ -20,7 +20,10 @@ public final class CommandIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void languageReport() {
+        final Connection conn = getAppDatabaseConnection();
 
+        Repl.parseAndRun(conn,
+                Command.LANGUAGES.name());
     }
 
     @Test
