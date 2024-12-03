@@ -23,6 +23,7 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
     void disconnected() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
         conn.close();
+
         Testing.setOutputState(false);
 
         assertTrue(SQLException.class.isAssignableFrom(
@@ -31,6 +32,7 @@ public final class ReplIntegrationTest extends AbstractIntegrationTest {
 
         // Reconnect after this test
         connectToDatabase();
+
         Testing.setOutputState(true);
     }
 

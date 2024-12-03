@@ -22,7 +22,7 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     void leaderboard() {
         final Connection conn = getAppDatabaseConnection();
 
-//        Testing.setOutputState(false);
+        Testing.setOutputState(false);
 
         assertEquals(239, ((List<IZone>) Repl.parseAndRun(conn,
                 Command.LEADERBOARD.name(), "--of", "countries")).size());
@@ -83,7 +83,8 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     @Test
     void populationOf() {
         final Connection conn = getAppDatabaseConnection();
-//        Testing.setOutputState(false);
+
+        Testing.setOutputState(false);
 
         assertEquals(7285000,
                 ((Long) Repl.parseAndRun(conn, Command.TOTAL.name(), "--in", "city:london")).longValue());
@@ -109,9 +110,8 @@ public class CommandIntegrationTest extends AbstractIntegrationTest {
     @Test
     void populationInfo() throws SQLException {
         final Connection conn = getAppDatabaseConnection();
-//        Testing.setOutputState(false);
 
-        // --in
+        Testing.setOutputState(false);
 
         // Valid zones
 
