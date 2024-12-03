@@ -43,7 +43,7 @@ Population of World: 6078749450
 
 ## Requirements
 
-> **31** requirements of **32** have been implemented, which is **96.9%**.
+> **32** requirements of **32** have been implemented, which is **100%**.
 
 ### Evidence
 
