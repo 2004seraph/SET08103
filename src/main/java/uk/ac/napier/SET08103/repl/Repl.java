@@ -156,9 +156,11 @@ public final class Repl {
      * Prints parameter help for a given Command
      */
     private static void printSubCommandHelpString(final Command command) {
+        // Blame Apache Commons CLI for this odd syntax
+        boolean noOpts = command.Instance().getOptions().getOptions().isEmpty();
+
         final HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(
-                command.toString().toLowerCase(Locale.ENGLISH)
-                        + " [options]", command.Instance().getOptions());
+        formatter.printHelp(command.toString().toLowerCase(Locale.ENGLISH)
+                        + ((noOpts) ? "" : " [options]"), command.Instance().getOptions());
     }
 }
